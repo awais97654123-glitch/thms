@@ -68,13 +68,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="hidden sm:flex items-center gap-2 text-slate-400 pl-3 border-l border-slate-800">
             <span className="font-extrabold text-white text-xs">The Hayatabad Model School</span>
             <ChevronRight className="w-3 h-3 text-slate-600" />
-            <span className="text-cyan-400 font-bold text-xs">Admin Control Center</span>
+            <span className="text-orange-400 font-bold text-xs">Admin Executive Control Tower</span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-extrabold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"></span>
+          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 text-[11px] font-extrabold">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse shadow-[0_0_8px_#fb923c]"></span>
             <span>Session: 2026-2027</span>
           </div>
 

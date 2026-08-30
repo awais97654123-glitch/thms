@@ -45,12 +45,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       title: 'CORE MODULES',
       items: [
         { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-        { name: 'Admissions Pipeline', href: '/admin/admissions', icon: UserPlus, badge: 'Live', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+        { name: 'Admissions Pipeline', href: '/admin/admissions', icon: UserPlus, badge: 'Live', badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
         { name: 'Student 360° Directory', href: '/admin/students', icon: Users },
         { name: 'Faculty & Teachers', href: '/admin/teachers', icon: UserCheck },
         { name: 'Staff Management', href: '/admin/staff', icon: UserCircle },
         { name: 'Parents Directory', href: '/admin/parents', icon: Users },
-        { name: 'ID Card Studio (QR)', href: '/admin/id-cards', icon: CreditCard, badge: 'Smart', badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
+        { name: 'ID Card Studio (QR)', href: '/admin/id-cards', icon: CreditCard, badge: 'Smart', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
       ],
     },
     {
@@ -94,28 +94,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar container */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-slate-950/95 text-slate-200 border-r border-slate-800/80 backdrop-blur-2xl flex flex-col transition-all duration-300 ease-in-out lg:translate-x-0 ${
-          isOpen ? 'translate-x-0 shadow-2xl shadow-blue-950/50' : '-translate-x-full'
+          isOpen ? 'translate-x-0 shadow-2xl shadow-orange-950/50' : '-translate-x-full'
         }`}
       >
-        {/* Top Header */}
+        {/* Top Header with 3D Logo */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-slate-800/80 bg-slate-900/40">
           <Link href="/admin" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-indigo-600 p-0.5 shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-all">
-              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center p-0.5">
-                <img
-                  src="/school-logo.png"
-                  alt="THMS Crest"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
+            <img
+              src="/logo.png"
+              alt="THMS Logo"
+              className="h-9 w-auto object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.3)] group-hover:scale-105 transition-transform"
+            />
             <div>
-              <h2 className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
+              <h2 className="text-sm font-black tracking-tight text-white flex items-center gap-1.5">
                 <span>THMS Command</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
               </h2>
               <span className="text-[10px] text-slate-400 font-medium tracking-wide">
-                Admin Control Center
+                Admin Control Tower
               </span>
             </div>
           </Link>
@@ -145,23 +141,23 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                       onClick={() => {
                         if (window.innerWidth < 1024) onClose();
                       }}
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
+                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all group ${
                         isActive
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30'
+                          ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/25'
                           : 'text-slate-400 hover:bg-slate-900/80 hover:text-slate-100'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-cyan-400'}`} />
+                        <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-orange-400'}`} />
                         <span>{item.name}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         {item.badge && (
-                          <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-extrabold border ${item.badgeColor || 'bg-blue-500/20 text-blue-300 border-blue-500/30'}`}>
+                          <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-extrabold border ${item.badgeColor || 'bg-orange-500/20 text-orange-300 border-orange-500/30'}`}>
                             {item.badge}
                           </span>
                         )}
-                        {isActive && <ChevronRight className="w-3.5 h-3.5 text-blue-200" />}
+                        {isActive && <ChevronRight className="w-3.5 h-3.5 text-orange-200" />}
                       </div>
                     </Link>
                   );
@@ -178,10 +174,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             onClick={() => {
               if (window.innerWidth < 1024) onClose();
             }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800/80 hover:text-white transition-all border border-slate-800/60"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800/80 hover:text-white transition-all border border-slate-800/60"
           >
             <span>← Exit to Website</span>
-            <span className="text-[10px] text-slate-500">Public Portal</span>
+            <span className="text-[10px] text-slate-500 font-medium">Public Portal</span>
           </Link>
           <button
             onClick={async () => {
@@ -201,8 +197,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Footer info */}
         <div className="p-3.5 border-t border-slate-800/80 bg-slate-950/80 text-[11px] text-slate-400 flex items-center justify-between">
           <span className="font-mono text-[10px]">THMS v2.6 • Neon PG</span>
-          <span className="flex items-center gap-1.5 text-emerald-400 font-semibold text-[10px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse"></span>
+          <span className="flex items-center gap-1.5 text-orange-400 font-bold text-[10px]">
+            <span className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_#fb923c] animate-pulse"></span>
             Live Cluster
           </span>
         </div>

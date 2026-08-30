@@ -27,16 +27,29 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // Determine target Section (use provided section or first section of class)
     let sectionId = body.sectionId || application.preferredSectionId;
+    if (sectionId) {
+      const secExists = await prisma.section.findUnique({ where: { id: sectionId } });
+      if (!secExists) sectionId = undefined; // fallback if invalid id or mock string passed
+    }
+
     if (!sectionId) {
       const defaultSec = await prisma.section.findFirst({
         where: { classId: application.applyingClassId },
         orderBy: { name: 'asc' },
       });
-      if (defaultSec) sectionId = defaultSec.id;
-    }
-
-    if (!sectionId) {
-      return NextResponse.json({ error: 'No sections configured for this class' }, { status: 400 });
+      if (defaultSec) {
+        sectionId = defaultSec.id;
+      } else {
+        // Automatically create Section A if class has no section yet
+        const newSec = await prisma.section.create({
+          data: {
+            name: 'Section A',
+            classId: application.applyingClassId,
+            capacity: 40,
+          },
+        });
+        sectionId = newSec.id;
+      }
     }
 
     // Authorization check
