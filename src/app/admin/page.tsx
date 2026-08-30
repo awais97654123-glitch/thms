@@ -57,50 +57,22 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Fetch Students count
-    fetch('/api/students')
+    // 1-Call Ultra Fast Dashboard Statistics Loader
+    fetch('/api/admin/dashboard-stats')
       .then((res) => res.json())
       .then((data) => {
-        if (data.students) {
-          const count = data.students.length;
-          setStats((prev) => ({ ...prev, totalStudents: count }));
-          setSetupProgress((prev) => ({ ...prev, firstAdmission: count > 0 }));
+        if (data.stats) {
+          setStats(data.stats);
+          setSetupProgress((prev) => ({
+            ...prev,
+            firstAdmission: data.stats.totalStudents > 0,
+            teachers: data.stats.activeTeachers > 0,
+            feeStructure: true,
+            pct: 95,
+          }));
         }
-      })
-      .catch(console.error);
-
-    // 2. Fetch Teachers count
-    fetch('/api/teachers')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.teachers) {
-          const count = data.teachers.length;
-          setStats((prev) => ({ ...prev, activeTeachers: count }));
-          setSetupProgress((prev) => ({ ...prev, teachers: count > 0 }));
-        }
-      })
-      .catch(console.error);
-
-    // 3. Fetch Admissions
-    fetch('/api/admissions')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.applications) {
-          setRecentAdmissions(data.applications.slice(0, 5));
-          setStats((prev) => ({ ...prev, activeAdmissions: data.applications.length }));
-        }
-      })
-      .catch(console.error);
-
-    // 4. Fetch Payments
-    fetch('/api/fees/payments')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.payments) {
-          setRecentPayments(data.payments.slice(0, 5));
-          const totalPaid = data.payments.reduce((acc: number, p: any) => acc + (p.amount || 0), 0);
-          setStats((prev) => ({ ...prev, todayFeeCollection: totalPaid }));
-        }
+        if (data.recentAdmissions) setRecentAdmissions(data.recentAdmissions);
+        if (data.recentPayments) setRecentPayments(data.recentPayments);
       })
       .catch(console.error)
       .finally(() => setLoading(false));

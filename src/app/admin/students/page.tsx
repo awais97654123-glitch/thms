@@ -13,7 +13,8 @@ import {
   Award, 
   UserCheck, 
   Eye,
-  Plus
+  Plus,
+  Key
 } from 'lucide-react';
 
 export default function AdminStudentsPage() {
@@ -71,6 +72,13 @@ export default function AdminStudentsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/users?role=STUDENT"
+            className="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors border border-amber-200"
+          >
+            <Key className="w-4 h-4" />
+            <span>Login & Passwords</span>
+          </Link>
           <Link
             href="/admin/id-cards"
             className="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors border border-purple-200"

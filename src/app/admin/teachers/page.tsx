@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   UserCheck, 
   Search, 
@@ -104,25 +105,34 @@ export default function AdminTeachersPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setFormData({
-              fullName: '',
-              phone: '',
-              email: '',
-              qualification: '',
-              designation: 'Senior Subject Teacher',
-              classId: classes[0]?.id || '',
-              subjectName: 'Mathematics',
-              tempPassword: 'Teacher@123',
-            });
-            setShowAddModal(true);
-          }}
-          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>+ Add New Teacher</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/users?role=TEACHER"
+            className="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors border border-amber-200"
+          >
+            <Key className="w-4 h-4" />
+            <span>Login & Passwords</span>
+          </Link>
+          <button
+            onClick={() => {
+              setFormData({
+                fullName: '',
+                phone: '',
+                email: '',
+                qualification: '',
+                designation: 'Senior Subject Teacher',
+                classId: classes[0]?.id || '',
+                subjectName: 'Mathematics',
+                tempPassword: 'Teacher@123',
+              });
+              setShowAddModal(true);
+            }}
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Add New Teacher</span>
+          </button>
+        </div>
       </div>
 
       {/* Teachers Grid or Smart Empty State */}

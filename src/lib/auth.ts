@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
 import prisma from './db';
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -51,6 +52,38 @@ export async function getCurrentUser(): Promise<UserSession | null> {
   try {
     const cookieStore = cookies();
     const token = cookieStore.get(COOKIE_NAME)?.value;
+    if (!token) return null;
+    return await verifySessionToken(token);
+  } catch {
+    return null;
+  }
+}
+
+export async function getSessionUser(req?: NextRequest): Promise<UserSession | null> {
+  try {
+    let token: string | undefined;
+
+    if (req?.cookies) {
+      token = req.cookies.get(COOKIE_NAME)?.value;
+    }
+
+    if (!token && req?.headers) {
+      const cookieHeader = req.headers.get('cookie');
+      if (cookieHeader) {
+        const match = cookieHeader.match(new RegExp(`(?:^|; )${COOKIE_NAME}=([^;]*)`));
+        if (match) token = decodeURIComponent(match[1]);
+      }
+    }
+
+    if (!token) {
+      try {
+        const cookieStore = cookies();
+        token = cookieStore.get(COOKIE_NAME)?.value;
+      } catch {
+        // Ignored in non-request contexts
+      }
+    }
+
     if (!token) return null;
     return await verifySessionToken(token);
   } catch {
