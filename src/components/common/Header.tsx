@@ -1,19 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { 
-  Bell, 
   Globe, 
   LogOut, 
   User, 
   Menu, 
-  X, 
-  Building2, 
-  GraduationCap, 
+  ChevronDown,
+  ShieldCheck,
   Sparkles,
-  ChevronDown
+  KeyRound
 } from 'lucide-react';
 import { Language, getDictionary } from '@/lib/i18n';
 
@@ -32,9 +29,8 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
   const [lang, setLang] = useState<Language>('en');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setCurrentUser(user);
     } else {
@@ -73,38 +69,53 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
     }
   };
 
-  const getRoleBadgeColor = (role?: string) => {
+  const getRoleTheme = (role?: string) => {
     switch (role) {
       case 'SUPER_ADMIN':
-        return 'bg-red-100 text-red-800 border-red-200';
       case 'ADMIN':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return {
+          badge: 'bg-blue-500/10 text-blue-700 border-blue-200/80',
+          dot: 'bg-blue-500 shadow-blue-500/50',
+          gradient: 'from-blue-600 to-indigo-600',
+        };
       case 'TEACHER':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+        return {
+          badge: 'bg-cyan-500/10 text-cyan-700 border-cyan-200/80',
+          dot: 'bg-cyan-500 shadow-cyan-500/50',
+          gradient: 'from-cyan-600 to-blue-600',
+        };
       case 'STUDENT':
-        return 'bg-sky-100 text-sky-800 border-sky-200';
+        return {
+          badge: 'bg-indigo-500/10 text-indigo-700 border-indigo-200/80',
+          dot: 'bg-indigo-500 shadow-indigo-500/50',
+          gradient: 'from-indigo-600 to-cyan-500',
+        };
       case 'PARENT':
-        return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'ADMISSION_OFFICER':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'ACCOUNTANT':
-        return 'bg-teal-100 text-teal-800 border-teal-200';
-      case 'LIBRARIAN':
-        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+        return {
+          badge: 'bg-amber-500/10 text-amber-700 border-amber-200/80',
+          dot: 'bg-amber-500 shadow-amber-500/50',
+          gradient: 'from-amber-500 to-orange-600',
+        };
       default:
-        return 'bg-slate-100 text-slate-800 border-slate-200';
+        return {
+          badge: 'bg-slate-500/10 text-slate-700 border-slate-200',
+          dot: 'bg-slate-500',
+          gradient: 'from-slate-700 to-slate-900',
+        };
     }
   };
 
+  const roleStyle = getRoleTheme(currentUser?.role);
+
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_24px_-4px_rgba(15,23,42,0.04)]">
       <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Left: Hamburger & School Logo */}
+        {/* Left: Mobile Toggle & School Monogram */}
         <div className="flex items-center gap-3">
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 lg:hidden"
+              className="p-2 rounded-xl text-slate-600 hover:bg-slate-100/80 border border-slate-200/60 focus:outline-none transition-all lg:hidden"
               aria-label="Toggle Navigation"
             >
               <Menu className="w-5 h-5" />
@@ -112,63 +123,66 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
           )}
 
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform bg-white flex items-center justify-center p-0.5 border border-slate-200">
-              <img
-                src="/school-logo.png"
-                alt="The Hayatabad Model School Crest"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-blue-700 p-0.5 shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-all">
+              <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center p-1">
+                <img
+                  src="/school-logo.png"
+                  alt="The Hayatabad Model School Crest"
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 tracking-tight text-base sm:text-lg">
+                <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">
                   The Hayatabad Model School
                 </span>
-                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50/80 text-blue-700 border border-blue-200/60 backdrop-blur-sm">
+                  <Sparkles className="w-3 h-3 text-cyan-500" />
                   Session 2026-27
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
-                Peshawar, Khyber Pakhtunkhwa • ISO 9001:2015 Certified
+              <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+                Peshawar, Khyber Pakhtunkhwa • ISO 9001:2015 Registered
               </p>
             </div>
           </Link>
         </div>
 
-        {/* Right: Language Picker, Notifications, User Menu */}
+        {/* Right: Language Picker, Security Indicator & User Profile Pill */}
         <div className="flex items-center gap-3">
-          {/* i18n Selector */}
+          {/* Language Selector */}
           <div className="relative">
             <button
               onClick={() => setShowLangMenu(!showLangMenu)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100 border border-slate-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 bg-white/70 hover:bg-white border border-slate-200/80 shadow-sm backdrop-blur-sm transition-all"
             >
-              <Globe className="w-4 h-4 text-blue-600" />
-              <span className="uppercase">{lang}</span>
+              <Globe className="w-3.5 h-3.5 text-blue-600" />
+              <span className="uppercase tracking-wider">{lang}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
             {showLangMenu && (
-              <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 animate-in fade-in zoom-in-95">
+              <div className="absolute right-0 mt-2 w-40 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
                 <button
                   onClick={() => { setLang('en'); setShowLangMenu(false); }}
-                  className={`w-full text-left px-3.5 py-1.5 text-xs flex items-center justify-between hover:bg-blue-50 ${lang === 'en' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
+                  className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-blue-50/80 transition-colors ${lang === 'en' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
                 >
                   <span>English</span>
-                  {lang === 'en' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>}
+                  {lang === 'en' && <span className="w-2 h-2 rounded-full bg-blue-600 shadow-sm"></span>}
                 </button>
                 <button
                   onClick={() => { setLang('ur'); setShowLangMenu(false); }}
-                  className={`w-full text-left px-3.5 py-1.5 text-xs flex items-center justify-between hover:bg-blue-50 ${lang === 'ur' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
+                  className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-blue-50/80 transition-colors ${lang === 'ur' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
                 >
                   <span>اردو (Urdu)</span>
-                  {lang === 'ur' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>}
+                  {lang === 'ur' && <span className="w-2 h-2 rounded-full bg-blue-600 shadow-sm"></span>}
                 </button>
                 <button
                   onClick={() => { setLang('ps'); setShowLangMenu(false); }}
-                  className={`w-full text-left px-3.5 py-1.5 text-xs flex items-center justify-between hover:bg-blue-50 ${lang === 'ps' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
+                  className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-blue-50/80 transition-colors ${lang === 'ps' ? 'font-bold text-blue-600' : 'text-slate-700'}`}
                 >
                   <span>پښتو (Pashto)</span>
-                  {lang === 'ps' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>}
+                  {lang === 'ps' && <span className="w-2 h-2 rounded-full bg-blue-600 shadow-sm"></span>}
                 </button>
               </div>
             )}
@@ -179,46 +193,50 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
+                className="flex items-center gap-2.5 p-1.5 pr-3.5 rounded-2xl bg-white/80 hover:bg-white border border-slate-200/80 shadow-sm backdrop-blur-md transition-all group"
               >
-                <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center text-xs shadow-sm">
+                <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${roleStyle.gradient} text-white font-bold flex items-center justify-center text-xs shadow-md group-hover:scale-105 transition-transform`}>
                   {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : currentUser.username.charAt(0).toUpperCase()}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <p className="text-xs font-semibold text-slate-800 leading-tight">
+                  <p className="text-xs font-bold text-slate-800 leading-tight">
                     {currentUser.fullName || currentUser.username}
                   </p>
-                  <span className={`inline-block px-1.5 py-0.2 text-[10px] font-bold rounded border ${getRoleBadgeColor(currentUser.role)}`}>
-                    {currentUser.role.replace('_', ' ')}
-                  </span>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${roleStyle.dot} shadow-[0_0_8px]`}></span>
+                    <span className={`inline-block px-1.5 py-0.2 text-[9px] font-extrabold rounded-md border uppercase tracking-wider ${roleStyle.badge}`}>
+                      {currentUser.role.replace('_', ' ')}
+                    </span>
+                  </div>
                 </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
-                  <div className="px-4 py-2 border-b border-slate-100">
-                    <p className="text-xs font-semibold text-slate-900">{currentUser.fullName || currentUser.username}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{currentUser.email || currentUser.username}</p>
-                    <div className="mt-1">
-                      <span className={`inline-block px-1.5 py-0.5 text-[10px] font-bold rounded border ${getRoleBadgeColor(currentUser.role)}`}>
-                        {currentUser.role.replace('_', ' ')}
+                <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95">
+                  <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100/80 mb-2">
+                    <p className="text-xs font-bold text-slate-900 truncate">{currentUser.fullName || currentUser.username}</p>
+                    <p className="text-[11px] text-slate-500 truncate font-mono mt-0.5">{currentUser.email || currentUser.username}</p>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <span className={`w-2 h-2 rounded-full ${roleStyle.dot}`}></span>
+                      <span className={`inline-block px-2 py-0.5 text-[10px] font-bold rounded-lg border ${roleStyle.badge}`}>
+                        {currentUser.role.replace('_', ' ')} Portal
                       </span>
                     </div>
                   </div>
                   <Link
                     href="/change-password"
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-medium text-slate-700 hover:bg-blue-50/80 hover:text-blue-700 rounded-xl transition-all"
                   >
-                    <User className="w-4 h-4 text-slate-400" />
+                    <KeyRound className="w-4 h-4 text-slate-400" />
                     <span>Change Password</span>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors border-t border-slate-100 mt-1"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50/80 rounded-xl transition-all mt-1"
                   >
-                    <LogOut className="w-4 h-4 text-red-500" />
+                    <LogOut className="w-4 h-4 text-rose-500" />
                     <span>{dict.logout}</span>
                   </button>
                 </div>
@@ -227,9 +245,9 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all hover:scale-[1.02]"
             >
-              <User className="w-4 h-4" />
+              <User className="w-3.5 h-3.5" />
               <span>Portal Login</span>
             </Link>
           )}
