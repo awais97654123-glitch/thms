@@ -10,16 +10,16 @@ import {
   DollarSign, 
   CreditCard, 
   LogOut, 
-  ArrowLeft, 
-  Home, 
+  BookOpen, 
+  Settings, 
+  Menu, 
+  X, 
   Sparkles, 
-  ChevronRight,
-  BookOpen,
-  Settings,
-  Menu,
-  X,
-  User,
-  Bell
+  Clock, 
+  FolderDown, 
+  Calendar, 
+  Bot,
+  ChevronRight
 } from 'lucide-react';
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
@@ -41,11 +41,15 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   const navItems = [
     { name: 'Academic Hub', href: '/student', icon: LayoutDashboard },
+    { name: 'AI Copilot', href: '/student/ai-assistant', icon: Bot, isAI: true },
     { name: 'Daily Homework', href: '/student/homework', icon: BookOpen },
+    { name: 'Timetable', href: '/student/timetable', icon: Clock },
+    { name: 'Study Library', href: '/student/resources', icon: FolderDown },
     { name: 'Exam Results', href: '/student/results', icon: Award },
     { name: 'Fee Vouchers', href: '/student/fees', icon: DollarSign },
-    { name: 'Smart Digital ID', href: '/student/id-card', icon: CreditCard },
-    { name: 'Settings & Profile', href: '/student/settings', icon: Settings },
+    { name: 'Leave Application', href: '/student/leave', icon: Calendar },
+    { name: 'Smart ID Card', href: '/student/id-card', icon: CreditCard },
+    { name: 'Settings', href: '/student/settings', icon: Settings },
   ];
 
   const handleLogout = async () => {
@@ -59,7 +63,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col text-slate-900 selection:bg-orange-500 selection:text-white">
-      {/* DEDICATED STUDENT PORTAL HEADER (No public website navbar) */}
+      {/* DEDICATED STUDENT PORTAL HEADER */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
@@ -88,8 +92,8 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
           </div>
 
           {/* Center: Desktop Navigation Tabs */}
-          <nav className="hidden xl:flex items-center gap-1.5 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/80">
-            {navItems.map((item) => {
+          <nav className="hidden 2xl:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/80">
+            {navItems.slice(0, 7).map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
@@ -102,15 +106,28 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                       : 'text-slate-700 hover:text-orange-600 hover:bg-white/60'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className={`w-3.5 h-3.5 ${item.isAI ? 'text-amber-500 animate-pulse' : ''}`} />
                   <span>{item.name}</span>
+                  {item.isAI && (
+                    <span className="px-1 py-0.2 rounded text-[8px] bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black">
+                      AI
+                    </span>
+                  )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right: Student Avatar + Sign Out */}
+          {/* Right: AI Quick Launcher + Student Avatar + Sign Out */}
           <div className="flex items-center gap-2.5">
+            <Link
+              href="/student/ai-assistant"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-orange-500/10 to-amber-500/10 hover:from-orange-500/20 hover:to-amber-500/20 text-orange-700 border border-orange-200/80 text-xs font-black transition-all hover:scale-105"
+            >
+              <Bot className="w-4 h-4 text-orange-600 animate-pulse" />
+              <span>AI Copilot</span>
+            </Link>
+
             <Link
               href="/student/settings"
               className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl bg-white hover:bg-orange-50/60 border border-slate-200 shadow-sm transition-all"
@@ -143,7 +160,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-2xl text-slate-700 hover:bg-orange-50 border border-slate-200 xl:hidden"
+              className="p-2.5 rounded-2xl text-slate-700 hover:bg-orange-50 border border-slate-200 2xl:hidden"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 text-orange-600" /> : <Menu className="w-5 h-5 text-slate-800" />}
             </button>
@@ -152,7 +169,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="xl:hidden bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 px-4 py-4 space-y-1 animate-in slide-in-from-top-4 duration-200">
+          <div className="2xl:hidden bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 px-4 py-4 space-y-1 animate-in slide-in-from-top-4 duration-200">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -168,8 +185,13 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon className="w-4 h-4 text-orange-600" />
+                    <Icon className={`w-4 h-4 ${item.isAI ? 'text-amber-500' : 'text-orange-600'}`} />
                     <span>{item.name}</span>
+                    {item.isAI && (
+                      <span className="px-1.5 py-0.5 rounded text-[8px] bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black">
+                        AI
+                      </span>
+                    )}
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-400" />
                 </Link>
@@ -179,7 +201,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         )}
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
         {children}
       </main>

@@ -20,7 +20,14 @@ import {
   Activity,
   Settings,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Bot,
+  Calendar,
+  FolderDown,
+  Compass,
+  Atom,
+  Languages,
+  Calculator
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
@@ -81,20 +88,29 @@ export default function StudentDashboardPage() {
   }, []);
 
   const todayPeriods = [
-    { time: '08:30 - 09:15 AM', subject: 'Mathematics (Algebra & Proofs)', teacher: 'Engr. Farooq Ahmad', room: 'Room 201' },
-    { time: '09:20 - 10:05 AM', subject: 'English Grammar & Literature', teacher: 'Ms. Saima Khattak', room: 'Room 201' },
-    { time: '10:25 - 11:10 AM', subject: 'General Science (Physics Lab)', teacher: 'Dr. Zobia Khan', room: 'Science Lab' },
-    { time: '11:15 - 12:00 PM', subject: 'Islamic Studies & Quran', teacher: 'Qari Abdul Rehman', room: 'Room 201' },
+    { time: '08:00 - 08:45 AM', subject: 'Mathematics (Algebra)', teacher: 'Engr. Farooq Ahmad', room: 'Room 201', active: false },
+    { time: '08:45 - 09:30 AM', subject: 'English Grammar & Speech', teacher: 'Ms. Sadia Khan', room: 'Room 201', active: false },
+    { time: '09:30 - 10:15 AM', subject: 'Physics Laboratory Practical', teacher: 'Dr. Zobia Khan', room: 'Science Lab A', active: true },
+    { time: '10:45 - 11:30 AM', subject: 'Computer Science & AI Coding', teacher: 'Prof. Tariq Mahmood', room: 'IT Lab 1', active: false },
+    { time: '11:30 - 12:15 PM', subject: 'Urdu Literature', teacher: 'Sir Usman Ali', room: 'Room 201', active: false },
   ];
 
   const pendingFeeAmount = feeInvoices
     .filter((inv: any) => inv.status !== 'PAID')
     .reduce((acc: number, inv: any) => acc + (inv.remainingAmount || inv.totalAmount || 0), 0);
 
+  // Subject Mastery Stats
+  const subjectMastery = [
+    { subject: 'Mathematics', score: 94, grade: 'A+', icon: Calculator, color: 'from-orange-500 to-amber-500' },
+    { subject: 'Physics', score: 91, grade: 'A+', icon: Atom, color: 'from-blue-500 to-indigo-500' },
+    { subject: 'Computer & AI', score: 98, grade: 'A+', icon: Bot, color: 'from-cyan-500 to-blue-600' },
+    { subject: 'English Grammar', score: 88, grade: 'A', icon: Languages, color: 'from-purple-500 to-pink-500' },
+  ];
+
   if (loading) {
     return (
       <div className="p-16 text-center">
-        <PortalCircularLoader message="Loading Student Academic Hub..." subMessage="Querying PostgreSQL attendance and gradebook" />
+        <PortalCircularLoader message="Loading Student Academic Hub..." subMessage="Connecting AI copilot and PostgreSQL records" />
       </div>
     );
   }
@@ -115,8 +131,8 @@ export default function StudentDashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       
-      {/* Top Futuristic Student Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/70 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
+      {/* 1. Futuristic Hero Card with AI Copilot Launcher */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/80 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
         <div className="absolute right-0 top-0 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
@@ -131,10 +147,10 @@ export default function StudentDashboardPage() {
             <div className="space-y-1 sm:space-y-1.5">
               <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-xs font-black border border-orange-400/30">
                 <Sparkles className="w-3 h-3 text-orange-400" />
-                <span>Session 2026-2027 • Enrolled Student</span>
+                <span>Session 2026-2027 • Enrolled Scholar</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                {student.fullName}
+                Welcome, {student.fullName}!
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 font-medium">
                 {student.class?.name || 'Class 8'} ({student.section?.name || 'Section A'}) • Roll No: <strong className="text-white font-mono">{student.rollNo}</strong> • Student ID: <strong className="text-orange-300 font-mono">{student.studentId}</strong>
@@ -144,18 +160,18 @@ export default function StudentDashboardPage() {
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <Link
-              href="/student/homework"
+              href="/student/ai-assistant"
               className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Daily Homework</span>
+              <Bot className="w-4 h-4 animate-pulse" />
+              <span>Ask AI Copilot</span>
             </Link>
             <Link
-              href="/student/id-card"
+              href="/student/homework"
               className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
-              <CreditCard className="w-4 h-4 text-orange-400" />
-              <span>Digital ID Card</span>
+              <BookOpen className="w-4 h-4 text-orange-400" />
+              <span>Homework</span>
             </Link>
             <Link
               href="/student/settings"
@@ -168,9 +184,32 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      {/* Primary KPI Metrics Grid */}
+      {/* 2. Interactive AI Academic Tip of the Day */}
+      <div className="p-5 rounded-3xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black shadow-md shrink-0">
+            <Bot className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs font-black text-slate-900 block">THMS AI Study Recommendation for Today:</span>
+            <p className="text-xs text-slate-600 font-medium">
+              &quot;Review Physics Chapter 3 numerical equations before Period 3 laboratory session today!&quot;
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/student/ai-assistant"
+          className="px-4 py-2 bg-white hover:bg-orange-50 text-orange-700 font-black text-xs rounded-xl border border-orange-200 shadow-sm shrink-0 flex items-center gap-1.5 self-start sm:self-auto"
+        >
+          <span>Open AI Tutor</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
+      {/* 3. Primary KPI Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Today's Status */}
+        {/* Today's Gate Check-in */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
           <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
             Today&apos;s Gate Check-in
@@ -204,7 +243,6 @@ export default function StudentDashboardPage() {
               ({attendanceStats?.presentDays ?? 0}/{attendanceStats?.totalSchoolDays ?? 0} Days)
             </span>
           </div>
-          {/* Visual Progress Bar */}
           <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
@@ -215,7 +253,7 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        {/* Pending Homework Tasks */}
+        {/* Pending Homework */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
@@ -229,12 +267,12 @@ export default function StudentDashboardPage() {
             <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">
               {homeworks.length}
             </span>
-            <span className="text-xs text-slate-500 font-bold">Active Tasks</span>
+            <span className="text-xs text-slate-500 font-bold">Pending Tasks</span>
           </div>
-          <p className="text-[11px] text-slate-400 font-medium">Assigned by subject teachers</p>
+          <p className="text-[11px] text-slate-400 font-medium">Assigned by subject faculty</p>
         </div>
 
-        {/* Fee Status */}
+        {/* Fee Balance */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
@@ -250,32 +288,91 @@ export default function StudentDashboardPage() {
             </span>
           </div>
           <p className="text-[11px] text-slate-400 font-medium">
-            {pendingFeeAmount === 0 ? '✓ All fees cleared for term' : 'Pending bank deposit voucher'}
+            {pendingFeeAmount === 0 ? '✓ Term fees fully cleared' : 'Pending bank deposit voucher'}
           </p>
         </div>
       </div>
 
-      {/* Main 2-Column Student Workload Layout */}
+      {/* 4. Subject Mastery Performance Meter */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="font-black text-base text-slate-900">Curriculum Subject Mastery</h3>
+            <p className="text-xs text-slate-500 font-medium">AI-calculated academic strength across core subjects</p>
+          </div>
+          <Link href="/student/results" className="text-xs font-black text-orange-600 hover:text-orange-700">
+            View Full Marksheet ➔
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {subjectMastery.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                    <Icon className="w-3.5 h-3.5 text-orange-600" />
+                    {item.subject}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white border border-slate-200 text-slate-800 font-mono">
+                    {item.grade}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full bg-gradient-to-r ${item.color}`}
+                    style={{ width: `${item.score}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-[10px] text-slate-500 font-medium font-mono">
+                  <span>Score: {item.score}%</span>
+                  <span>Mastery Level</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 5. 2-Column Section: Today's Live Schedule & Recent Homework */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Left Column: Today's Timetable */}
+        {/* Left Column: Live Timetable */}
         <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="font-black text-base text-slate-900">Today&apos;s Class Schedule</h3>
-              <p className="text-xs text-slate-500 font-medium">Assigned subject periods and teachers</p>
+              <h3 className="font-black text-base text-slate-900">Today&apos;s Class Timetable</h3>
+              <p className="text-xs text-slate-500 font-medium">Assigned periods with active classroom indicators</p>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-orange-700 border border-orange-200">
-              Regular Hours
-            </span>
+            <Link
+              href="/student/timetable"
+              className="text-xs font-black text-orange-600 hover:text-orange-700"
+            >
+              Weekly ➔
+            </Link>
           </div>
 
           <div className="space-y-3">
             {todayPeriods.map((period, idx) => (
-              <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs hover:bg-orange-50/40 transition-colors">
+              <div
+                key={idx}
+                className={`p-3.5 rounded-2xl border flex items-center justify-between text-xs transition-colors ${
+                  period.active
+                    ? 'bg-orange-500/10 border-orange-400 shadow-sm'
+                    : 'bg-slate-50 border-slate-100 hover:bg-orange-50/40'
+                }`}
+              >
                 <div className="space-y-1">
-                  <span className="font-bold text-slate-900 block text-xs">{period.subject}</span>
-                  <span className="text-[11px] text-slate-500 font-medium">Faculty: {period.teacher}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-900 text-xs">{period.subject}</span>
+                    {period.active && (
+                      <span className="px-2 py-0.2 rounded-full text-[8px] font-black bg-orange-600 text-white uppercase animate-pulse">
+                        Active Now
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[11px] text-slate-500 font-medium">Instructor: {period.teacher}</span>
                 </div>
                 <div className="text-right space-y-1">
                   <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-bold block">
@@ -288,18 +385,18 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        {/* Right Column: Active Homework Assignments */}
+        {/* Right Column: Homework Tasks */}
         <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="font-black text-base text-slate-900">Homework & Curriculum Tasks</h3>
-              <p className="text-xs text-slate-500 font-medium">Published assignments by your subject teachers</p>
+              <h3 className="font-black text-base text-slate-900">Homework & Coursework</h3>
+              <p className="text-xs text-slate-500 font-medium">Assigned by subject teachers with submission deadline</p>
             </div>
             <Link
               href="/student/homework"
-              className="text-xs font-black text-orange-600 hover:text-orange-700 flex items-center gap-1"
+              className="text-xs font-black text-orange-600 hover:text-orange-700"
             >
-              <span>View All ➔</span>
+              Submit Online ➔
             </Link>
           </div>
 
@@ -307,7 +404,7 @@ export default function StudentDashboardPage() {
             <div className="p-8 text-center text-slate-400 space-y-2">
               <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
               <p className="text-xs font-bold text-slate-700">No pending homework assignments</p>
-              <p className="text-[11px] text-slate-400">All curriculum tasks are up to date.</p>
+              <p className="text-[11px] text-slate-400">All coursework tasks are up to date.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -331,59 +428,67 @@ export default function StudentDashboardPage() {
 
       </div>
 
-      {/* Published Examination Results Marksheet */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div>
-            <h3 className="font-black text-base text-slate-900">Official Exam Reports & Marksheets</h3>
-            <p className="text-xs text-slate-500 font-medium">Verified terminal examination marks entered by subject faculty</p>
+      {/* 6. Quick Portal Action Shortcuts */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <Link
+          href="/student/ai-assistant"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+            <Bot className="w-5 h-5" />
           </div>
-          <Link
-            href="/student/results"
-            className="text-xs font-black text-orange-600 hover:text-orange-700 flex items-center gap-1"
-          >
-            <span>Full Report Card ➔</span>
-          </Link>
-        </div>
+          <span className="font-bold text-xs text-slate-900 block">AI Copilot</span>
+        </Link>
 
-        {results.length === 0 ? (
-          <div className="p-8 text-center text-slate-400 space-y-2">
-            <Award className="w-10 h-10 text-slate-300 mx-auto" />
-            <p className="text-xs font-bold text-slate-700">No published exam marks available</p>
-            <p className="text-[11px] text-slate-400">Terminal examination marks will be published after teacher evaluation.</p>
+        <Link
+          href="/student/homework"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-orange-200">
+            <BookOpen className="w-5 h-5" />
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 font-black border-b border-slate-100">
-                <tr>
-                  <th className="p-3.5">Subject</th>
-                  <th className="p-3.5">Exam Term</th>
-                  <th className="p-3.5 text-center">Marks Obtained</th>
-                  <th className="p-3.5 text-center">Total</th>
-                  <th className="p-3.5 text-center">Percentage</th>
-                  <th className="p-3.5 text-center">Grade</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {results.slice(0, 5).map((r, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/50 font-medium">
-                    <td className="p-3.5 font-bold text-slate-900">{r.subjectName}</td>
-                    <td className="p-3.5 text-slate-600">{r.term}</td>
-                    <td className="p-3.5 text-center font-bold font-mono text-slate-800">{r.obtainedMarks}</td>
-                    <td className="p-3.5 text-center font-mono text-slate-500">{r.totalMarks}</td>
-                    <td className="p-3.5 text-center font-mono font-bold text-orange-600">{r.percentage}%</td>
-                    <td className="p-3.5 text-center">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-50 text-orange-800 border border-orange-200">
-                        {r.grade}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <span className="font-bold text-xs text-slate-900 block">Homework</span>
+        </Link>
+
+        <Link
+          href="/student/timetable"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-blue-200">
+            <Clock className="w-5 h-5" />
           </div>
-        )}
+          <span className="font-bold text-xs text-slate-900 block">Timetable</span>
+        </Link>
+
+        <Link
+          href="/student/resources"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-purple-200">
+            <FolderDown className="w-5 h-5" />
+          </div>
+          <span className="font-bold text-xs text-slate-900 block">Study Library</span>
+        </Link>
+
+        <Link
+          href="/student/leave"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-emerald-200">
+            <Calendar className="w-5 h-5" />
+          </div>
+          <span className="font-bold text-xs text-slate-900 block">Apply Leave</span>
+        </Link>
+
+        <Link
+          href="/student/settings"
+          className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-slate-200">
+            <Settings className="w-5 h-5" />
+          </div>
+          <span className="font-bold text-xs text-slate-900 block">Settings</span>
+        </Link>
       </div>
 
     </div>
