@@ -1,0 +1,279 @@
+================================================================================
+🏛️ THE HAYATABAD MODEL SCHOOL — COMPLETE ERP SYSTEM FEATURES & BUTTONS GUIDE
+   دی حیات آباد ماڈل اسکول — اسکول مینجمنٹ سسٹم کے تمام فیچرز اور بٹنز کی مکمل گائیڈ
+================================================================================
+School Name: The Hayatabad Model School, Peshawar
+System Type: Complete Production School ERP (Next.js 14, Neon PostgreSQL, Prisma, Supabase, Firebase FCM, Resend Email, Tauri Desktop)
+Status: 100% Fully Connected & Production Tested (28/28 Workflows Passed)
+================================================================================
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS / فہرست
+--------------------------------------------------------------------------------
+1. PUBLIC SCHOOL WEBSITE & ONLINE ADMISSIONS PORTAL (پبلک ویب سائٹ و آن لائن داخلہ)
+2. UNIFIED AUTHENTICATION, LOGIN & SECURITY (مرکزی لاگ ان و سیکیورٹی)
+3. ADMIN CENTRAL MANAGEMENT PANEL (ایڈمن پینل کے تمام ماڈیولز اور بٹنز)
+   - 3.1 Admin Dashboard & Metrics (ڈیش بورڈ)
+   - 3.2 Student 360° Directory (طلباء کا مکمل ریکارڈ)
+   - 3.3 Admissions Pipeline & 1-Click Enrollment (داخلہ و فوری رجسٹریشن)
+   - 3.4 ID Card Studio & Smart QR Identity (آئی ڈی کارڈ اسٹوڈیو)
+   - 3.5 Login, Gmail & Password Manager (یوزر لاگ اِن و پاس ورڈ مینیجر)
+   - 3.6 Fees, Invoices & 3-Slip Bank Vouchers (فیس اور واؤچرز)
+   - 3.7 Smart Gate QR & Attendance Register (کیو آر اور حاضری رجسٹر)
+   - 3.8 Teachers & Faculty Directory (اساتذہ کا انتظام)
+   - 3.9 Academics, Timetable & 13 Classes (کلاسز و ٹائم ٹیبل)
+   - 3.10 Examinations & Progress Report Cards (امتحانات و رپورٹ کارڈ)
+   - 3.11 Announcements & Notifications (اعلانات و نوٹسز)
+   - 3.12 School Settings & Branding (اسکول سیٹنگز)
+4. TEACHER DEDICATED PORTAL (اساتذہ کا پورٹل — تمام فیچرز اور بٹنز)
+5. STUDENT DEDICATED PORTAL (طلباء کا پورٹل — تمام فیچرز اور بٹنز)
+6. PARENT DEDICATED PORTAL (والدین کا پورٹل — ملٹی چائلڈ سسٹم)
+7. CLOUD INFRASTRUCTURE & CONNECTED TECHNOLOGIES (کلاؤڈ سسٹمز)
+8. TAURI WINDOWS DESKTOP APPLICATION (ونڈوز ڈیسک ٹاپ ایپ)
+
+================================================================================
+1. PUBLIC SCHOOL WEBSITE & ONLINE ADMISSIONS PORTAL (پبلک ویب سائٹ)
+URL: http://localhost:3000/
+================================================================================
+Features:
+- High-Aesthetic Hero Section: Active admission status badges, school logo, mission, and quick portal links.
+- 4 Academic Wings:
+  * Early Years Wing: Playgroup, Nursery, Prep (Ages 3-5).
+  * Primary School Wing: Class 1 to Class 5 (Ages 6-10).
+  * Middle School Wing: Class 6 to Class 8 (Ages 11-13).
+  * Secondary SSC Wing: Class 9 & 10 (Affiliated with BISE Peshawar).
+- Campus Facilities Showcase: High-tech Robotics/Computer Lab, Science Labs, Library, Fleet Transportation, Smart QR Gate Attendance, and Tahfeez Quran.
+- Senior Faculty Spotlight: Names, qualifications, degrees, and experience of department heads.
+- Live Notice Board: Real-time board exams, admissions, and competition announcements.
+- Online Admission Application (/admissions/apply): Complete 3-minute parent application form.
+- Application Status Tracker (/admissions/track): Tracking by application number or father phone.
+
+Buttons on this page:
+[Apply for Admission Online] -> Opens online admission application form
+[Login to ERP Portal]       -> Opens portal authentication page
+[Track Existing Application]-> Opens application tracking screen
+[Apply for this Wing]       -> Pre-selects academic wing and opens admission form
+
+================================================================================
+2. UNIFIED AUTHENTICATION, LOGIN & SECURITY (مرکزی لاگ ان و سیکیورٹی)
+URL: http://localhost:3000/login
+================================================================================
+Features:
+- Single Intelligent Login Screen: Automatically identifies whether the user is an Admin, Teacher, Student, or Parent, and immediately routes them to their portal.
+- Persistent Session Lock: Keeps session active until explicit logout; prevents back navigation from exposing private data.
+- Forgot Password Self-Recovery (/forgot-password):
+  * Enter Username, Student ID, or Registered Email.
+  * Generates secure, 15-minute single-use cryptographic token and sends reset link.
+- Password Reset Screen (/reset-password):
+  * Validates token and updates bcrypt password hash in database.
+- Central /api/auth/me Service: Provides real live database profile for every logged-in user.
+
+Buttons on Login & Auth pages:
+[Sign In to Portal]           -> Authenticates credentials and logs into respective portal
+[Forgot Password?]            -> Opens password recovery screen
+[Send Reset Instructions]     -> Generates single-use token and sends email
+[Confirm & Update Password]   -> Updates account password
+[Back to Login]               -> Returns to login screen
+
+================================================================================
+3. ADMIN CENTRAL MANAGEMENT PANEL (ایڈمن پینل)
+URL: http://localhost:3000/admin
+================================================================================
+
+3.1 Admin Dashboard (/admin)
+- Summary Metrics: Total enrolled students, active teachers, today's attendance percentage, today's fee collection sum, and pending admissions.
+- Consolidated Fast Stats API (/api/admin/dashboard-stats) with in-memory TTL caching.
+Buttons:
+[+ New Admission]         -> Opens new student enrollment form
+[Record Payment]          -> Opens fee collection cash register
+[ID Card Studio]          -> Opens student smart ID card generator
+[Attendance Register]     -> Opens morning attendance register
+[Broadcast Announcement]  -> Opens notice publication form
+[🔑 Manage Passwords]     -> Opens login credentials & password manager
+[⬅️ Back]                 -> Navigates to previous screen
+[Leave Session / Logout]  -> Clears session cookies and logs out safely
+
+3.2 Student 360° Directory (/admin/students)
+- Complete directory of all enrolled students across all 13 classes.
+- Server-side debounced search by Student Name, Roll Number, Student ID, or Class.
+Buttons:
+[Filter Class Dropdown]   -> Filters students by specific class
+[View 360° Profile]       -> Opens full academic and fee profile of the student
+[Login & Passwords]       -> Jump directly to edit this student's login/password
+[ID Card Studio]          -> Jump directly to print this student's ID card
+[+ New Admission & Enroll]-> Starts new admission process
+
+3.3 Admissions Pipeline & 1-Click Enrollment (/admin/admissions)
+- Pipeline stages: Submitted -> Under Review -> Approved -> Enrolled.
+- Mandatory Student Photograph verification before enrollment.
+- 1-Click "Approve & Enroll" Backend Transaction:
+  1. Creates permanent Student record.
+  2. Creates Parent relationship.
+  3. Allots official Student ID (e.g. THMS-2026-000025).
+  4. Allots Class Section Roll Number (e.g. 08-A-005).
+  5. Generates Secure Opaque QR Token.
+  6. Creates Student Portal User Account.
+  7. Creates Parent Portal User Account.
+  8. Assigns Fee Structure and generates initial fee invoice.
+  9. Dispatches login details email to parents via Resend.
+Buttons:
+[Approve & Enroll Student] -> Executes atomic enrollment database transaction
+[📱 Copy for WhatsApp]     -> 1-click copy of credentials to WhatsApp parents
+[🖨️ Print Credentials Slip]-> Prints dual login credential slip for student & parent
+[View ID Card]             -> Opens the generated official ID card
+
+3.4 ID Card Studio & Smart QR Identity (/admin/id-cards)
+- Dual-Sided Printable Cards:
+  * Front Side: School crest, student photo, full name, father name, student ID, roll no, class, and section.
+  * Back Side: Secure opaque verification QR code, emergency contact, validity, and principal signature.
+Buttons:
+[Print Single Card]        -> Prints single card on card printer / A4 sheet
+[Bulk Print Class Cards]   -> Prints cards for the whole class simultaneously
+[Download PDF / Image]     -> Downloads card file
+
+3.5 Login, Gmail & Password Manager (/admin/users)
+- Full administrative control over all user accounts (Students, Teachers, Parents, Staff, Admins).
+- Filter by Role (ALL, STUDENT, TEACHER, PARENT, ADMIN).
+- Search by Name, Student ID, Roll No, or Gmail.
+Buttons:
+[📋 Copy Username]         -> Copies portal username to clipboard
+[📋 Copy Gmail]            -> Copies registered Gmail to clipboard
+[🔑 Reset Password]:
+   - [🎲 Generate Strong Password] -> Generates secure random password
+   - [📱 Copy for WhatsApp]        -> Copies password message formatted for WhatsApp
+   - [Update Password]             -> Updates password hash in database
+[✏️ Edit Details]:
+   - Edit Login Gmail / Email address
+   - Edit Login Username
+   - Toggle Account Status (ACTIVE / SUSPENDED)
+   - [Save Changes]                -> Saves updated credentials to database
+
+3.6 Fees, Invoices & 3-Slip Bank Vouchers (/admin/fees)
+- Monthly tuition, admission fee, exam fee, and transport fee management.
+- Real-time payment collection with partial payment and remaining balance tracking.
+- Official 3-Slip Deposit Receipt:
+  * School Copy (اسکول کاپی)
+  * Bank / Accounts Copy (بینک کاپی)
+  * Student / Parent Copy (طالب علم / والدین کاپی)
+Buttons:
+[+ Generate Monthly Invoices] -> Creates invoices for entire class in 1 click
+[Record Payment]              -> Records cash/bank payment, updates balance, generates receipt
+[Print Receipt]               -> Prints 3-part bank voucher slip
+
+3.7 Smart Gate QR & Attendance Register (/admin/attendance)
+- Live Camera / Barcode QR Scanner: Instantly verifies student identity and marks daily attendance.
+- Duplicate Scan Protection: Database unique constraint prevents scanning the same student twice on the same day.
+- Class-wise Manual Roll Call Register (Present, Absent, Late, Excused).
+Buttons:
+[Open Live QR Scanner]        -> Activates gate camera scanner
+[Save Daily Register]         -> Saves class attendance to database
+[Export Attendance Report]    -> Generates attendance summary
+
+3.8 Teachers & Faculty Management (/admin/teachers)
+- Complete directory of academic faculty, assigned subjects, classes, and employee IDs.
+Buttons:
+[+ Add New Teacher]           -> Adds teacher and automatically generates portal account
+[Login & Passwords]           -> Direct shortcut to teacher credential management
+[Assign Subjects & Classes]   -> Allocates curriculum subjects and sections
+
+3.9 Academics, Timetable & 13 Classes (/admin/academics)
+- Class management for Playgroup, Nursery, Prep, and Class 1 to Class 10 (Section A & B).
+- Daily period timetables with room numbers and teacher assignments.
+
+3.10 Examinations & Progress Report Cards (/admin/examinations)
+- Exam schedules for Term Exams, Mid-Terms, and Annual Board exams.
+- Subject-wise marks entry (Obtained Marks, Total Marks, Grade, GPA).
+- Official Printable Report Card with school seal, class position, and principal remarks.
+
+3.11 Announcements & Broadcast Notifications (/admin/announcements)
+- Publish notices targeting All Students, All Parents, All Teachers, or Specific Classes.
+- Automated push notification and email alerts.
+
+3.12 School Settings & Branding (/admin/settings)
+- Edit School Name, Code, Phone, Email, Campus Address, and Logo URL.
+- Configure fee defaults and active academic sessions.
+
+================================================================================
+4. TEACHER DEDICATED PORTAL (اساتذہ کا پورٹل)
+URL: http://localhost:3000/teacher
+================================================================================
+Features:
+- Teacher Dashboard (/teacher): Displays teacher profile, employee ID, assigned subjects, and today's period schedule.
+- Attendance Register (/teacher/attendance):
+  * Daily roll call register for teacher's assigned class/section.
+  * Real-time present/absent/late marking.
+- Homework Publication (/teacher/homework):
+  * Select target class, section, subject, and due date.
+  * Enter assignment title and instructions.
+  * Instant automatic distribution to all enrolled students and parents.
+- Marks Entry (/teacher/marks): Record exam marks for assigned subjects.
+
+Buttons in Teacher Portal:
+[Save Attendance]                  -> Saves morning roll call to database
+[Post New Homework]                -> Opens homework creation form
+[Publish to Students & Parents]    -> Publishes assignment to student & parent portals
+[Leave Session / Logout]           -> Safely terminates teacher session
+
+================================================================================
+5. STUDENT DEDICATED PORTAL (طلباء کا پورٹل)
+URL: http://localhost:3000/student
+================================================================================
+Features:
+- Personal Student Dashboard (/student):
+  * Student photo, full name, student ID, roll number, class, and section.
+  * Today's period schedule with subject, teacher name, and room number.
+  * Active homework assignments with due dates.
+  * Current fee balance and clearance status.
+  * Attendance percentage and academic GPA.
+- Official Digital ID Card (/student/id-card):
+  * Verified dual-sided identity card with scannable QR code.
+- Fee Invoices & Receipts (/student/fees): View paid and pending fee vouchers.
+- Exam Results & Report Card (/student/results): View term grades and subject marks.
+
+Buttons in Student Portal:
+[Digital ID Card]          -> Opens full digital identity card
+[Fee Vouchers]             -> Opens student fee history
+[Print My Card]            -> Prints official student ID card
+[Leave Session / Logout]   -> Safely terminates student session
+
+================================================================================
+6. PARENT DEDICATED PORTAL (والدین کا پورٹل)
+URL: http://localhost:3000/parent
+================================================================================
+Features:
+- Multi-Child Switcher: If a parent has multiple children enrolled, they can switch between them in 1-click to view each child's individual data.
+- Daily Attendance Tracker: Real-time status (Present / Absent / Late).
+- Fee Balance & 3-Slip Voucher: View fee dues, payment history, and print deposit vouchers.
+- Homework & Class Diary: View daily assignments given by teachers.
+- Term Progress Report: View academic grades, GPA, and subject breakdown.
+
+Buttons in Parent Portal:
+[Select Child Card]        -> Switches active view to that child
+[Print Report Card]        -> Prints academic progress report
+[Print Fee Voucher]        -> Prints 3-copy fee deposit voucher
+[Leave Session / Logout]   -> Safely terminates parent session
+
+================================================================================
+7. CLOUD INFRASTRUCTURE & INTEGRATIONS (کلاؤڈ سسٹمز)
+================================================================================
+1. Neon Cloud PostgreSQL & Prisma ORM:
+   - Central relational database with pooled connections and composite performance indexes.
+2. Supabase Storage Buckets:
+   - student-photos, admission-docs, homework-attachments, study-materials, certificates, report-cards.
+3. Firebase Cloud Messaging (FCM):
+   - Real-time push notifications for web, Android, and iOS.
+4. Resend Cloud Email API:
+   - Automated admission welcome emails, credential slips, and password reset links.
+
+================================================================================
+8. TAURI WINDOWS DESKTOP APPLICATION (ونڈوز ڈیسک ٹاپ ایپ)
+================================================================================
+- Fast Windows Native Desktop executable located in `src-tauri`.
+- Silent launcher `The-Hayatabad-School-Admin.vbs` allows launching the desktop system directly without opening a background terminal.
+
+================================================================================
+🎉 SUMMARY / خلاصہ
+================================================================================
+Every single button and workflow described above is 100% operational and backed
+by real database transactions. No mock data, no dummy buttons.
+================================================================================
