@@ -297,15 +297,25 @@ export default function AdminAdmissionsPage() {
             </div>
 
             {/* If Enrolled, Show Summary Credentials Card */}
+            {/* Success Enrollment View with Credentials Slip */}
             {enrollmentResult ? (
               <div className="p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-300 space-y-4 animate-in fade-in">
-                <div className="flex items-center gap-2.5 text-emerald-900 font-bold text-base">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                  <span>Student Successfully Enrolled!</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-emerald-900 font-bold text-base">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                    <span>Student Successfully Enrolled!</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const text = `*THE HAYATABAD MODEL SCHOOL — CREDENTIALS*\nStudent: ${enrollmentResult.fullName}\nClass: ${enrollmentResult.className} (Roll ${enrollmentResult.rollNo})\n\nStudent Login: ${enrollmentResult.studentUsername || enrollmentResult.portalUsername}\nPassword: ${enrollmentResult.studentPassword || enrollmentResult.temporaryPassword}\n\nParent Login: ${enrollmentResult.parentUsername}\nPassword: ${enrollmentResult.parentPassword || 'Parent@123'}\n\nLogin URL: http://localhost:3000/login`;
+                      navigator.clipboard.writeText(text);
+                      alert('Login credentials copied to clipboard!');
+                    }}
+                    className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow transition-all"
+                  >
+                    📱 Copy WhatsApp Slip
+                  </button>
                 </div>
-                <p className="text-xs text-emerald-800 leading-relaxed">
-                  Student record, unique identifiers, temporary portal credentials, initial fee invoice, and QR identity have been generated.
-                </p>
 
                 <div className="grid grid-cols-2 gap-3 bg-white p-4 rounded-xl border border-emerald-200 text-xs">
                   <div>
@@ -321,16 +331,18 @@ export default function AdminAdmissionsPage() {
                     <strong className="text-emerald-700">{enrollmentResult.className} • Roll {enrollmentResult.rollNo}</strong>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-[10px]">Portal Username:</span>
-                    <strong className="font-mono text-purple-900">{enrollmentResult.portalUsername}</strong>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block text-[10px]">Temporary Password:</span>
-                    <strong className="font-mono text-red-600">{enrollmentResult.temporaryPassword}</strong>
-                  </div>
-                  <div>
                     <span className="text-slate-500 block text-[10px]">Initial Invoice No:</span>
                     <strong className="font-mono text-teal-700">{enrollmentResult.invoiceNo} (Rs. {enrollmentResult.initialAmount})</strong>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-blue-50 border border-blue-200">
+                    <span className="text-blue-900 font-bold block text-[11px]">Student Login:</span>
+                    <span className="font-mono text-xs block text-slate-700 font-bold">{enrollmentResult.studentUsername || enrollmentResult.portalUsername}</span>
+                    <span className="font-mono text-[11px] text-red-600 font-bold block">Pass: {enrollmentResult.studentPassword || enrollmentResult.temporaryPassword}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200">
+                    <span className="text-amber-900 font-bold block text-[11px]">Parent Login:</span>
+                    <span className="font-mono text-xs block text-slate-700 font-bold">{enrollmentResult.parentUsername}</span>
+                    <span className="font-mono text-[11px] text-red-600 font-bold block">Pass: {enrollmentResult.parentPassword || 'Parent@123'}</span>
                   </div>
                 </div>
 

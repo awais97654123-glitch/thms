@@ -14,7 +14,7 @@ try {
 
 # 2. If not running, start server in background and wait for it
 if (-not $isHealthy) {
-    Start-Process -FilePath "cmd.exe" -ArgumentList "/c npm.cmd run dev" -WorkingDirectory $AppDir -WindowStyle Hidden -CreateNoWindow
+    Start-Process -FilePath "cmd.exe" -ArgumentList "/c npm.cmd run dev" -WorkingDirectory $AppDir -WindowStyle Hidden
 
     $attempts = 0
     while (-not $isHealthy -and $attempts -lt 20) {

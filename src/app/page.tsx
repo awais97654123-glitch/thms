@@ -17,23 +17,109 @@ import {
   Laptop, 
   Microscope, 
   Bus,
-  Search
+  Search,
+  UserCheck,
+  Clock,
+  ChevronRight,
+  School,
+  Lock
 } from 'lucide-react';
 import Header from '@/components/common/Header';
-import DemoRoleSwitcher from '@/components/common/DemoRoleSwitcher';
 
 export default function PublicHomePage() {
+  const academicWings = [
+    {
+      title: 'Early Years / Pre-School',
+      grades: 'Playgroup, Nursery & Prep',
+      description: 'Activity-based Montessori learning, phonics development, foundational numeracy, and caring environment.',
+      color: 'from-amber-500/10 to-orange-500/10 border-amber-200 text-amber-900',
+      badge: 'Ages 3 - 5',
+    },
+    {
+      title: 'Primary School Wing',
+      grades: 'Class 1 to Class 5',
+      description: 'Core literacy, mathematics, general science, Islamic ethics, computer basics, and creative arts.',
+      color: 'from-blue-500/10 to-cyan-500/10 border-blue-200 text-blue-900',
+      badge: 'Ages 6 - 10',
+    },
+    {
+      title: 'Middle School Wing',
+      grades: 'Class 6 to Class 8',
+      description: 'Conceptual science, advanced mathematics, English grammar, analytical thinking, and leadership grooming.',
+      color: 'from-emerald-500/10 to-teal-500/10 border-emerald-200 text-emerald-900',
+      badge: 'Ages 11 - 13',
+    },
+    {
+      title: 'Secondary SSC Wing',
+      grades: 'Class 9 & 10 (BISE Peshawar)',
+      description: 'Rigorous SSC Board examination preparation in Science group (Physics, Chemistry, Biology & Computer Science).',
+      color: 'from-purple-500/10 to-indigo-500/10 border-purple-200 text-purple-900',
+      badge: 'Matriculation',
+    },
+  ];
+
+  const facilities = [
+    {
+      title: 'High-Tech Computer & Robotics Lab',
+      desc: 'Modern networked PCs with high-speed internet, programming curriculum, and digital literacy tools.',
+      icon: Laptop,
+    },
+    {
+      title: 'Advanced Science Laboratories',
+      desc: 'Well-equipped Physics, Chemistry, and Biology practical apparatus strictly following BISE curriculum.',
+      icon: Microscope,
+    },
+    {
+      title: 'Modern Library & Resource Hub',
+      desc: 'Extensive repository of encyclopedias, Islamic literature, science reference books, and quiet reading halls.',
+      icon: BookOpen,
+    },
+    {
+      title: 'Safe Fleet Transportation',
+      desc: 'Dedicated school vans covering all sectors of Hayatabad and surrounding areas with verified drivers.',
+      icon: Bus,
+    },
+    {
+      title: 'Automated QR / Smart Attendance',
+      desc: 'Instant gate check-in alerts sent via Push Notification and SMS to parents in real-time.',
+      icon: ShieldCheck,
+    },
+    {
+      title: 'Islamic Values & Tahfeez Program',
+      desc: 'Daily Nazra Quran, moral character building, and regular ethical counseling for students.',
+      icon: Award,
+    },
+  ];
+
+  const notices = [
+    {
+      tag: 'ADMISSION',
+      title: 'Admissions Open for Academic Session 2026-2027 (Nursery to Class 9)',
+      date: 'March 2026',
+      link: '/admissions/apply',
+    },
+    {
+      tag: 'EXAMINATIONS',
+      title: 'Annual Examination Schedule & Model Papers Published Online',
+      date: 'April 2026',
+      link: '/login',
+    },
+    {
+      tag: 'EVENTS',
+      title: 'Annual Science & Robotics Exhibition and Sports Gala 2026',
+      date: 'May 2026',
+      link: '/admissions/track',
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* 1-Click Demo Fast Switcher Bar for instant tester access */}
-      <DemoRoleSwitcher />
-      
-      {/* Top Header */}
+      {/* Top Header Navigation */}
       <Header />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-950 via-slate-900 to-slate-950 text-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8">
-        {/* Ambient Glows */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-950 via-slate-900 to-slate-950 text-white py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+        {/* Ambient Lighting */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -52,28 +138,37 @@ export default function PublicHomePage() {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-              The Hayatabad Model School provides world-class STEM education, character building, and academic excellence from Nursery to Matriculation (SSC BISE Peshawar) with state-of-the-art campus infrastructure.
+              The Hayatabad Model School delivers quality education, modern STEM training, and moral character building from Nursery to Matriculation with certified faculty and cloud-connected portals for students, parents, and teachers.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+            {/* Primary Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
                 href="/admissions/apply"
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-bold text-sm shadow-lg shadow-blue-500/25 flex items-center gap-2 transition-all hover:scale-105"
+                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-extrabold text-sm shadow-xl shadow-blue-600/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
               >
                 <span>Apply for Online Admission</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
+
+              <Link
+                href="/login"
+                className="px-6 py-3.5 rounded-2xl bg-white text-slate-900 hover:bg-slate-100 font-extrabold text-sm shadow-md flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-slate-200"
+              >
+                <Lock className="w-4 h-4 text-blue-600" />
+                <span>Portal Login (Students & Staff)</span>
+              </Link>
+
               <Link
                 href="/admissions/track"
-                className="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 flex items-center gap-2 transition-all"
+                className="px-5 py-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700 flex items-center gap-2 transition-all"
               >
                 <Search className="w-4 h-4 text-blue-400" />
-                <span>Track Application Status</span>
+                <span>Track Application</span>
               </Link>
             </div>
 
-            {/* Key Badges */}
+            {/* Metric Highlights */}
             <div className="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800 text-left">
               <div>
                 <span className="block text-xl sm:text-2xl font-bold text-white">100%</span>
@@ -95,254 +190,299 @@ export default function PublicHomePage() {
             <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl backdrop-blur-xl relative space-y-5">
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-0.5 shadow-md border border-slate-700">
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-md border border-slate-700">
                     <img
                       src="/school-logo.png"
-                      alt="THMS Crest"
+                      alt="The Hayatabad Model School Logo"
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-sm">School Portals Access</h3>
-                    <p className="text-xs text-slate-400">Unified Digital Campus Hub</p>
+                    <h3 className="text-sm font-bold text-white leading-tight">The Hayatabad Model School</h3>
+                    <p className="text-[11px] text-slate-400">Hayatabad, Peshawar • Est. 2005</p>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
-                  Online
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Affiliated BISE
                 </span>
               </div>
 
-              {/* Portal Links */}
-              <div className="space-y-2.5">
+              {/* Online Admission Callout */}
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-900/40 to-slate-800 border border-blue-500/30 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-blue-300 uppercase tracking-wider">Session 2026-2027</span>
+                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/20 px-2 py-0.5 rounded-full">Limited Seats</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">Online Admission Applications Open</h4>
+                <p className="text-xs text-slate-300">
+                  Complete the 4-step digital application form online and receive instant confirmation along with tracking number.
+                </p>
                 <Link
-                  href="/login"
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all group"
+                  href="/admissions/apply"
+                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-red-500/20 text-red-400">
-                      <ShieldCheck className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors">
-                        Admin & Staff ERP
-                      </p>
-                      <p className="text-[11px] text-slate-400">Admissions, Attendance, Finance & Exams</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
-                </Link>
-
-                <Link
-                  href="/login"
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
-                      <BookOpen className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">
-                        Teacher Portal
-                      </p>
-                      <p className="text-[11px] text-slate-400">My Classes, Mark Attendance & Enter Marks</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
-                </Link>
-
-                <Link
-                  href="/login"
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
-                      <GraduationCap className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors">
-                        Student Portal
-                      </p>
-                      <p className="text-[11px] text-slate-400">ID Card, Timetable, Results & Homework</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
-                </Link>
-
-                <Link
-                  href="/login"
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400">
-                      <Users className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-white group-hover:text-amber-300 transition-colors">
-                        Parent & Guardian Portal
-                      </p>
-                      <p className="text-[11px] text-slate-400">Multi-Child Tracking, Fee Receipts & Results</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+                  <span>Start Online Admission Application</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              <div className="p-3 bg-blue-950/60 border border-blue-800/50 rounded-xl text-center">
-                <p className="text-[11px] text-blue-200">
-                  New student? <Link href="/admissions/apply" className="font-bold text-white underline ml-1">Submit admission form online</Link> in under 3 minutes.
+              {/* Direct Portal Access Bar */}
+              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2.5">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Self-Service Portal Login
+                </span>
+                <p className="text-xs text-slate-400">
+                  Students, parents, and teachers can login directly to check attendance, marks, homework, and fee status.
                 </p>
+                <Link
+                  href="/login"
+                  className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-all border border-slate-700"
+                >
+                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Open Unified Login Screen</span>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Academic Divisions Section */}
-      <section className="py-16 bg-slate-50 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">
-              Academic Divisions
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-              Comprehensive Curriculum from Early Years to SSC
+      {/* Online Admission Process Steps */}
+      <section className="py-16 bg-slate-50 border-b border-slate-200 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Hassle-Free Process</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              Simple 4-Step Online Admission
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Tailored learning pathways fostering scientific inquiry, linguistic fluency, and moral integrity.
+            <p className="text-xs sm:text-sm text-slate-500">
+              Apply from the comfort of your home in under 5 minutes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 relative">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-md">1</span>
+              <h3 className="text-sm font-bold text-slate-900">Fill Application Form</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Provide student information, parent details, residential address, and select the desired class.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 relative">
+              <span className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-md">2</span>
+              <h3 className="text-sm font-bold text-slate-900">Upload Documents</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Attach student photo, previous school leaving certificate, and birth certificate/Form-B.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 relative">
+              <span className="w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-md">3</span>
+              <h3 className="text-sm font-bold text-slate-900">Assessment & Interview</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Track status online and receive interview/admission test date updates directly on phone/portal.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 relative">
+              <span className="w-8 h-8 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-md">4</span>
+              <h3 className="text-sm font-bold text-slate-900">Instant Enrollment Slip</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Receive official Roll Number, student & parent login credentials, and printable fee voucher.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center pt-2">
+            <Link
+              href="/admissions/apply"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-blue-500/20 transition-all hover:scale-105"
+            >
+              <span>Apply Online for Admission Now</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Academic Programs Wing */}
+      <section className="py-16 bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Curriculum & Wings</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              Academic Excellence from Nursery to Matric
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Comprehensive academic stages designed to foster critical thinking, moral character, and board examination success.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6" />
+            {academicWings.map((wing, idx) => (
+              <div
+                key={idx}
+                className={`p-6 rounded-3xl border bg-gradient-to-b ${wing.color} shadow-sm space-y-3 flex flex-col justify-between`}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/80 border">
+                      {wing.badge}
+                    </span>
+                    <GraduationCap className="w-5 h-5 opacity-70" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900">{wing.title}</h3>
+                  <p className="text-xs font-semibold text-blue-700">{wing.grades}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">{wing.description}</p>
+                </div>
+                <Link
+                  href="/admissions/apply"
+                  className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 pt-2"
+                >
+                  <span>Apply for this Wing</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
-              <h3 className="font-bold text-slate-900 text-base">Early Years Wing</h3>
-              <p className="text-xs font-semibold text-pink-600 mt-0.5">Nursery & Prep</p>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Play-based sensory learning, phonics foundation, interactive numeracy, and motor skills development.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-base">Primary School</h3>
-              <p className="text-xs font-semibold text-emerald-600 mt-0.5">Class 1 to Class 5</p>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Strong bilingual literacy (English/Urdu), foundational sciences, arts, and creative problem solving.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-                <Microscope className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-base">Middle School</h3>
-              <p className="text-xs font-semibold text-blue-600 mt-0.5">Class 6 to Class 8</p>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Advanced STEM labs, computer science coding, Islamic studies, social studies, and public speaking.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
-                <Award className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-base">Secondary Wing (SSC)</h3>
-              <p className="text-xs font-semibold text-purple-600 mt-0.5">Class 9 & Class 10 (Science)</p>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Intensive BISE Peshawar board preparation in Physics, Chemistry, Biology, Mathematics & Computer Science.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Campus Infrastructure Highlights */}
-      <section className="py-16 bg-white px-4 sm:px-6 lg:px-8 border-t border-slate-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
-              Campus Facilities
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-              Purpose-Built 5-Acre Campus in Phase 6 Hayatabad
+      {/* Facilities & Infrastructure */}
+      <section className="py-16 bg-slate-50 border-b border-slate-200 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Campus Life</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              State-of-the-Art School Facilities
             </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Purpose-built campus designed for safe, engaging, and comprehensive student development.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {facilities.map((fac, idx) => {
+              const Icon = fac.icon;
+              return (
+                <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900">{fac.title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{fac.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Notices & Announcements */}
+      <section className="py-16 bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+              <span className="text-xs font-bold text-amber-600 uppercase tracking-wider">Notice Board</span>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">Latest School Announcements</h2>
+            </div>
+            <Link
+              href="/login"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+            >
+              <span>Login for All Notices</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-              <Laptop className="w-8 h-8 text-blue-600 mb-3" />
-              <h4 className="font-bold text-slate-900 text-sm">Smart Robotics & IT Labs</h4>
-              <p className="text-xs text-slate-600 mt-1">
-                40+ high-speed workstations with fiber internet and robotics programming kits.
-              </p>
-            </div>
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-              <Microscope className="w-8 h-8 text-emerald-600 mb-3" />
-              <h4 className="font-bold text-slate-900 text-sm">Advanced Science Laboratories</h4>
-              <p className="text-xs text-slate-600 mt-1">
-                Dedicated Physics, Chemistry, and Biology laboratories equipped with modern apparatus.
-              </p>
-            </div>
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-              <Bus className="w-8 h-8 text-amber-600 mb-3" />
-              <h4 className="font-bold text-slate-900 text-sm">Dedicated AC Transport Fleet</h4>
-              <p className="text-xs text-slate-600 mt-1">
-                Safe Toyota Coaster fleet covering all phases of Hayatabad and Peshawar city.
-              </p>
-            </div>
+            {notices.map((n, idx) => (
+              <div key={idx} className="p-5 rounded-3xl border border-slate-200 bg-slate-50 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+                    {n.tag}
+                  </span>
+                  <span className="text-[11px] text-slate-400">{n.date}</span>
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 leading-snug">{n.title}</h3>
+                <Link
+                  href={n.link}
+                  className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 pt-1"
+                >
+                  <span>View Details</span>
+                  <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-950 text-slate-300 py-12 px-4 sm:px-6 lg:px-8 mt-auto border-t border-slate-800">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-xs">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center">
-                H
+      <footer className="bg-slate-950 text-white pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 border-b border-slate-800 pb-12">
+          {/* Col 1 */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center p-0.5">
+                <img src="/school-logo.png" alt="School Crest" className="w-full h-full object-contain" />
               </div>
-              <span className="font-bold text-white text-sm">The Hayatabad Model School</span>
+              <div>
+                <h3 className="text-sm font-bold text-white">The Hayatabad Model School</h3>
+                <p className="text-[11px] text-slate-400">Hayatabad, Peshawar</p>
+              </div>
             </div>
-            <p className="text-slate-400 text-[11px] leading-relaxed">
-              Excellence in Education, Character & Innovation since 1998. Registered with Directorate of Education KPK.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Excellence in academics, Islamic morals, and modern science education in Peshawar, Khyber Pakhtunkhwa.
             </p>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Quick Portals</h4>
-            <ul className="space-y-2 text-[11px]">
-              <li><Link href="/login" className="hover:text-white">Admin Management ERP</Link></li>
-              <li><Link href="/login" className="hover:text-white">Teacher Portal</Link></li>
-              <li><Link href="/login" className="hover:text-white">Student Portal</Link></li>
-              <li><Link href="/login" className="hover:text-white">Parent Portal</Link></li>
+          {/* Col 2: Quick Links */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">Quick Links</h4>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/" className="hover:text-white transition-colors">Home Page</Link></li>
+              <li><Link href="/admissions/apply" className="hover:text-white transition-colors">Online Admission Form</Link></li>
+              <li><Link href="/admissions/track" className="hover:text-white transition-colors">Track Admission Status</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Portal Login</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Admissions</h4>
-            <ul className="space-y-2 text-[11px]">
-              <li><Link href="/admissions/apply" className="hover:text-white">Online Admission Form</Link></li>
-              <li><Link href="/admissions/track" className="hover:text-white">Track Application</Link></li>
-              <li><span className="text-slate-400">Fee Structure 2026</span></li>
-              <li><span className="text-slate-400">Scholarship Criteria</span></li>
+          {/* Col 3: Portals */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">Dedicated Portals</h4>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/login" className="hover:text-white transition-colors">Student Portal</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Parent Portal</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Faculty & Teacher Portal</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Administration ERP</Link></li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Campus Contact</h4>
-            <p className="text-slate-400 text-[11px]">Sector F-4, Phase 6, Hayatabad, Peshawar, KPK</p>
-            <p className="text-slate-400 text-[11px] mt-1">Phone: +92 91 5828100</p>
-            <p className="text-slate-400 text-[11px]">Email: admissions@hayatabadmodel.edu.pk</p>
+          {/* Col 4: Contact */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">Campus Contact</h4>
+            <div className="space-y-2 text-xs text-slate-400">
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <span>Sector F-4, Phase 6, Hayatabad, Peshawar, KP, Pakistan</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>+92 91 5812345 / +92 333 9123456</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>admissions@hayatabadmodel.edu.pk</span>
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto border-t border-slate-900 mt-8 pt-6 text-center text-[10px] text-slate-500">
-          © 2026 The Hayatabad Model School. All Rights Reserved. Full School Management ERP System.
+        <div className="max-w-7xl mx-auto pt-8 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+          <p>© 2026 The Hayatabad Model School. All Rights Reserved.</p>
+          <p className="font-mono text-[11px]">ISO 9001:2015 • BISE Peshawar Registered</p>
         </div>
       </footer>
     </div>

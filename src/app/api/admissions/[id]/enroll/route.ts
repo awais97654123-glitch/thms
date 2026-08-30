@@ -202,9 +202,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       },
     });
 
+    const parentUserRecord = await prisma.user.findUnique({
+      where: { id: parent.userId! },
+      select: { username: true },
+    });
+
     return NextResponse.json({
       success: true,
-      message: 'Student enrolled and portal account created successfully',
+      message: 'Student enrolled and portal accounts generated successfully',
       enrollment: {
         studentId: student.studentId,
         admissionNo: student.admissionNo,
@@ -212,8 +217,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         fullName: student.fullName,
         className: student.class.name,
         sectionName: student.section.name,
-        portalUsername: student.studentId,
-        temporaryPassword: 'Student@123',
+        studentUsername: student.studentId,
+        studentPassword: 'Student@123',
+        parentUsername: parentUserRecord?.username || `parent.${application.fatherPhone.replace(/\D/g, '').slice(-7)}`,
+        parentPassword: 'Parent@123',
+        loginUrl: '/login',
         qrToken: student.qrToken,
         invoiceNo: invoice.invoiceNo,
         initialAmount: invoice.totalAmount,
