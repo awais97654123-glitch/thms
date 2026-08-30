@@ -14,6 +14,10 @@ export async function GET(req: NextRequest) {
     const studentId = searchParams.get('studentId');
     const query = searchParams.get('q');
 
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const skip = (page - 1) * limit;
+
     const where: any = {};
     if (status && status !== 'ALL') where.status = status;
     if (studentId) where.studentId = studentId;
@@ -22,32 +26,45 @@ export async function GET(req: NextRequest) {
     }
     if (query) {
       where.OR = [
-        { invoiceNo: { contains: query } },
-        { title: { contains: query } },
-        { student: { fullName: { contains: query } } },
-        { student: { studentId: { contains: query } } },
+        { invoiceNo: { contains: query, mode: 'insensitive' } },
+        { title: { contains: query, mode: 'insensitive' } },
+        { student: { fullName: { contains: query, mode: 'insensitive' } } },
+        { student: { studentId: { contains: query, mode: 'insensitive' } } },
       ];
     }
 
-    const invoices = await prisma.feeInvoice.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        student: {
-          include: {
-            class: true,
-            section: true,
-            parent: true,
+    const [total, invoices, aggregates] = await Promise.all([
+      prisma.feeInvoice.count({ where }),
+      prisma.feeInvoice.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          student: {
+            include: {
+              class: true,
+              section: true,
+              parent: true,
+            },
           },
+          items: true,
+          payments: true,
         },
-        items: true,
-        payments: true,
-      },
-    });
+      }),
+      prisma.feeInvoice.aggregate({
+        where,
+        _sum: {
+          totalAmount: true,
+          paidAmount: true,
+          remainingAmount: true,
+        },
+      }),
+    ]);
 
-    const totalBilled = invoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
-    const totalCollected = invoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
-    const totalPending = invoices.reduce((sum, inv) => sum + inv.remainingAmount, 0);
+    const totalBilled = aggregates._sum.totalAmount || 0;
+    const totalCollected = aggregates._sum.paidAmount || 0;
+    const totalPending = aggregates._sum.remainingAmount || 0;
 
     return NextResponse.json({
       success: true,
@@ -55,9 +72,15 @@ export async function GET(req: NextRequest) {
         totalBilled,
         totalCollected,
         totalPending,
-        count: invoices.length,
+        count: total,
       },
       invoices,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     console.error(error);

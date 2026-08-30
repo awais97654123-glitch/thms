@@ -73,33 +73,53 @@ export async function POST(req: NextRequest) {
 
     const receiptNo = await generateReceiptNumber(2026);
 
-    const payment = await prisma.payment.create({
-      data: {
-        receiptNo,
-        invoiceId: invoice.id,
-        studentId: invoice.studentId,
-        amount: paymentAmount,
-        paymentDate: new Date(),
-        paymentMethod,
-        transactionRef,
-        bankName,
-        receivedById: session?.userId,
-        status: 'COMPLETED',
-        remarks: remarks || `Fee payment for ${invoice.title}`,
-      },
-    });
+    const { payment, updatedInvoice } = await prisma.$transaction(async (tx) => {
+      // Re-fetch invoice with lock in transaction to prevent race conditions / double submission
+      const currentInv = await tx.feeInvoice.findUnique({
+        where: { id: invoiceId },
+      });
 
-    const newPaidAmount = invoice.paidAmount + paymentAmount;
-    const newRemainingAmount = Math.max(0, invoice.remainingAmount - paymentAmount);
-    const newStatus = newRemainingAmount === 0 ? 'PAID' : 'PARTIALLY_PAID';
+      if (!currentInv) {
+        throw new Error('Invoice not found during payment processing');
+      }
 
-    await prisma.feeInvoice.update({
-      where: { id: invoice.id },
-      data: {
-        paidAmount: newPaidAmount,
-        remainingAmount: newRemainingAmount,
-        status: newStatus,
-      },
+      if (paymentAmount > currentInv.remainingAmount) {
+        throw new Error(`Payment amount (Rs. ${paymentAmount}) exceeds remaining balance of Rs. ${currentInv.remainingAmount}`);
+      }
+
+      const p = await tx.payment.create({
+        data: {
+          receiptNo,
+          invoiceId: currentInv.id,
+          studentId: currentInv.studentId,
+          amount: paymentAmount,
+          paymentDate: new Date(),
+          paymentMethod,
+          transactionRef: transactionRef || null,
+          bankName: bankName || null,
+          receivedById: session?.userId || null,
+          status: 'COMPLETED',
+          remarks: remarks || `Fee payment for ${currentInv.title}`,
+        },
+      });
+
+      const newPaidAmount = currentInv.paidAmount + paymentAmount;
+      const newRemainingAmount = Math.max(0, currentInv.remainingAmount - paymentAmount);
+      const newStatus = newRemainingAmount === 0 ? 'PAID' : 'PARTIALLY_PAID';
+
+      const upInv = await tx.feeInvoice.update({
+        where: { id: currentInv.id },
+        data: {
+          paidAmount: newPaidAmount,
+          remainingAmount: newRemainingAmount,
+          status: newStatus,
+        },
+        include: {
+          items: true,
+        },
+      });
+
+      return { payment: p, updatedInvoice: upInv };
     });
 
     await logAuditEvent({
@@ -114,7 +134,7 @@ export async function POST(req: NextRequest) {
         invoiceNo: invoice.invoiceNo,
         studentName: invoice.student.fullName,
         amount: paymentAmount,
-        remainingBalance: newRemainingAmount,
+        remainingBalance: updatedInvoice.remainingAmount,
         method: paymentMethod,
       },
     });
@@ -126,7 +146,7 @@ export async function POST(req: NextRequest) {
         amount: payment.amount,
         paymentMethod: payment.paymentMethod,
         paymentDate: payment.paymentDate,
-        remainingBalance: newRemainingAmount,
+        remainingBalance: updatedInvoice.remainingAmount,
         studentId: invoice.studentId,
       })
       .catch((err) => console.error('Failed to dispatch payment receipt email:', err));
@@ -148,9 +168,9 @@ export async function POST(req: NextRequest) {
         month: invoice.month,
         totalAmount: invoice.totalAmount,
         discountAmount: invoice.discountAmount,
-        paidAmount: newPaidAmount,
-        remainingAmount: newRemainingAmount,
-        status: newStatus,
+        paidAmount: updatedInvoice.paidAmount,
+        remainingAmount: updatedInvoice.remainingAmount,
+        status: updatedInvoice.status,
         items: invoice.items,
       },
       student: {

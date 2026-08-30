@@ -28,11 +28,39 @@ interface HeaderProps {
 }
 
 export default function Header({ user, onToggleSidebar }: HeaderProps) {
-  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<HeaderProps['user']>(user || null);
   const [lang, setLang] = useState<Language>('en');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+
+  React.useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+    } else {
+      fetch('/api/auth/me')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user) {
+            let fullName = data.user.username;
+            if (data.user.student) fullName = data.user.student.fullName;
+            else if (data.user.teacher) fullName = data.user.teacher.fullName;
+            else if (data.user.parent) fullName = data.user.parent.fatherName;
+            else if (data.user.staff) fullName = data.user.staff.fullName;
+
+            setCurrentUser({
+              username: data.user.username,
+              role: data.user.role,
+              fullName,
+              email: data.user.email,
+            });
+          }
+        })
+        .catch(() => {
+          setCurrentUser(null);
+        });
+    }
+  }, [user]);
 
   const dict = getDictionary(lang);
 
@@ -147,21 +175,21 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
           </div>
 
           {/* User Profile Pill */}
-          {user ? (
+          {currentUser ? (
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
               >
                 <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center text-xs shadow-sm">
-                  {user.fullName ? user.fullName.charAt(0).toUpperCase() : user.username.charAt(0).toUpperCase()}
+                  {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : currentUser.username.charAt(0).toUpperCase()}
                 </div>
                 <div className="text-left hidden sm:block">
                   <p className="text-xs font-semibold text-slate-800 leading-tight">
-                    {user.fullName || user.username}
+                    {currentUser.fullName || currentUser.username}
                   </p>
-                  <span className={`inline-block px-1.5 py-0.2 text-[10px] font-bold rounded border ${getRoleBadgeColor(user.role)}`}>
-                    {user.role.replace('_', ' ')}
+                  <span className={`inline-block px-1.5 py-0.2 text-[10px] font-bold rounded border ${getRoleBadgeColor(currentUser.role)}`}>
+                    {currentUser.role.replace('_', ' ')}
                   </span>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -170,11 +198,11 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
                   <div className="px-4 py-2 border-b border-slate-100">
-                    <p className="text-xs font-semibold text-slate-900">{user.fullName || user.username}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{user.email || user.username}</p>
+                    <p className="text-xs font-semibold text-slate-900">{currentUser.fullName || currentUser.username}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{currentUser.email || currentUser.username}</p>
                     <div className="mt-1">
-                      <span className={`inline-block px-1.5 py-0.5 text-[10px] font-bold rounded border ${getRoleBadgeColor(user.role)}`}>
-                        {user.role.replace('_', ' ')}
+                      <span className={`inline-block px-1.5 py-0.5 text-[10px] font-bold rounded border ${getRoleBadgeColor(currentUser.role)}`}>
+                        {currentUser.role.replace('_', ' ')}
                       </span>
                     </div>
                   </div>

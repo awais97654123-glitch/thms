@@ -37,3 +37,8 @@ yarn-error.log*
 
 # Tauri Build Artifacts
 src-tauri/target/
+
+# TypeScript Build Info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+

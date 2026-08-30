@@ -105,12 +105,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <OfflineSyncBar />
 
           <Header
-            user={{
-              username: 'admin',
-              role: 'SUPER_ADMIN',
-              fullName: 'Super Admin',
-              email: 'admin@hayatabadmodel.edu.pk',
-            }}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           />
 

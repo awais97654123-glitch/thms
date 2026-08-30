@@ -5,7 +5,7 @@ import { hasPermission, ROLE_PERMISSIONS } from '../src/lib/permissions';
 import { emailQueue } from '../src/lib/email/queue';
 import { interpolateTemplate, DEFAULT_TEMPLATES } from '../src/lib/email/templates';
 
-const prisma = new PrismaClient();
+import prisma from '../src/lib/db';
 
 async function runAllWorkflowTests() {
   console.log('\n===============================================================');
@@ -124,6 +124,9 @@ async function runAllWorkflowTests() {
     assert(newQrToken.startsWith('THMS-QR-'), 'Generated Secure Opaque QR Token', newQrToken);
 
     // Create Enrolled Student Record in Transaction
+    const defaultPasswordHash = await bcrypt.hash('Student@123', 10);
+    const invoiceNo = await generateInvoiceNumber(2026);
+
     const enrolledStudent = await prisma.$transaction(async (tx) => {
       let parent = await tx.parent.findFirst({
         where: { fatherPhone: application.fatherPhone },
@@ -141,7 +144,6 @@ async function runAllWorkflowTests() {
         });
       }
 
-      const defaultPasswordHash = await bcrypt.hash('Student@123', 10);
       const studentUser = await tx.user.create({
         data: {
           username: newStudentId,
@@ -176,7 +178,6 @@ async function runAllWorkflowTests() {
         },
       });
 
-      const invoiceNo = await generateInvoiceNumber(2026);
       await tx.feeInvoice.create({
         data: {
           invoiceNo,
@@ -208,7 +209,7 @@ async function runAllWorkflowTests() {
       });
 
       return student;
-    }, { timeout: 20000, maxWait: 10000 });
+    }, { timeout: 60000, maxWait: 30000 });
 
     assert(enrolledStudent.status === 'ENROLLED', '1-Click Approve & Enroll executed atomically with DB Transaction');
 
@@ -401,7 +402,7 @@ async function runAllWorkflowTests() {
       });
 
       return pay;
-    });
+    }, { timeout: 60000, maxWait: 30000 });
 
     const updatedInvoice = await prisma.feeInvoice.findUnique({
       where: { id: studentInvoice!.id },

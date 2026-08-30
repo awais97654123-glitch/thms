@@ -26,6 +26,8 @@ export default function StudentDashboardPage() {
   const [student, setStudent] = useState<any | null>(null);
   const [school, setSchool] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [attendanceRecords, setAttendanceRecords] = useState<any[]>([]);
+  const [homeworks, setHomeworks] = useState<any[]>([]);
   const [feeInvoices, setFeeInvoices] = useState<any[]>([]);
 
   useEffect(() => {
@@ -33,14 +35,32 @@ export default function StudentDashboardPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.user?.student) {
-          setStudent(data.user.student);
+          const st = data.user.student;
+          setStudent(st);
           setSchool(data.school);
+          
           // Fetch student invoices
-          if (data.user.student.id) {
-            fetch(`/api/fees?studentId=${data.user.student.id}`)
+          fetch(`/api/fees/invoices?studentId=${st.id}`)
+            .then((res) => res.json())
+            .then((fData) => {
+              if (fData.invoices) setFeeInvoices(fData.invoices);
+            })
+            .catch(console.error);
+
+          // Fetch student attendance
+          fetch(`/api/attendance?studentId=${st.id}`)
+            .then((res) => res.json())
+            .then((attData) => {
+              if (attData.records) setAttendanceRecords(attData.records);
+            })
+            .catch(console.error);
+
+          // Fetch class homework
+          if (st.classId) {
+            fetch(`/api/homework?classId=${st.classId}`)
               .then((res) => res.json())
-              .then((fData) => {
-                if (fData.invoices) setFeeInvoices(fData.invoices);
+              .then((hData) => {
+                if (hData.homeworks) setHomeworks(hData.homeworks);
               })
               .catch(console.error);
           }
@@ -50,6 +70,10 @@ export default function StudentDashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const totalAttDays = attendanceRecords.length;
+  const presentDays = attendanceRecords.filter((a) => a.status === 'PRESENT' || a.status === 'LATE').length;
+  const attendanceRate = totalAttDays > 0 ? ((presentDays / totalAttDays) * 100).toFixed(1) : '100.0';
+
   const todayPeriods = [
     { time: '08:30 - 09:15 AM', subject: 'Mathematics', teacher: 'Engr. Farooq Ahmad', room: 'Room 201' },
     { time: '09:20 - 10:05 AM', subject: 'English Literature', teacher: 'Ms. Saima Khattak', room: 'Room 201' },
@@ -58,8 +82,8 @@ export default function StudentDashboardPage() {
   ];
 
   const pendingFeeAmount = feeInvoices
-    .filter((inv) => inv.status !== 'PAID')
-    .reduce((acc, inv) => acc + (inv.remainingAmount || inv.totalAmount || 0), 0);
+    .filter((inv: any) => inv.status !== 'PAID')
+    .reduce((acc: number, inv: any) => acc + (inv.remainingAmount || inv.totalAmount || 0), 0);
 
   if (loading) {
     return (
@@ -133,9 +157,9 @@ export default function StudentDashboardPage() {
             <span>Attendance</span>
             <CalendarCheck className="w-4 h-4 text-emerald-600" />
           </div>
-          <p className="text-2xl font-extrabold text-slate-900">96.5%</p>
+          <p className="text-2xl font-extrabold text-slate-900">{attendanceRate}%</p>
           <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full inline-block">
-            Regular
+            {parseFloat(attendanceRate) >= 90 ? 'Regular' : 'Satisfactory'}
           </span>
         </div>
 
@@ -144,7 +168,7 @@ export default function StudentDashboardPage() {
             <span>Fee Balance</span>
             <DollarSign className="w-4 h-4 text-amber-600" />
           </div>
-          <p className="text-2xl font-extrabold text-slate-900">
+          <p className="text-2xl font-extrabold text-slate-900 font-mono">
             Rs. {pendingFeeAmount.toLocaleString()}
           </p>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
@@ -156,12 +180,12 @@ export default function StudentDashboardPage() {
 
         <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-1">
           <div className="flex items-center justify-between text-slate-500 text-xs">
-            <span>Latest Exam GPA</span>
+            <span>Academic Standing</span>
             <Award className="w-4 h-4 text-purple-600" />
           </div>
-          <p className="text-2xl font-extrabold text-slate-900">3.92 / 4.0</p>
+          <p className="text-2xl font-extrabold text-purple-900">Enrolled</p>
           <span className="text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full inline-block">
-            Grade A+ (Distinction)
+            Official Student Record
           </span>
         </div>
 
@@ -170,7 +194,7 @@ export default function StudentDashboardPage() {
             <span>Active Term</span>
             <Building2 className="w-4 h-4 text-blue-600" />
           </div>
-          <p className="text-xl font-extrabold text-slate-900">Session 2026-27</p>
+          <p className="text-xl font-extrabold text-slate-900">Session 2026</p>
           <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded-full inline-block">
             BISE Peshawar
           </span>
@@ -213,26 +237,32 @@ export default function StudentDashboardPage() {
                 <BookOpen className="w-4 h-4 text-purple-600" />
                 <h3 className="font-bold text-sm text-slate-900">Active Homework & Assignments</h3>
               </div>
-              <span className="text-xs text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-full">2 Pending</span>
+              <span className="text-xs text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-full">
+                {homeworks.length} Assigned
+              </span>
             </div>
 
-            <div className="space-y-2.5 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center justify-between">
-                  <strong className="text-slate-900">Mathematics — Exercise 4.2 (Quadratic Equations)</strong>
-                  <span className="text-[10px] text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded">Due Tomorrow</span>
-                </div>
-                <p className="text-[11px] text-slate-500">Solve Q1 to Q8 in fair notebook. Teacher: Engr. Farooq Ahmad</p>
+            {homeworks.length === 0 ? (
+              <div className="p-8 text-center text-xs text-slate-400">
+                No active homework tasks assigned.
               </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center justify-between">
-                  <strong className="text-slate-900">General Science — Biology Chapter 3 Diagram</strong>
-                  <span className="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded">Due Friday</span>
-                </div>
-                <p className="text-[11px] text-slate-500">Draw labeled diagram of plant cell structure with organelle functions.</p>
+            ) : (
+              <div className="space-y-2.5 text-xs">
+                {homeworks.map((hw) => (
+                  <div key={hw.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <strong className="text-slate-900">
+                        {hw.subject?.name || 'Subject'}: {hw.title}
+                      </strong>
+                      <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded">
+                        Due {new Date(hw.dueDate).toLocaleDateString('en-GB')}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600">{hw.description}</p>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
 

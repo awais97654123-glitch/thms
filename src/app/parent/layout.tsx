@@ -21,6 +21,18 @@ import Header from '@/components/common/Header';
 export default function ParentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [parent, setParent] = React.useState<any | null>(null);
+
+  React.useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.parent) {
+          setParent(data.user.parent);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const isMainDashboard = pathname === '/parent';
 
@@ -75,14 +87,7 @@ export default function ParentLayout({ children }: { children: React.ReactNode }
         </button>
       </div>
 
-      <Header
-        user={{
-          username: 'parent.tariq',
-          role: 'PARENT',
-          fullName: 'Dr. Tariq Mehmood',
-          email: 'dr.tariq@gmail.com',
-        }}
-      />
+      <Header />
 
       {/* Parent Sub-bar */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-2.5">
@@ -92,8 +97,12 @@ export default function ParentLayout({ children }: { children: React.ReactNode }
               <Users className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-900">Parent Portal — Dr. Tariq Mehmood</p>
-              <p className="text-[10px] text-slate-500">2 Enrolled Children (Hamza & Aiman)</p>
+              <p className="text-xs font-bold text-slate-900">
+                {parent ? `Parent & Guardian Portal — ${parent.fatherName}` : 'Parent Portal'}
+              </p>
+              <p className="text-[10px] text-slate-500">
+                {parent?.students ? `${parent.students.length} Enrolled Children` : 'Family Monitoring Dashboard'}
+              </p>
             </div>
           </div>
         </div>

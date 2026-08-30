@@ -22,6 +22,18 @@ import Header from '@/components/common/Header';
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [student, setStudent] = React.useState<any | null>(null);
+
+  React.useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.student) {
+          setStudent(data.user.student);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const isMainDashboard = pathname === '/student';
 
@@ -83,14 +95,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         </button>
       </div>
 
-      <Header
-        user={{
-          username: 'THMS-2026-000001',
-          role: 'STUDENT',
-          fullName: 'Hamza Tariq',
-          email: 'hamza.tariq@student.hayatabadmodel.edu.pk',
-        }}
-      />
+      <Header />
 
       {/* Student Sub-bar */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-2.5">
@@ -100,8 +105,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               <GraduationCap className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-900">Student Portal — Hamza Tariq</p>
-              <p className="text-[10px] text-slate-500 font-mono">ID: THMS-2026-000001 • Class 8-A (Roll 08-A-001)</p>
+              <p className="text-xs font-bold text-slate-900">
+                {student ? `Student Portal — ${student.fullName}` : 'Student Portal'}
+              </p>
+              <p className="text-[10px] text-slate-500 font-mono">
+                {student
+                  ? `ID: ${student.studentId} • ${student.class?.name || 'Class'} (${student.section?.name || 'Section'}, Roll ${student.rollNo})`
+                  : 'Official Enrolled Student'}
+              </p>
             </div>
           </div>
 

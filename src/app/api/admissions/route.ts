@@ -12,29 +12,37 @@ export async function GET(req: NextRequest) {
     const classId = searchParams.get('classId');
     const query = searchParams.get('q');
 
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const skip = (page - 1) * limit;
+
     const where: any = {};
     if (status && status !== 'ALL') where.status = status;
     if (classId) where.applyingClassId = classId;
     if (query) {
       where.OR = [
-        { applicationNo: { contains: query } },
-        { fullName: { contains: query } },
-        { fatherName: { contains: query } },
+        { applicationNo: { contains: query, mode: 'insensitive' } },
+        { fullName: { contains: query, mode: 'insensitive' } },
+        { fatherName: { contains: query, mode: 'insensitive' } },
         { fatherPhone: { contains: query } },
       ];
     }
 
-    const applications = await prisma.admissionApplication.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        session: true,
-      },
-    });
-
-    const classes = await prisma.class.findMany({
-      orderBy: { orderIndex: 'asc' },
-    });
+    const [total, applications, classes] = await Promise.all([
+      prisma.admissionApplication.count({ where }),
+      prisma.admissionApplication.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          session: true,
+        },
+      }),
+      prisma.class.findMany({
+        orderBy: { orderIndex: 'asc' },
+      }),
+    ]);
 
     const classMap: Record<string, string> = {};
     classes.forEach((c) => {
@@ -46,7 +54,16 @@ export async function GET(req: NextRequest) {
       applyingClassName: classMap[app.applyingClassId] || 'Class',
     }));
 
-    return NextResponse.json({ success: true, applications: enhanced });
+    return NextResponse.json({
+      success: true,
+      applications: enhanced,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to fetch admission applications' }, { status: 500 });

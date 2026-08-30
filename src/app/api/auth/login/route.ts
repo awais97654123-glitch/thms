@@ -11,11 +11,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
     }
 
-    const user = await prisma.user.findFirst({
+    const searchInput = username.trim();
+
+    // 1. Direct search by username or email
+    let user = await prisma.user.findFirst({
       where: {
         OR: [
-          { username: username.trim() },
-          { email: username.trim() },
+          { username: { equals: searchInput, mode: 'insensitive' } },
+          { email: { equals: searchInput, mode: 'insensitive' } },
         ],
       },
       include: {
@@ -25,6 +28,51 @@ export async function POST(req: NextRequest) {
         staff: true,
       },
     });
+
+    // 2. Fallback: Search by Student ID or Admission No
+    if (!user) {
+      const studentMatch = await prisma.student.findFirst({
+        where: {
+          OR: [
+            { studentId: { equals: searchInput, mode: 'insensitive' } },
+            { admissionNo: { equals: searchInput, mode: 'insensitive' } },
+          ],
+        },
+        include: { user: { include: { student: true, teacher: true, parent: true, staff: true } } },
+      });
+      if (studentMatch?.user) {
+        user = studentMatch.user;
+      }
+    }
+
+    // 3. Fallback: Search by Teacher Employee ID
+    if (!user) {
+      const teacherMatch = await prisma.teacher.findFirst({
+        where: { employeeId: { equals: searchInput, mode: 'insensitive' } },
+        include: { user: { include: { student: true, teacher: true, parent: true, staff: true } } },
+      });
+      if (teacherMatch?.user) {
+        user = teacherMatch.user;
+      }
+    }
+
+    // 4. Fallback: Search by Parent Phone or CNIC
+    if (!user) {
+      const cleanPhone = searchInput.replace(/\D/g, '');
+      const parentMatch = await prisma.parent.findFirst({
+        where: {
+          OR: [
+            { fatherPhone: { contains: searchInput } },
+            ...(cleanPhone.length >= 7 ? [{ fatherPhone: { contains: cleanPhone.slice(-7) } }] : []),
+            { fatherCnic: { equals: searchInput } },
+          ],
+        },
+        include: { user: { include: { student: true, teacher: true, parent: true, staff: true } } },
+      });
+      if (parentMatch?.user) {
+        user = parentMatch.user;
+      }
+    }
 
     if (!user) {
       return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });

@@ -22,6 +22,18 @@ import Header from '@/components/common/Header';
 export default function TeacherLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [teacher, setTeacher] = React.useState<any | null>(null);
+
+  React.useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.teacher) {
+          setTeacher(data.user.teacher);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const isMainDashboard = pathname === '/teacher';
 
@@ -83,14 +95,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
         </button>
       </div>
 
-      <Header
-        user={{
-          username: 'teacher.farooq',
-          role: 'TEACHER',
-          fullName: 'Engr. Farooq Ahmad',
-          email: 'farooq.ahmad@hayatabadmodel.edu.pk',
-        }}
-      />
+      <Header />
 
       {/* Teacher Navigation Sub-bar */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-2.5">
@@ -100,8 +105,12 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               <UserCheck className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-900">Faculty Portal — Engr. Farooq Ahmad</p>
-              <p className="text-[10px] text-slate-500">Head of Mathematics & Class 8 Incharge</p>
+              <p className="text-xs font-bold text-slate-900">
+                {teacher ? `Faculty Portal — ${teacher.fullName}` : 'Teacher Portal'}
+              </p>
+              <p className="text-[10px] text-slate-500">
+                {teacher ? `${teacher.designation} (${teacher.employeeId})` : 'Faculty Member'}
+              </p>
             </div>
           </div>
 

@@ -11,40 +11,58 @@ export async function GET(req: NextRequest) {
     const query = searchParams.get('q');
     const status = searchParams.get('status');
 
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const skip = (page - 1) * limit;
+
     const where: any = {};
     if (classId) where.classId = classId;
     if (sectionId) where.sectionId = sectionId;
     if (status && status !== 'ALL') where.status = status;
     if (query) {
       where.OR = [
-        { studentId: { contains: query } },
-        { admissionNo: { contains: query } },
-        { rollNo: { contains: query } },
-        { fullName: { contains: query } },
-        { parent: { fatherName: { contains: query } } },
+        { studentId: { contains: query, mode: 'insensitive' } },
+        { admissionNo: { contains: query, mode: 'insensitive' } },
+        { rollNo: { contains: query, mode: 'insensitive' } },
+        { fullName: { contains: query, mode: 'insensitive' } },
+        { parent: { fatherName: { contains: query, mode: 'insensitive' } } },
         { parent: { fatherPhone: { contains: query } } },
       ];
     }
 
-    const students = await prisma.student.findMany({
-      where,
-      orderBy: { rollNo: 'asc' },
-      include: {
-        class: true,
-        section: true,
-        session: true,
-        parent: true,
-        _count: {
-          select: {
-            attendances: true,
-            invoices: true,
-            marks: true,
+    const [total, students] = await Promise.all([
+      prisma.student.count({ where }),
+      prisma.student.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { rollNo: 'asc' },
+        include: {
+          class: true,
+          section: true,
+          session: true,
+          parent: true,
+          _count: {
+            select: {
+              attendances: true,
+              invoices: true,
+              marks: true,
+            },
           },
         },
+      }),
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      students,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
     });
-
-    return NextResponse.json({ success: true, students });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 });

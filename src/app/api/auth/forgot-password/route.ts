@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { SignJWT } from 'jose';
-import { sendEmail } from '@/lib/email/provider';
+import { emailProvider } from '@/lib/email/provider';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'the_hayatabad_model_school_super_secret_jwt_key_2026_erp'
@@ -62,8 +62,9 @@ export async function POST(req: NextRequest) {
 
     if (targetEmail && targetEmail.includes('@')) {
       try {
-        await sendEmail({
+        await emailProvider.sendEmail({
           to: targetEmail,
+          toName: user.student?.fullName || user.teacher?.fullName || user.parent?.fatherName || user.username,
           subject: 'Password Reset Request — The Hayatabad Model School',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
