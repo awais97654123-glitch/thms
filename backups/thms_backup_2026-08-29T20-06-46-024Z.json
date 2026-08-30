@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "schoolName": "The Hayatabad Model School",
+    "version": "1.0.0",
+    "createdAt": "2026-08-29T20:06:46.121Z",
+    "totalEntities": {
+      "users": 1,
+      "students": 0,
+      "teachers": 0,
+      "admissions": 0,
+      "feeInvoices": 0,
+      "payments": 0,
+      "attendance": 0
+    }
+  },
+  "data": {
+    "schoolSettings": [],
+    "academicSessions": [],
+    "classes": [],
+    "sections": [],
+    "subjects": [],
+    "users": [
+      {
+        "id": "04600484-8290-43b3-877a-a5f53cc33791",
+        "username": "admin",
+        "email": "admin@hayatabadmodel.edu.pk",
+        "passwordHash": "$2a$10$H2f2PyE57XGIbmm3z1Kdpeu3NSTGZc7eQe5gYngpOliYijXB93EHK",
+        "role": "SUPER_ADMIN",
+        "permissions": null,
+        "status": "ACTIVE",
+        "isFirstLogin": false,
+        "avatar": null,
+        "lastLoginAt": null,
+        "createdAt": "2026-08-29T19:54:31.711Z",
+        "updatedAt": "2026-08-29T19:54:31.711Z"
+      }
+    ],
+    "teachers": [],
+    "students": [],
+    "parents": [],
+    "staff": [],
+    "admissions": [],
+    "feeStructures": [],
+    "feeInvoices": [],
+    "feeItems": [],
+    "payments": [],
+    "attendance": [],
+    "exams": [],
+    "examSchedules": [],
+    "marks": [],
+    "gradeRules": [
+      {
+        "id": "245c31e4-0a4e-48f1-aa93-4faad759983e",
+        "grade": "A+",
+        "minPercentage": 90,
+        "maxPercentage": 100,
+        "gpa": 4,
+        "remarks": "Outstanding / Exceptional",
+        "orderIndex": 1
+      },
+      {
+        "id": "86156564-478f-4a36-9700-38e2d5428f0a",
+        "grade": "A",
+        "minPercentage": 80,
+        "maxPercentage": 89.99,
+        "gpa": 3.7,
+        "remarks": "Excellent",
+        "orderIndex": 2
+      },
+      {
+        "id": "1b99da11-017b-4407-9125-84677f49854d",
+        "grade": "B+",
+        "minPercentage": 70,
+        "maxPercentage": 79.99,
+        "gpa": 3.3,
+        "remarks": "Very Good",
+        "orderIndex": 3
+      },
+      {
+        "id": "a2dbb2ae-61aa-447a-9694-9ddd05dd1ef8",
+        "grade": "B",
+        "minPercentage": 60,
+        "maxPercentage": 69.99,
+        "gpa": 3,
+        "remarks": "Good",
+        "orderIndex": 4
+      },
+      {
+        "id": "8c5bd0e2-aabc-4926-b36b-090ad1205554",
+        "grade": "C",
+        "minPercentage": 50,
+        "maxPercentage": 59.99,
+        "gpa": 2,
+        "remarks": "Satisfactory / Average",
+        "orderIndex": 5
+      },
+      {
+        "id": "205e5513-19a6-433a-992a-40881a2b7e94",
+        "grade": "D",
+        "minPercentage": 33,
+        "maxPercentage": 49.99,
+        "gpa": 1,
+        "remarks": "Pass / Below Average",
+        "orderIndex": 6
+      },
+      {
+        "id": "c1a2b5fc-492b-4294-a23b-f880f1b13f76",
+        "grade": "F",
+        "minPercentage": 0,
+        "maxPercentage": 32.99,
+        "gpa": 0,
+        "remarks": "Fail",
+        "orderIndex": 7
+      }
+    ],
+    "homework": [],
+    "homeworkSubmissions": [],
+    "announcements": [],
+    "auditLogs": [],
+    "emailTemplates": [],
+    "emailJobs": [],
+    "emailLogs": []
+  }
+}

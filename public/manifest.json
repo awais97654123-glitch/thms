@@ -1,0 +1,47 @@
+{
+  "name": "The Hayatabad Model School ERP",
+  "short_name": "Hayatabad School",
+  "description": "Official Full-Stack School Management ERP & Mobile Portal for The Hayatabad Model School",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity", "management"],
+  "shortcuts": [
+    {
+      "name": "Teacher Portal",
+      "url": "/teacher",
+      "description": "Direct access for Faculty members"
+    },
+    {
+      "name": "Student Portal",
+      "url": "/student",
+      "description": "Direct access for Students"
+    },
+    {
+      "name": "Parent Portal",
+      "url": "/parent",
+      "description": "Direct access for Parents & Guardians"
+    },
+    {
+      "name": "Online Admissions",
+      "url": "/admissions/apply",
+      "description": "Apply for Admission 2026-2027"
+    }
+  ]
+}

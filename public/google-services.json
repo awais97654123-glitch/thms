@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618494952410",
+    "project_id": "thms-8273f",
+    "storage_bucket": "thms-8273f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618494952410:android:9a3ed6d64bc0bd1e22f6e3",
+        "android_client_info": {
+          "package_name": "Thms.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEB34PM2VYcyxtK3nWEzco7PBKbY1llbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
