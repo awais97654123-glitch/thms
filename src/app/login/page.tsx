@@ -7,13 +7,14 @@ import {
   User, 
   ArrowRight, 
   ShieldAlert, 
-  ShieldCheck,
-  Sparkles,
-  GraduationCap,
-  Users,
-  Building2,
-  CheckCircle2
+  ShieldCheck, 
+  Sparkles, 
+  GraduationCap, 
+  Users, 
+  Building2, 
+  CheckCircle2 
 } from 'lucide-react';
+import PortalCircularLoader from '@/components/common/PortalCircularLoader';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -42,10 +43,10 @@ export default function LoginPage() {
         }
       } else {
         setError(data.error || 'Invalid username or password. Please check your credentials.');
+        setLoading(false);
       }
     } catch {
       setError('A network error occurred during authentication. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -242,36 +243,41 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-xs shadow-xl shadow-orange-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] hover:shadow-orange-500/35 disabled:opacity-50 cursor-pointer"
                 >
-                  {loading ? (
-                    <span className="animate-spin inline-block">⏳ Authenticating...</span>
-                  ) : (
-                    <>
-                      <span>Sign In to Dashboard</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                  <span>Sign In to Portal</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
 
-              <div className="pt-4 border-t border-slate-100 text-center">
-                <p className="text-[11px] text-slate-500">
-                  Looking for admission?{' '}
-                  <Link href="/admissions/apply" className="font-bold text-orange-600 hover:underline">
-                    Submit Online Admission Form
-                  </Link>
-                </p>
+              <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-500">
+                <span>Looking for new admission? </span>
+                <Link
+                  href="/admissions/apply"
+                  className="font-bold text-orange-600 hover:text-orange-700 inline-flex items-center gap-1"
+                >
+                  <span>Apply Online ➔</span>
+                </Link>
               </div>
             </div>
           </div>
+
         </div>
       </main>
 
-      {/* Footer Strip */}
-      <footer className="p-4 text-center text-slate-400 text-xs z-10 border-t border-slate-200/60 bg-white/60 backdrop-blur-sm">
-        The Hayatabad Model School, Peshawar • Session 2026-2027 • Official ERP Security
+      {/* Footer */}
+      <footer className="p-4 sm:p-6 text-center text-xs text-slate-400 border-t border-slate-100">
+        © 2026 The Hayatabad Model School, Peshawar. All rights reserved. Encrypted Portal Network.
       </footer>
+
+      {/* DEDICATED FULL-SCREEN CENTERED PROGRESSIVE CIRCULAR LOADER */}
+      {loading && (
+        <PortalCircularLoader
+          isFullScreen
+          message="Authenticating Credentials..."
+          subMessage="Verifying role permissions with PostgreSQL"
+        />
+      )}
     </div>
   );
 }
