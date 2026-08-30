@@ -4,6 +4,8 @@ import { generateStudentId, generateAdmissionNumber, generateRollNumber, generat
 import { hashPassword, getCurrentUser } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
@@ -42,15 +44,18 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: 'Unauthorized. Admin permission required to enroll students.' }, { status: 403 });
     }
 
+    // Pre-generate IDs & hashes outside interactive transaction for instant execution
+    const studentId = await generateStudentId(2026);
+    const admissionNo = await generateAdmissionNumber(2026);
+    const rollNo = body.customRollNo || (await generateRollNumber(application.applyingClassId, sectionId));
+    const qrToken = generateQrToken(studentId);
+    const invoiceNo = await generateInvoiceNumber(2026);
+    const tempParentPassword = await hashPassword('Parent@123');
+    const tempStudentPassword = await hashPassword('Student@123');
+
     // Execute the complete enrollment pipeline atomically
     const enrollmentResult = await prisma.$transaction(async (tx) => {
-      // 1. Generate IDs & Roll No
-      const studentId = await generateStudentId(2026);
-      const admissionNo = await generateAdmissionNumber(2026);
-      const rollNo = body.customRollNo || (await generateRollNumber(application.applyingClassId, sectionId));
-      const qrToken = generateQrToken(studentId);
-
-      // 2. Check or create Parent
+      // 1. Check or create Parent
       let parent = await tx.parent.findFirst({
         where: {
           OR: [
@@ -63,8 +68,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       let parentUsername = '';
 
       if (!parent) {
-        // Create user account for Parent
-        const tempParentPassword = await hashPassword('Parent@123');
         parentUsername = `parent.${application.fatherPhone.replace(/\D/g, '').slice(-7)}`;
         
         // Ensure username is unique
@@ -112,8 +115,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         parentUsername = pUser?.username || parent.fatherPhone;
       }
 
-      // 3. Create Student Portal User Account
-      const tempStudentPassword = await hashPassword('Student@123');
+      // 2. Create Student Portal User Account
       const studentUser = await tx.user.create({
         data: {
           username: studentId,
@@ -125,7 +127,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         },
       });
 
-      // 4. Create Student Record
+      // 3. Create Student Record
       const student = await tx.student.create({
         data: {
           studentId,
@@ -160,7 +162,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         },
       });
 
-      // 5. Generate Initial Admission Fee Invoice
+      // 4. Generate Initial Admission Fee Invoice
       const feeStructure = await tx.feeStructure.findFirst({
         where: { classId: application.applyingClassId },
       });
@@ -168,7 +170,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       const admissionFee = feeStructure?.admissionFee || 15000;
       const tuitionFee = feeStructure?.tuitionFee || 8500;
       const totalInitialFee = admissionFee + tuitionFee;
-      const invoiceNo = await generateInvoiceNumber(2026);
 
       const invoice = await tx.feeInvoice.create({
         data: {
@@ -194,7 +195,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         },
       });
 
-      // 6. Update Application status
+      // 5. Update Application status
       await tx.admissionApplication.update({
         where: { id: application.id },
         data: {
@@ -208,7 +209,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         invoice,
         parentUsername,
       };
-    }, { timeout: 20000 });
+    }, { timeout: 60000, maxWait: 30000 });
 
     // 7. Audit Log outside transaction
     await logAuditEvent({

@@ -5,6 +5,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
 import { notificationDispatcher } from '@/lib/email/service';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

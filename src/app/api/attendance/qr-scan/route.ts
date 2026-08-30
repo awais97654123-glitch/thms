@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { format } from 'date-fns';
 import { logAuditEvent } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { qrToken, deviceId, method = 'QR' } = await req.json();

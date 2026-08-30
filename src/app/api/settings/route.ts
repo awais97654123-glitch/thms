@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const setting = await prisma.schoolSetting.findFirst();

@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { createSessionToken, COOKIE_NAME } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { username } = await req.json();
