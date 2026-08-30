@@ -38,6 +38,40 @@ import {
 } from 'lucide-react';
 import Header from '@/components/common/Header';
 
+// Smooth Scroll Reveal Wrapper using IntersectionObserver
+function RevealOnScroll({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`reveal-init ${isVisible ? 'reveal-visible' : ''} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [stats, setStats] = useState({
     totalStudents: 1250,
@@ -239,45 +273,45 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9] text-slate-900 font-sans selection:bg-orange-500 selection:text-white flex flex-col">
-      {/* Sticky Header with prominent logo, clean nav links, and ERP Login */}
+      {/* Sticky Header */}
       <Header />
 
-      {/* 1. HERO SECTION — Image-Rich, Large Typography, Staggered Text Reveal & Subtle Mouse Glow */}
+      {/* 1. HERO SECTION — Vivid, Bright & Clear Campus Image Background with Staggered Animations */}
       <section 
         onMouseMove={handleMouseMove}
-        className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-36 bg-slate-950 text-white"
+        className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-36 bg-slate-900 text-white"
       >
-        {/* Campus Background Image with Gradient Overlay */}
+        {/* Crisp, Bright, High-Clarity Campus Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-25 scale-105 transition-transform duration-1000 ease-out"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&auto=format&fit=crop&q=80')` }}
+          className="absolute inset-0 bg-cover bg-center opacity-70 scale-105 transition-transform duration-1000 ease-out"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&auto=format&fit=crop&q=85')` }}
         ></div>
 
-        {/* Ambient Dark Gradient & Dynamic Mouse Glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/80 to-slate-950"></div>
+        {/* Luminous Soft Gradient Overlay for Crystal Clear Text Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-900/40 to-slate-950/80"></div>
         <div 
-          className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-500/20 via-amber-500/15 to-transparent blur-3xl pointer-events-none transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
+          className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-500/25 via-amber-500/20 to-transparent blur-3xl pointer-events-none transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
           style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
         ></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-center z-10">
           
           {/* Animated School Badge */}
-          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md text-orange-400 text-xs font-black border border-orange-500/30 shadow-lg animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-slate-900/80 backdrop-blur-md text-orange-400 text-xs font-black border border-orange-500/40 shadow-xl animate-in fade-in slide-in-from-top-4 duration-700">
             <Sparkles className="w-4 h-4 text-orange-400 animate-spin" />
             <span className="tracking-widest uppercase">The Hayatabad Model School • Phase 3, Peshawar</span>
           </div>
 
-          {/* Staggered Animated Headline */}
+          {/* Staggered Animated Headline with Glowing Shadow */}
           <div className="space-y-3 max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
               Shaping Bright Minds.
-              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent drop-shadow-md">
                 Building Strong Futures.
               </span>
             </h1>
 
-            <p className="text-base sm:text-xl text-slate-300 font-medium leading-relaxed max-w-3xl mx-auto pt-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+            <p className="text-base sm:text-xl text-slate-100 font-medium leading-relaxed max-w-3xl mx-auto pt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
               Delivering 28+ years of premier academic excellence, character building, state-of-the-art AI laboratories, and proven BISE Peshawar Board position holders from <strong className="text-white font-bold">Playgroup to Class 10 (Matric)</strong>.
             </p>
           </div>
@@ -294,7 +328,7 @@ export default function HomePage() {
 
             <a
               href="#about"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black text-sm border border-white/20 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 hover:bg-slate-900 text-white font-black text-sm border border-white/30 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
             >
               <span>Explore Our School</span>
               <ChevronDown className="w-4 h-4 text-orange-400" />
@@ -302,7 +336,7 @@ export default function HomePage() {
 
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-black text-sm border border-slate-700 flex items-center justify-center gap-2 transition-all hover:scale-105"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-950/90 hover:bg-slate-900 text-slate-100 font-black text-sm border border-slate-700 flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
             >
               <KeyRound className="w-4 h-4 text-orange-400" />
               <span>Login to ERP</span>
@@ -313,7 +347,7 @@ export default function HomePage() {
       </section>
 
       {/* 2. REAL ANIMATED STATISTICS SECTION */}
-      <section className="relative -mt-12 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <RevealOnScroll className="relative -mt-12 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/95 backdrop-blur-2xl rounded-3xl border border-orange-500/15 shadow-2xl p-8 sm:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
           
           <div className="space-y-1">
@@ -359,13 +393,13 @@ export default function HomePage() {
           </div>
 
         </div>
-      </section>
+      </RevealOnScroll>
 
       {/* 3. "WHY CHOOSE THE HAYATABAD MODEL SCHOOL?" (8 Core Pillars) */}
       <section className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               The THMS Standard
             </span>
@@ -375,28 +409,29 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Combining 28 years of pedagogical tradition with 21st-century technological tools and character development.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyChooseUs.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div
-                  key={idx}
-                  className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-300 space-y-4 group hover:-translate-y-1"
-                >
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6" />
+                <RevealOnScroll key={idx} delay={idx * 75}>
+                  <div className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-300 space-y-4 group hover:-translate-y-1 h-full flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="font-black text-base text-slate-900 leading-snug group-hover:text-orange-600 transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="font-black text-base text-slate-900 leading-snug group-hover:text-orange-600 transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
+                </RevealOnScroll>
               );
             })}
           </div>
@@ -409,7 +444,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left: Large High-Quality Campus Visual */}
-          <div className="lg:col-span-6 relative">
+          <RevealOnScroll className="lg:col-span-6 relative" delay={100}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 group">
               <img
                 src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&auto=format&fit=crop&q=80"
@@ -422,10 +457,10 @@ export default function HomePage() {
                 <h4 className="text-lg font-black">28+ Years of Academic Excellence in Peshawar</h4>
               </div>
             </div>
-          </div>
+          </RevealOnScroll>
 
           {/* Right: School Mission & Narrative */}
-          <div className="lg:col-span-6 space-y-6">
+          <RevealOnScroll className="lg:col-span-6 space-y-6" delay={200}>
             <div className="space-y-2">
               <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
                 About The School
@@ -466,7 +501,7 @@ export default function HomePage() {
                 <ArrowRight className="w-3.5 h-3.5 text-orange-400" />
               </a>
             </div>
-          </div>
+          </RevealOnScroll>
 
         </div>
       </section>
@@ -475,7 +510,7 @@ export default function HomePage() {
       <section id="campus" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               Campus Infrastructure
             </span>
@@ -485,43 +520,44 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Purpose-built facilities engineered to inspire, experiment, discover, and excel in both academics and sports.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="space-y-12">
             {campusFacilities.map((fac, idx) => {
               const isEven = idx % 2 === 0;
               return (
-                <div
-                  key={idx}
-                  className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all ${
-                    isEven ? '' : 'lg:flex-row-reverse'
-                  }`}
-                >
-                  {/* Visual */}
-                  <div className={`lg:col-span-6 overflow-hidden rounded-2xl ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
-                    <img
-                      src={fac.image}
-                      alt={fac.title}
-                      className="w-full h-72 sm:h-80 object-cover hover:scale-105 transition-transform duration-500 rounded-2xl"
-                    />
-                  </div>
+                <RevealOnScroll key={idx} delay={idx * 100}>
+                  <div
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all ${
+                      isEven ? '' : 'lg:flex-row-reverse'
+                    }`}
+                  >
+                    {/* Visual */}
+                    <div className={`lg:col-span-6 overflow-hidden rounded-2xl ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
+                      <img
+                        src={fac.image}
+                        alt={fac.title}
+                        className="w-full h-72 sm:h-80 object-cover hover:scale-105 transition-transform duration-500 rounded-2xl"
+                      />
+                    </div>
 
-                  {/* Content */}
-                  <div className={`lg:col-span-6 space-y-4 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-                      {fac.tag}
-                    </span>
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-                      {fac.title}
-                    </h3>
-                    <p className="text-xs font-bold text-orange-600">
-                      {fac.subtitle}
-                    </p>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                      {fac.desc}
-                    </p>
+                    {/* Content */}
+                    <div className={`lg:col-span-6 space-y-4 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+                        {fac.tag}
+                      </span>
+                      <h3 className="text-2xl font-black text-slate-900 tracking-tight">
+                        {fac.title}
+                      </h3>
+                      <p className="text-xs font-bold text-orange-600">
+                        {fac.subtitle}
+                      </p>
+                      <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                        {fac.desc}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </RevealOnScroll>
               );
             })}
           </div>
@@ -532,13 +568,13 @@ export default function HomePage() {
       {/* 6. DEDICATED LIBRARY SECTION ("Knowledge Lives Here") */}
       <section className="py-20 bg-slate-950 text-white relative overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center opacity-25"
           style={{ backgroundImage: `url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1600&auto=format&fit=crop&q=80')` }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-transparent"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-7 space-y-6">
+          <RevealOnScroll className="lg:col-span-7 space-y-6" delay={100}>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 text-orange-400 text-xs font-black border border-orange-400/30">
               <BookOpen className="w-3.5 h-3.5" />
               <span>Central School Library</span>
@@ -576,9 +612,9 @@ export default function HomePage() {
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
-          </div>
+          </RevealOnScroll>
 
-          <div className="lg:col-span-5">
+          <RevealOnScroll className="lg:col-span-5" delay={200}>
             <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
               <img
                 src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80"
@@ -586,7 +622,7 @@ export default function HomePage() {
                 className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
               />
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </section>
 
@@ -594,7 +630,7 @@ export default function HomePage() {
       <section className="py-20 lg:py-28 bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               Moral Foundation
             </span>
@@ -604,32 +640,38 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Education without character is incomplete. We emphasize core virtues that shape honorable and responsible citizens.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
-              <span className="text-3xl">🤝</span>
-              <h3 className="font-black text-lg text-slate-900">Mutual Respect & Kindness</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Fostering an inclusive environment where students respect faculty, fellow classmates, school property, and diversity of thought.
-              </p>
-            </div>
+            <RevealOnScroll delay={100}>
+              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                <span className="text-3xl">🤝</span>
+                <h3 className="font-black text-lg text-slate-900">Mutual Respect & Kindness</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  Fostering an inclusive environment where students respect faculty, fellow classmates, school property, and diversity of thought.
+                </p>
+              </div>
+            </RevealOnScroll>
 
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
-              <span className="text-3xl">⏰</span>
-              <h3 className="font-black text-lg text-slate-900">Punctuality & Habitual Order</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Instilling morning discipline, timely homework submission, regular attendance, and clean personal presentation.
-              </p>
-            </div>
+            <RevealOnScroll delay={200}>
+              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                <span className="text-3xl">⏰</span>
+                <h3 className="font-black text-lg text-slate-900">Punctuality & Habitual Order</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  Instilling morning discipline, timely homework submission, regular attendance, and clean personal presentation.
+                </p>
+              </div>
+            </RevealOnScroll>
 
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
-              <span className="text-3xl">📖</span>
-              <h3 className="font-black text-lg text-slate-900">Academic Integrity</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Encouraging original thinking, honest examination conduct, intellectual curiosity, and self-driven problem solving.
-              </p>
-            </div>
+            <RevealOnScroll delay={300}>
+              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                <span className="text-3xl">📖</span>
+                <h3 className="font-black text-lg text-slate-900">Academic Integrity</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  Encouraging original thinking, honest examination conduct, intellectual curiosity, and self-driven problem solving.
+                </p>
+              </div>
+            </RevealOnScroll>
           </div>
 
         </div>
@@ -639,7 +681,7 @@ export default function HomePage() {
       <section id="academics" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               Academic Wings
             </span>
@@ -649,46 +691,45 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Four progressive academic stages tailored to each phase of your child&apos;s intellectual and emotional maturity.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {learningStages.map((st, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={st.image}
-                    alt={st.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 text-white font-mono text-xs font-black">
-                    {st.stage}
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">{st.age}</span>
-                    <h3 className="font-black text-base text-slate-900 leading-snug">{st.name}</h3>
-                    <p className="text-xs font-bold text-slate-500">{st.grades}</p>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium pt-1">
-                      {st.desc}
-                    </p>
+              <RevealOnScroll key={idx} delay={idx * 100}>
+                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1 h-full">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={st.image}
+                      alt={st.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 text-white font-mono text-xs font-black">
+                      {st.stage}
+                    </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100">
-                    <Link
-                      href="/admissions/apply"
-                      className="inline-flex items-center gap-1.5 text-xs font-black text-orange-600 hover:text-orange-700"
-                    >
-                      <span>Enroll in this Wing</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
+                  <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">{st.age}</span>
+                      <h3 className="font-black text-base text-slate-900 leading-snug">{st.name}</h3>
+                      <p className="text-xs font-bold text-slate-500">{st.grades}</p>
+                      <p className="text-xs text-slate-600 leading-relaxed font-medium pt-1">
+                        {st.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-slate-100">
+                      <Link
+                        href="/admissions/apply"
+                        className="inline-flex items-center gap-1.5 text-xs font-black text-orange-600 hover:text-orange-700"
+                      >
+                        <span>Enroll in this Wing</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </RevealOnScroll>
             ))}
           </div>
 
@@ -699,7 +740,7 @@ export default function HomePage() {
       <section id="faculty" className="py-20 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               Expert Educators
             </span>
@@ -709,50 +750,47 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Passionate subject educators with proven teaching methodologies and dedication to student success.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {faculty.length > 0 ? (
               faculty.map((t, idx) => (
-                <div
-                  key={t.id || idx}
-                  className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group"
-                >
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform overflow-hidden">
-                    {t.photoUrl ? (
-                      <img src={t.photoUrl} alt={t.fullName} className="w-full h-full object-cover" />
-                    ) : (
-                      t.fullName?.charAt(0).toUpperCase() || 'T'
-                    )}
+                <RevealOnScroll key={t.id || idx} delay={idx * 75}>
+                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group h-full">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform overflow-hidden">
+                      {t.photoUrl ? (
+                        <img src={t.photoUrl} alt={t.fullName} className="w-full h-full object-cover" />
+                      ) : (
+                        t.fullName?.charAt(0).toUpperCase() || 'T'
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-black text-sm text-slate-900">{t.fullName}</h3>
+                      <p className="text-xs font-bold text-orange-600">{t.designation || 'Senior Faculty'}</p>
+                      <p className="text-[11px] text-slate-500 font-medium">{t.qualification || 'M.Sc / M.Ed'}</p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="font-black text-sm text-slate-900">{t.fullName}</h3>
-                    <p className="text-xs font-bold text-orange-600">{t.designation || 'Senior Faculty'}</p>
-                    <p className="text-[11px] text-slate-500 font-medium">{t.qualification || 'M.Sc / M.Ed'}</p>
-                  </div>
-                </div>
+                </RevealOnScroll>
               ))
             ) : (
-              // Verified Default Faculty Specialists
               [
                 { name: 'Engr. Farooq Ahmad', role: 'Head of Mathematics & STEM', qual: 'M.Sc Mathematics • 12 Yrs Exp' },
                 { name: 'Dr. Ayesha Malik', role: 'Head of Biology & Sciences', qual: 'Ph.D Biology • 10 Yrs Exp' },
                 { name: 'Prof. Tariq Mahmood', role: 'Head of Computer & AI', qual: 'MS Computer Science • 9 Yrs Exp' },
                 { name: 'Ms. Sadia Khan', role: 'Senior English Department', qual: 'M.A English Literature • 8 Yrs Exp' },
               ].map((f, idx) => (
-                <div
-                  key={idx}
-                  className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group"
-                >
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform">
-                    {f.name.charAt(0)}
+                <RevealOnScroll key={idx} delay={idx * 75}>
+                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group h-full">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform">
+                      {f.name.charAt(0)}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-black text-sm text-slate-900">{f.name}</h3>
+                      <p className="text-xs font-bold text-orange-600">{f.role}</p>
+                      <p className="text-[11px] text-slate-500 font-medium">{f.qual}</p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="font-black text-sm text-slate-900">{f.name}</h3>
-                    <p className="text-xs font-bold text-orange-600">{f.role}</p>
-                    <p className="text-[11px] text-slate-500 font-medium">{f.qual}</p>
-                  </div>
-                </div>
+                </RevealOnScroll>
               ))
             )}
           </div>
@@ -764,7 +802,7 @@ export default function HomePage() {
       <section className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
               Campus Moments
             </span>
@@ -774,24 +812,25 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               A glimpse into daily classroom discussions, laboratory discoveries, sporting tournaments, and campus celebrations.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {galleryImages.map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() => setActiveLightboxImage(img.src)}
-                className="relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group h-64"
-              >
-                <img
-                  src={img.src}
-                  alt={img.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                  <span className="text-white font-black text-xs tracking-wide">{img.title}</span>
+              <RevealOnScroll key={idx} delay={idx * 75}>
+                <div
+                  onClick={() => setActiveLightboxImage(img.src)}
+                  className="relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group h-64"
+                >
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                    <span className="text-white font-black text-xs tracking-wide">{img.title}</span>
+                  </div>
                 </div>
-              </div>
+              </RevealOnScroll>
             ))}
           </div>
 
@@ -824,7 +863,7 @@ export default function HomePage() {
       <section id="admissions" className="py-20 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-y border-orange-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Admissions 2026-2027
             </span>
@@ -834,7 +873,7 @@ export default function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
               Simple 5-step admission roadmap from initial online application to enrollment and smart pass issuance.
             </p>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
@@ -844,15 +883,17 @@ export default function HomePage() {
               { step: '04', title: 'Admission Decision', desc: 'Receive official confirmation letter and 3-copy fee deposit voucher.' },
               { step: '05', title: 'Smart Pass & Start', desc: 'Receive smart QR ID card, uniform kit guidelines, and welcome orientation.' },
             ].map((st, idx) => (
-              <div key={idx} className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-orange-500/15 shadow-sm space-y-3">
-                <span className="text-3xl font-black text-orange-500/40 block font-mono">{st.step}</span>
-                <h3 className="font-black text-sm text-slate-900">{st.title}</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">{st.desc}</p>
-              </div>
+              <RevealOnScroll key={idx} delay={idx * 75}>
+                <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-orange-500/15 shadow-sm space-y-3 h-full">
+                  <span className="text-3xl font-black text-orange-500/40 block font-mono">{st.step}</span>
+                  <h3 className="font-black text-sm text-slate-900">{st.title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed font-medium">{st.desc}</p>
+                </div>
+              </RevealOnScroll>
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <RevealOnScroll className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4" delay={200}>
             <Link
               href="/admissions/apply"
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/30 flex items-center justify-center gap-3 transition-all hover:scale-105"
@@ -868,7 +909,7 @@ export default function HomePage() {
               <Search className="w-4 h-4 text-orange-600" />
               <span>Track Existing Application</span>
             </Link>
-          </div>
+          </RevealOnScroll>
 
         </div>
       </section>
@@ -877,7 +918,7 @@ export default function HomePage() {
       <section id="news" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-6">
+          <RevealOnScroll className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-6">
             <div className="space-y-2">
               <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
                 Notice Board
@@ -893,18 +934,20 @@ export default function HomePage() {
               <span>View All via Portal</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-          </div>
+          </RevealOnScroll>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {announcements.length > 0 ? (
               announcements.map((a, idx) => (
-                <div key={a.id || idx} className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-1 rounded-full">
-                    {a.type || 'Academic'}
-                  </span>
-                  <h3 className="font-black text-sm text-slate-900 leading-snug">{a.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">{a.content}</p>
-                </div>
+                <RevealOnScroll key={a.id || idx} delay={idx * 75}>
+                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-1 rounded-full">
+                      {a.type || 'Academic'}
+                    </span>
+                    <h3 className="font-black text-sm text-slate-900 leading-snug">{a.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">{a.content}</p>
+                  </div>
+                </RevealOnScroll>
               ))
             ) : (
               [
@@ -913,16 +956,18 @@ export default function HomePage() {
                 { title: '100% Merit Scholarships', type: 'Scholarship', date: 'Active', desc: 'Applications invited for merit positions and sibling tuition fee discount.' },
                 { title: 'Smart QR ID Rollout', type: 'Security', date: 'Active', desc: 'Encrypted smart cards active for instant real-time parent gate notifications.' },
               ].map((n, idx) => (
-                <div key={idx} className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-0.5 rounded-full">
-                      {n.type}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400">{n.date}</span>
+                <RevealOnScroll key={idx} delay={idx * 75}>
+                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-0.5 rounded-full">
+                        {n.type}
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">{n.date}</span>
+                    </div>
+                    <h3 className="font-black text-sm text-slate-900 leading-snug">{n.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">{n.desc}</p>
                   </div>
-                  <h3 className="font-black text-sm text-slate-900 leading-snug">{n.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">{n.desc}</p>
-                </div>
+                </RevealOnScroll>
               ))
             )}
           </div>
@@ -933,52 +978,54 @@ export default function HomePage() {
       {/* 13. FAQ ACCORDION SECTION */}
       <section className="py-20 bg-slate-50 border-t border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center space-y-2">
+          <RevealOnScroll className="text-center space-y-2">
             <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
               Got Questions?
             </span>
             <h2 className="text-3xl font-black text-slate-950 tracking-tight">
               Frequently Asked Questions
             </h2>
-          </div>
+          </RevealOnScroll>
 
           <div className="space-y-3">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <button
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-orange-50/40 transition-colors"
-                >
-                  <span className="font-black text-sm text-slate-900">{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 text-orange-600 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
-                </button>
-                {openFaq === idx && (
-                  <div className="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 font-medium">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+              <RevealOnScroll key={idx} delay={idx * 50}>
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-orange-50/40 transition-colors"
+                  >
+                    <span className="font-black text-sm text-slate-900">{faq.q}</span>
+                    <ChevronDown className={`w-4 h-4 text-orange-600 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openFaq === idx && (
+                    <div className="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 font-medium">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
       {/* 14. FINAL HERO CTA SECTION */}
-      <section className="py-24 bg-slate-950 text-white relative overflow-hidden text-center">
+      <section className="py-24 bg-slate-900 text-white relative overflow-hidden text-center">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&auto=format&fit=crop&q=80')` }}
+          className="absolute inset-0 bg-cover bg-center opacity-40"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1562774053-701939374585?w=1600&auto=format&fit=crop&q=85')` }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-950"></div>
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 z-10">
+        <RevealOnScroll className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 z-10">
           <img src="/logo.png" alt="THMS" className="h-20 w-auto mx-auto object-contain drop-shadow-[0_4px_20px_rgba(249,115,22,0.4)]" />
           
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
             Your Child&apos;s Future Starts Here.
           </h2>
 
-          <p className="text-sm sm:text-base text-slate-300 font-medium max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-200 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
             Join over 1,200+ students on their journey of academic brilliance, character growth, and technological mastery at The Hayatabad Model School.
           </p>
 
@@ -993,13 +1040,13 @@ export default function HomePage() {
 
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black text-sm border border-white/20 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-950/80 hover:bg-slate-900 text-white font-black text-sm border border-white/20 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
             >
               <KeyRound className="w-4 h-4 text-orange-400" />
               <span>Login to ERP</span>
             </Link>
           </div>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* 15. LARGE PROFESSIONAL FOOTER */}
