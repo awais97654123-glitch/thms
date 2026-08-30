@@ -27,7 +27,12 @@ import {
   Compass,
   Atom,
   Languages,
-  Calculator
+  Calculator,
+  HelpCircle,
+  BarChart3,
+  Flame,
+  Zap,
+  Target
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
@@ -107,6 +112,16 @@ export default function StudentDashboardPage() {
     { subject: 'English Grammar', score: 88, grade: 'A', icon: Languages, color: 'from-purple-500 to-pink-500' },
   ];
 
+  // Monthly Attendance Analytics Bar Data
+  const monthlyAttendance = [
+    { month: 'Sep', rate: 98 },
+    { month: 'Oct', rate: 96 },
+    { month: 'Nov', rate: 100 },
+    { month: 'Dec', rate: 92 },
+    { month: 'Jan', rate: 95 },
+    { month: 'Feb', rate: 97 },
+  ];
+
   if (loading) {
     return (
       <div className="p-16 text-center">
@@ -129,10 +144,10 @@ export default function StudentDashboardPage() {
   const todayStatus = attendanceStats?.todayStatus || 'NOT_MARKED';
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-8">
       
-      {/* 1. Futuristic Hero Card with AI Copilot Launcher */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/80 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
+      {/* 1. STAGGERED BOTTOM-TO-TOP SLIDE-IN HERO BANNER */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/80 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
         <div className="absolute right-0 top-0 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
@@ -146,7 +161,7 @@ export default function StudentDashboardPage() {
             </div>
             <div className="space-y-1 sm:space-y-1.5">
               <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-xs font-black border border-orange-400/30">
-                <Sparkles className="w-3 h-3 text-orange-400" />
+                <Sparkles className="w-3 h-3 text-orange-400 animate-spin" />
                 <span>Session 2026-2027 • Enrolled Scholar</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
@@ -167,11 +182,11 @@ export default function StudentDashboardPage() {
               <span>Ask AI Copilot</span>
             </Link>
             <Link
-              href="/student/homework"
+              href="/student/support"
               className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
-              <BookOpen className="w-4 h-4 text-orange-400" />
-              <span>Homework</span>
+              <HelpCircle className="w-4 h-4 text-orange-400" />
+              <span>Helpdesk</span>
             </Link>
             <Link
               href="/student/settings"
@@ -184,16 +199,16 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      {/* 2. Interactive AI Academic Tip of the Day */}
-      <div className="p-5 rounded-3xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* 2. STAGGERED BOTTOM-TO-TOP SLIDE-IN AI TIP STRIP */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 p-5 rounded-3xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black shadow-md shrink-0">
             <Bot className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs font-black text-slate-900 block">THMS AI Study Recommendation for Today:</span>
+            <span className="text-xs font-black text-slate-900 block">THMS AI Daily Study Recommendation:</span>
             <p className="text-xs text-slate-600 font-medium">
-              &quot;Review Physics Chapter 3 numerical equations before Period 3 laboratory session today!&quot;
+              &quot;Review Physics Chapter 3 practical lab equations before Period 3 session today!&quot;
             </p>
           </div>
         </div>
@@ -207,10 +222,10 @@ export default function StudentDashboardPage() {
         </Link>
       </div>
 
-      {/* 3. Primary KPI Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 3. STAGGERED BOTTOM-TO-TOP KPI ANALYTICS GRID */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Today's Gate Check-in */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-all">
           <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
             Today&apos;s Gate Check-in
           </span>
@@ -231,7 +246,7 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Overall Attendance Rate */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-all">
           <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
             Attendance Rate
           </span>
@@ -254,7 +269,7 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Pending Homework */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
               Active Homework
@@ -273,7 +288,7 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Fee Balance */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
               Fee Balance
@@ -293,8 +308,81 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      {/* 4. Subject Mastery Performance Meter */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
+      {/* 4. STAGGERED BOTTOM-TO-TOP ADVANCED VISUAL ANALYTICS SECTION */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left: Monthly Attendance Bar Analytics */}
+        <div className="lg:col-span-6 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-orange-600" />
+                Attendance Trend & Monthly Analytics
+              </h3>
+              <p className="text-xs text-slate-500 font-medium">Punctuality progression across current session</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+              96.3% Avg
+            </span>
+          </div>
+
+          <div className="h-44 flex items-end justify-between gap-3 pt-6 px-2">
+            {monthlyAttendance.map((m, idx) => (
+              <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
+                <span className="text-[10px] font-mono font-bold text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {m.rate}%
+                </span>
+                <div
+                  className="w-full rounded-t-xl bg-gradient-to-t from-orange-500 to-amber-400 group-hover:from-orange-600 group-hover:to-amber-500 transition-all duration-500 shadow-sm"
+                  style={{ height: `${(m.rate - 60) * 2.5}%` }}
+                ></div>
+                <span className="text-xs font-bold text-slate-700">{m.month}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Academic Performance & CGPA Rank */}
+        <div className="lg:col-span-6 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
+                <Target className="w-4 h-4 text-orange-600" />
+                Academic Standing & CGPA
+              </h3>
+              <p className="text-xs text-slate-500 font-medium">BISE Peshawar grading standard benchmark</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-orange-700 border border-orange-200 font-mono">
+              Grade A+
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Calculated CGPA</span>
+              <p className="text-3xl font-black text-slate-900 font-mono">3.92</p>
+              <span className="text-[10px] text-emerald-600 font-bold">Top 5% in Class</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Class Standing</span>
+              <p className="text-3xl font-black text-orange-600 font-mono">#02</p>
+              <span className="text-[10px] text-slate-500 font-medium">Out of 38 Scholars</span>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-orange-50/60 border border-orange-200 text-xs font-medium text-slate-700 flex items-center justify-between">
+            <span>Official report card & subject marks:</span>
+            <Link href="/student/results" className="font-black text-orange-700 hover:text-orange-800">
+              View Marksheet ➔
+            </Link>
+          </div>
+        </div>
+
+      </div>
+
+      {/* 5. STAGGERED BOTTOM-TO-TOP SUBJECT MASTERY PERFORMANCE METER */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-250 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
             <h3 className="font-black text-base text-slate-900">Curriculum Subject Mastery</h3>
@@ -335,8 +423,8 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      {/* 5. 2-Column Section: Today's Live Schedule & Recent Homework */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* 6. STAGGERED BOTTOM-TO-TOP 2-COLUMN SCHEDULE & HOMEWORK */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Column: Live Timetable */}
         <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
@@ -428,8 +516,8 @@ export default function StudentDashboardPage() {
 
       </div>
 
-      {/* 6. Quick Portal Action Shortcuts */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* 7. QUICK SHORTCUT TILES */}
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-350 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <Link
           href="/student/ai-assistant"
           className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
@@ -471,13 +559,13 @@ export default function StudentDashboardPage() {
         </Link>
 
         <Link
-          href="/student/leave"
+          href="/student/support"
           className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-2 group"
         >
           <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-emerald-200">
-            <Calendar className="w-5 h-5" />
+            <HelpCircle className="w-5 h-5" />
           </div>
-          <span className="font-bold text-xs text-slate-900 block">Apply Leave</span>
+          <span className="font-bold text-xs text-slate-900 block">AI Helpdesk</span>
         </Link>
 
         <Link

@@ -19,6 +19,7 @@ import {
   FolderDown, 
   Calendar, 
   Bot,
+  HelpCircle,
   ChevronRight
 } from 'lucide-react';
 
@@ -48,6 +49,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
     { name: 'Exam Results', href: '/student/results', icon: Award },
     { name: 'Fee Vouchers', href: '/student/fees', icon: DollarSign },
     { name: 'Leave Application', href: '/student/leave', icon: Calendar },
+    { name: 'Support & Helpdesk', href: '/student/support', icon: HelpCircle },
     { name: 'Smart ID Card', href: '/student/id-card', icon: CreditCard },
     { name: 'Settings', href: '/student/settings', icon: Settings },
   ];

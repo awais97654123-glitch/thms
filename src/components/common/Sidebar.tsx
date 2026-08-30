@@ -28,7 +28,9 @@ import {
   Cloud,
   Bell,
   KeyRound,
-  Sparkles
+  Sparkles,
+  Bot,
+  Headphones
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -45,6 +47,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       title: 'CORE MODULES',
       items: [
         { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+        { name: 'AI Command Center', href: '/admin/ai-insights', icon: Bot, badge: 'AI', badgeColor: 'bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold' },
+        { name: 'Student Support Desk', href: '/admin/support', icon: Headphones, badge: 'Live', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
         { name: 'Admissions Pipeline', href: '/admin/admissions', icon: UserPlus, badge: 'Live', badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
         { name: 'Student 360° Directory', href: '/admin/students', icon: Users },
         { name: 'Faculty & Teachers', href: '/admin/teachers', icon: UserCheck },
