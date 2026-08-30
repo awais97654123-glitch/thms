@@ -21,7 +21,7 @@ interface SessionPayload {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 1. Allow static files, public routes, and auth API
+  // 1. Static resources and auth APIs are always allowed
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api/auth') ||
@@ -31,7 +31,9 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/admissions/track') ||
     pathname.startsWith('/favicon.ico') ||
     pathname.startsWith('/manifest.json') ||
-    pathname === '/'
+    pathname.startsWith('/school-logo.png') ||
+    pathname.startsWith('/google-services.json') ||
+    pathname.startsWith('/firebase-messaging-sw.js')
   ) {
     return NextResponse.next();
   }
@@ -49,27 +51,29 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 3. If accessing /login while already logged in -> auto-redirect to respective portal
-  if (pathname === '/login') {
+  // Helper for role-based portal destination
+  const getRoleDestination = (s: SessionPayload) => {
+    if (s.isFirstLogin) return '/change-password';
+    if (s.role === 'TEACHER') return '/teacher';
+    if (s.role === 'STUDENT') return '/student';
+    if (s.role === 'PARENT') return '/parent';
+    if (s.role === 'ACCOUNTANT') return '/admin/fees';
+    if (s.role === 'LIBRARIAN') return '/admin/library';
+    return '/admin';
+  };
+
+  // 3. PERSISTENT LOGGED-IN SESSION ROUTING:
+  // If user is already logged in and accesses root "/" or "/login", redirect directly to their active portal
+  if (pathname === '/' || pathname === '/login') {
     if (session) {
-      if (session.isFirstLogin) {
-        return NextResponse.redirect(new URL('/change-password', req.url));
-      }
-      if (session.role === 'TEACHER') {
-        return NextResponse.redirect(new URL('/teacher', req.url));
-      }
-      if (session.role === 'STUDENT') {
-        return NextResponse.redirect(new URL('/student', req.url));
-      }
-      if (session.role === 'PARENT') {
-        return NextResponse.redirect(new URL('/parent', req.url));
-      }
-      return NextResponse.redirect(new URL('/admin', req.url));
+      const destination = getRoleDestination(session);
+      return NextResponse.redirect(new URL(destination, req.url));
     }
+    // Unlogged / First-time user: Show public school website or login screen normally
     return NextResponse.next();
   }
 
-  // 4. Protected Route Checking (Requires authentication)
+  // 4. Protected Route Enforcement (Requires authentication)
   const isProtected =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/teacher') ||
@@ -96,7 +100,6 @@ export async function middleware(req: NextRequest) {
     // A. STUDENT ISOLATION:
     if (session.role === 'STUDENT') {
       if (pathname.startsWith('/admin') || pathname.startsWith('/teacher') || pathname.startsWith('/parent')) {
-        // Forbidden: Redirect directly to their own student dashboard
         return NextResponse.redirect(new URL('/student', req.url));
       }
     }
@@ -104,7 +107,6 @@ export async function middleware(req: NextRequest) {
     // B. TEACHER ISOLATION:
     if (session.role === 'TEACHER') {
       if (pathname.startsWith('/admin') || pathname.startsWith('/student') || pathname.startsWith('/parent')) {
-        // Forbidden: Redirect directly to teacher portal
         return NextResponse.redirect(new URL('/teacher', req.url));
       }
     }
@@ -112,25 +114,36 @@ export async function middleware(req: NextRequest) {
     // C. PARENT ISOLATION:
     if (session.role === 'PARENT') {
       if (pathname.startsWith('/admin') || pathname.startsWith('/teacher') || pathname.startsWith('/student')) {
-        // Forbidden: Redirect directly to parent portal
         return NextResponse.redirect(new URL('/parent', req.url));
       }
     }
 
     // D. ADMIN AREA RESTRICTION (Only Super Admin & Admin can access /admin):
     if (pathname.startsWith('/admin')) {
-      if (session.role !== 'SUPER_ADMIN' && session.role !== 'ADMIN' && session.role !== 'ACCOUNTANT' && session.role !== 'LIBRARIAN') {
-        // Unauthorized role trying to access admin
+      if (
+        session.role !== 'SUPER_ADMIN' &&
+        session.role !== 'ADMIN' &&
+        session.role !== 'ACCOUNTANT' &&
+        session.role !== 'LIBRARIAN'
+      ) {
         return NextResponse.redirect(new URL('/login', req.url));
       }
 
-      // Accountant specific boundaries
-      if (session.role === 'ACCOUNTANT' && !pathname.startsWith('/admin/fees') && !pathname.startsWith('/admin/reports') && !pathname.startsWith('/admin/audit-logs') && pathname !== '/admin') {
+      if (
+        session.role === 'ACCOUNTANT' &&
+        !pathname.startsWith('/admin/fees') &&
+        !pathname.startsWith('/admin/reports') &&
+        !pathname.startsWith('/admin/audit-logs') &&
+        pathname !== '/admin'
+      ) {
         return NextResponse.redirect(new URL('/admin/fees', req.url));
       }
 
-      // Librarian specific boundaries
-      if (session.role === 'LIBRARIAN' && !pathname.startsWith('/admin/library') && pathname !== '/admin') {
+      if (
+        session.role === 'LIBRARIAN' &&
+        !pathname.startsWith('/admin/library') &&
+        pathname !== '/admin'
+      ) {
         return NextResponse.redirect(new URL('/admin/library', req.url));
       }
     }
@@ -141,11 +154,12 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
+    '/login',
+    '/change-password',
     '/admin/:path*',
     '/teacher/:path*',
     '/student/:path*',
     '/parent/:path*',
-    '/login',
-    '/change-password',
   ],
 };

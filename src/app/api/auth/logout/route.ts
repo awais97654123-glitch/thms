@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server';
 import { COOKIE_NAME } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST() {
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json({ success: true, message: 'Session terminated successfully' });
+  
+  response.cookies.delete(COOKIE_NAME);
   response.cookies.set({
     name: COOKIE_NAME,
     value: '',
     httpOnly: true,
     path: '/',
     maxAge: 0,
+    expires: new Date(0),
   });
+  
   return response;
 }
