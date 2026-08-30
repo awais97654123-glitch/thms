@@ -13,11 +13,14 @@ import {
   ArrowRight, 
   CheckCircle2, 
   Sparkles, 
-  Building2,
-  AlertCircle,
-  FileText,
-  TrendingUp,
-  Activity
+  Building2, 
+  AlertCircle, 
+  FileText, 
+  TrendingUp, 
+  Activity,
+  Settings,
+  ShieldCheck,
+  ChevronRight
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
@@ -111,20 +114,21 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      
       {/* Top Futuristic Student Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/70 text-white p-8 sm:p-10 shadow-2xl border border-orange-500/20">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/70 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
         <div className="absolute right-0 top-0 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-white p-1 border-2 border-orange-400/40 shadow-xl overflow-hidden shrink-0">
+          <div className="flex items-center gap-4 sm:gap-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-orange-400/40 shadow-xl overflow-hidden shrink-0">
               <img
                 src={student.photoUrl || '/student-avatar.png'}
                 alt={student.fullName}
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1 sm:space-y-1.5">
               <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-xs font-black border border-orange-400/30">
                 <Sparkles className="w-3 h-3 text-orange-400" />
                 <span>Session 2026-2027 • Enrolled Student</span>
@@ -138,20 +142,27 @@ export default function StudentDashboardPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+            <Link
+              href="/student/homework"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Daily Homework</span>
+            </Link>
             <Link
               href="/student/id-card"
-              className="px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black shadow-lg shadow-orange-500/25 flex items-center gap-2 transition-all hover:scale-105"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
-              <CreditCard className="w-4 h-4" />
+              <CreditCard className="w-4 h-4 text-orange-400" />
               <span>Digital ID Card</span>
             </Link>
             <Link
-              href="/student/fees"
-              className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center gap-2 transition-all hover:scale-105"
+              href="/student/settings"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
-              <DollarSign className="w-4 h-4 text-orange-400" />
-              <span>Fee Vouchers</span>
+              <Settings className="w-4 h-4 text-orange-400" />
+              <span>Settings</span>
             </Link>
           </div>
         </div>
@@ -160,7 +171,7 @@ export default function StudentDashboardPage() {
       {/* Primary KPI Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Today's Status */}
-        <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover space-y-2">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
           <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
             Today&apos;s Gate Check-in
           </span>
@@ -181,59 +192,81 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Overall Attendance Rate */}
-        <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
-              Session Attendance
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
+            Attendance Rate
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">
+              {attendanceRate}%
             </span>
-            <span className="text-emerald-600 font-black text-sm">{attendanceRate}%</span>
+            <span className="text-xs text-slate-500 font-bold">
+              ({attendanceStats?.presentDays ?? 0}/{attendanceStats?.totalSchoolDays ?? 0} Days)
+            </span>
           </div>
-          {/* Visual Progress Bar ████████████░░ 92% */}
-          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+          {/* Visual Progress Bar */}
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-1000"
-              style={{ width: `${Math.min(100, Math.max(0, attendanceRate))}%` }}
+              className={`h-full rounded-full transition-all duration-500 ${
+                attendanceRate >= 80 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-amber-500 to-rose-500'
+              }`}
+              style={{ width: `${attendanceRate}%` }}
             ></div>
           </div>
-          <p className="text-[11px] text-slate-500 font-semibold">
-            {attendanceStats?.presentCount || 0} Present • {attendanceStats?.absentCount || 0} Absent • {attendanceStats?.totalDays || 0} Total Days
-          </p>
         </div>
 
-        {/* Active Homework */}
-        <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover space-y-2">
-          <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
-            Active Homework
-          </span>
-          <h3 className="text-3xl font-black text-slate-900 tracking-tight">{homeworks.length}</h3>
-          <p className="text-xs text-orange-600 font-bold">Curriculum Tasks Pending</p>
+        {/* Pending Homework Tasks */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
+              Active Homework
+            </span>
+            <Link href="/student/homework" className="text-[11px] font-bold text-orange-600 hover:text-orange-700">
+              View All ➔
+            </Link>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">
+              {homeworks.length}
+            </span>
+            <span className="text-xs text-slate-500 font-bold">Active Tasks</span>
+          </div>
+          <p className="text-[11px] text-slate-400 font-medium">Assigned by subject teachers</p>
         </div>
 
         {/* Fee Status */}
-        <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover space-y-2">
-          <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
-            Fee Clearance
-          </span>
-          <h3 className="text-3xl font-black text-slate-900 tracking-tight font-mono">
-            {pendingFeeAmount === 0 ? 'Rs. 0' : `Rs. ${pendingFeeAmount.toLocaleString()}`}
-          </h3>
-          <p className={`text-xs font-bold ${pendingFeeAmount === 0 ? 'text-emerald-600' : 'text-amber-600'}`}>
-            {pendingFeeAmount === 0 ? '✓ 100% Cleared (Session 2026)' : 'Pending Monthly Voucher'}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
+              Fee Balance
+            </span>
+            <Link href="/student/fees" className="text-[11px] font-bold text-orange-600 hover:text-orange-700">
+              Vouchers ➔
+            </Link>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-2xl sm:text-3xl font-black font-mono ${pendingFeeAmount > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
+              Rs. {pendingFeeAmount.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-400 font-medium">
+            {pendingFeeAmount === 0 ? '✓ All fees cleared for term' : 'Pending bank deposit voucher'}
           </p>
         </div>
       </div>
 
-      {/* 2-Column Section: Today's Timetable & Active Homework */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Today's Timetable */}
-        <div className="glass-panel rounded-3xl border border-white p-6 sm:p-7 space-y-5 shadow-sm">
+      {/* Main 2-Column Student Workload Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left Column: Today's Timetable */}
+        <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <h3 className="font-black text-base text-slate-900">Today&apos;s Class Schedule</h3>
-              <p className="text-xs text-slate-500 font-medium">Daily periods and subject teacher allocations</p>
+              <p className="text-xs text-slate-500 font-medium">Assigned subject periods and teachers</p>
             </div>
-            <span className="text-xs font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-xl border border-orange-200">
-              {student.class?.name || 'Class 8-A'}
+            <span className="px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-orange-700 border border-orange-200">
+              Regular Hours
             </span>
           </div>
 
@@ -255,13 +288,19 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        {/* Active Homework Assignments */}
-        <div className="glass-panel rounded-3xl border border-white p-6 sm:p-7 space-y-5 shadow-sm">
+        {/* Right Column: Active Homework Assignments */}
+        <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <h3 className="font-black text-base text-slate-900">Homework & Curriculum Tasks</h3>
               <p className="text-xs text-slate-500 font-medium">Published assignments by your subject teachers</p>
             </div>
+            <Link
+              href="/student/homework"
+              className="text-xs font-black text-orange-600 hover:text-orange-700 flex items-center gap-1"
+            >
+              <span>View All ➔</span>
+            </Link>
           </div>
 
           {homeworks.length === 0 ? (
@@ -276,7 +315,7 @@ export default function StudentDashboardPage() {
                 <div key={hw.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 hover:bg-orange-50/40 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="px-2 py-0.5 rounded-md bg-orange-100/80 text-orange-900 text-[10px] font-bold">
-                      {hw.subjectName}
+                      {hw.subject?.name || hw.subjectName || 'Subject'}
                     </span>
                     <span className="text-[10px] text-slate-400 font-mono">
                       Due: {new Date(hw.dueDate).toLocaleDateString('en-GB')}
@@ -289,59 +328,64 @@ export default function StudentDashboardPage() {
             </div>
           )}
         </div>
+
       </div>
 
-      {/* Published Exam Results Section */}
-      {results.length > 0 && (
-        <div className="glass-panel rounded-3xl border border-white p-6 sm:p-7 space-y-5 shadow-sm">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div>
-              <h3 className="font-black text-base text-slate-900">Official Examination Marksheet</h3>
-              <p className="text-xs text-slate-500 font-medium">Published results verified by Principal Office</p>
-            </div>
+      {/* Published Examination Results Marksheet */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-5 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="font-black text-base text-slate-900">Official Exam Reports & Marksheets</h3>
+            <p className="text-xs text-slate-500 font-medium">Verified terminal examination marks entered by subject faculty</p>
           </div>
-
-          <div className="space-y-4">
-            {results.map((report) => (
-              <div key={report.examId} className="space-y-3">
-                <div className="flex items-center justify-between bg-orange-50 p-4 rounded-2xl border border-orange-200">
-                  <div>
-                    <h4 className="font-black text-sm text-orange-950">{report.examName}</h4>
-                    <span className="text-[11px] text-orange-800 font-medium">Term: {report.term}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-lg font-black text-orange-950 block">{report.percentage}%</span>
-                    <span className="text-[10px] font-bold text-orange-800">GPA: {report.gpaAverage}</span>
-                  </div>
-                </div>
-
-                <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden text-xs">
-                  <div className="grid grid-cols-12 bg-slate-50 p-3 font-black text-[10px] uppercase text-slate-600">
-                    <span className="col-span-4">Subject</span>
-                    <span className="col-span-3 text-center">Marks Obtained</span>
-                    <span className="col-span-2 text-center">Percentage</span>
-                    <span className="col-span-3 text-right">Grade</span>
-                  </div>
-                  {report.subjects.map((sub: any, idx: number) => (
-                    <div key={idx} className="grid grid-cols-12 p-3 items-center hover:bg-slate-50/50">
-                      <span className="col-span-4 font-bold text-slate-900">{sub.subjectName}</span>
-                      <span className="col-span-3 text-center font-mono font-bold text-slate-800">
-                        {sub.marksObtained} / {sub.totalMarks}
-                      </span>
-                      <span className="col-span-2 text-center font-mono font-semibold text-slate-600">
-                        {sub.percentage}%
-                      </span>
-                      <span className="col-span-3 text-right font-black text-emerald-700">
-                        {sub.grade} ({sub.gpa} GPA)
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <Link
+            href="/student/results"
+            className="text-xs font-black text-orange-600 hover:text-orange-700 flex items-center gap-1"
+          >
+            <span>Full Report Card ➔</span>
+          </Link>
         </div>
-      )}
+
+        {results.length === 0 ? (
+          <div className="p-8 text-center text-slate-400 space-y-2">
+            <Award className="w-10 h-10 text-slate-300 mx-auto" />
+            <p className="text-xs font-bold text-slate-700">No published exam marks available</p>
+            <p className="text-[11px] text-slate-400">Terminal examination marks will be published after teacher evaluation.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-500 font-black border-b border-slate-100">
+                <tr>
+                  <th className="p-3.5">Subject</th>
+                  <th className="p-3.5">Exam Term</th>
+                  <th className="p-3.5 text-center">Marks Obtained</th>
+                  <th className="p-3.5 text-center">Total</th>
+                  <th className="p-3.5 text-center">Percentage</th>
+                  <th className="p-3.5 text-center">Grade</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {results.slice(0, 5).map((r, idx) => (
+                  <tr key={idx} className="hover:bg-slate-50/50 font-medium">
+                    <td className="p-3.5 font-bold text-slate-900">{r.subjectName}</td>
+                    <td className="p-3.5 text-slate-600">{r.term}</td>
+                    <td className="p-3.5 text-center font-bold font-mono text-slate-800">{r.obtainedMarks}</td>
+                    <td className="p-3.5 text-center font-mono text-slate-500">{r.totalMarks}</td>
+                    <td className="p-3.5 text-center font-mono font-bold text-orange-600">{r.percentage}%</td>
+                    <td className="p-3.5 text-center">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-50 text-orange-800 border border-orange-200">
+                        {r.grade}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

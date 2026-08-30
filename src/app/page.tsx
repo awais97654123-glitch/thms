@@ -23,18 +23,13 @@ import {
   Zap, 
   Star, 
   Clock, 
-  HelpCircle,
-  School,
-  ExternalLink,
-  ChevronDown,
-  Building2,
-  Lock,
-  Search,
-  BookMarked,
-  Layers,
-  HeartHandshake,
-  KeyRound,
-  X
+  HelpCircle, 
+  School, 
+  ChevronDown, 
+  Search, 
+  HeartHandshake, 
+  KeyRound, 
+  X 
 } from 'lucide-react';
 import Header from '@/components/common/Header';
 
@@ -72,6 +67,51 @@ function RevealOnScroll({ children, className = '', delay = 0 }: { children: Rea
   );
 }
 
+// Animated Smooth Number Counter on Scroll
+function AnimatedCounter({ end, duration = 2000, suffix = '' }: { end: number; duration?: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started) {
+          setStarted(true);
+          let startTimestamp: number | null = null;
+          const step = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease out cubic
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(easeProgress * end));
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            } else {
+              setCount(end);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [end, duration, started]);
+
+  return (
+    <span ref={ref}>
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  );
+}
+
 export default function HomePage() {
   const [stats, setStats] = useState({
     totalStudents: 1250,
@@ -91,7 +131,7 @@ export default function HomePage() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Fetch real dashboard stats if available
+    // Fetch real dashboard stats
     fetch('/api/admin/dashboard-stats')
       .then((res) => res.json())
       .then((data) => {
@@ -134,7 +174,7 @@ export default function HomePage() {
     });
   };
 
-  // Why Choose The Hayatabad Model School (8 Core Pillars)
+  // 8 Core Pillars
   const whyChooseUs = [
     {
       title: 'Academic Excellence & BISE Top Positions',
@@ -186,7 +226,7 @@ export default function HomePage() {
     },
   ];
 
-  // Facilities Alternating Sections
+  // Campus Facilities
   const campusFacilities = [
     {
       title: 'Modern Computer & AI Laboratory',
@@ -218,7 +258,7 @@ export default function HomePage() {
     },
   ];
 
-  // Learning Journey Stages (4 Academic Wings)
+  // 4 Academic Stages
   const learningStages = [
     {
       stage: '01',
@@ -254,7 +294,6 @@ export default function HomePage() {
     },
   ];
 
-  // School Life Gallery Images
   const galleryImages = [
     { src: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&auto=format&fit=crop&q=80', title: 'Smart Classroom Collaboration' },
     { src: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80', title: 'Chemistry & Biology Laboratory' },
@@ -272,18 +311,18 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-slate-900 font-sans selection:bg-orange-500 selection:text-white flex flex-col">
-      {/* Sticky Header */}
+    <div className="min-h-screen bg-[#fafaf9] text-slate-900 font-sans selection:bg-orange-500 selection:text-white flex flex-col mesh-orange-bg subtle-grid-orange">
+      {/* Universal Sticky Header on Public Website */}
       <Header />
 
-      {/* 1. HERO SECTION — Vivid, Bright & Clear Campus Image Background with Staggered Animations */}
+      {/* 1. HERO SECTION — Bright, Vivid Campus Photography with Staggered Animations */}
       <section 
         onMouseMove={handleMouseMove}
         className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-36 bg-slate-900 text-white"
       >
         {/* Crisp, Bright, High-Clarity Campus Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-70 scale-105 transition-transform duration-1000 ease-out"
+          className="absolute inset-0 bg-cover bg-center opacity-75 scale-105 transition-transform duration-1000 ease-out"
           style={{ backgroundImage: `url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&auto=format&fit=crop&q=85')` }}
         ></div>
 
@@ -297,7 +336,7 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-center z-10">
           
           {/* Animated School Badge */}
-          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-slate-900/80 backdrop-blur-md text-orange-400 text-xs font-black border border-orange-500/40 shadow-xl animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-slate-900/80 backdrop-blur-xl text-orange-400 text-xs font-black border border-orange-500/40 shadow-xl animate-in fade-in slide-in-from-top-4 duration-700">
             <Sparkles className="w-4 h-4 text-orange-400 animate-spin" />
             <span className="tracking-widest uppercase">The Hayatabad Model School • Phase 3, Peshawar</span>
           </div>
@@ -328,7 +367,7 @@ export default function HomePage() {
 
             <a
               href="#about"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 hover:bg-slate-900 text-white font-black text-sm border border-white/30 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 hover:bg-slate-900 text-white font-black text-sm border border-white/30 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
             >
               <span>Explore Our School</span>
               <ChevronDown className="w-4 h-4 text-orange-400" />
@@ -346,61 +385,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. REAL ANIMATED STATISTICS SECTION */}
+      {/* 2. REAL ANIMATED COUNTING STATISTICS SECTION (Frosted Glassmorphic Box) */}
       <RevealOnScroll className="relative -mt-12 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white/95 backdrop-blur-2xl rounded-3xl border border-orange-500/15 shadow-2xl p-8 sm:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+        <div className="bg-white/80 backdrop-blur-2xl rounded-3xl border border-white/90 shadow-[0_12px_40px_rgba(249,115,22,0.1)] p-8 sm:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
           
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              {stats.totalStudents}+
+              <AnimatedCounter end={stats.totalStudents} suffix="+" />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">Students Enrolled</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Students Enrolled</p>
           </div>
 
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              {stats.totalTeachers}+
+              <AnimatedCounter end={stats.totalTeachers} suffix="+" />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">Active Teachers</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Active Teachers</p>
           </div>
 
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              28+
+              <AnimatedCounter end={stats.yearsExcellence} suffix="+" />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">Years of Legacy</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Years of Legacy</p>
           </div>
 
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              100%
+              <AnimatedCounter end={stats.matricPassRate} suffix="%" />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">BISE Board Pass Rate</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">BISE Board Pass</p>
           </div>
 
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              4
+              <AnimatedCounter end={stats.academicWings} />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">Academic Wings</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Academic Wings</p>
           </div>
 
-          <div className="space-y-1">
+          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
             <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              100%
+              <AnimatedCounter end={stats.secureCampus} suffix="%" />
             </h3>
-            <p className="text-[11px] font-black uppercase tracking-wider text-orange-600">Secure QR Campus</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Secure QR Gate</p>
           </div>
 
         </div>
       </RevealOnScroll>
 
-      {/* 3. "WHY CHOOSE THE HAYATABAD MODEL SCHOOL?" (8 Core Pillars) */}
+      {/* 3. "WHY CHOOSE THE HAYATABAD MODEL SCHOOL?" (Frosted Glass Cards) */}
       <section className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               The THMS Standard
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -416,7 +455,7 @@ export default function HomePage() {
               const Icon = item.icon;
               return (
                 <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-300 space-y-4 group hover:-translate-y-1 h-full flex flex-col justify-between">
+                  <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:border-orange-300 transition-all duration-300 space-y-4 group hover:-translate-y-1 h-full flex flex-col justify-between">
                     <div className="space-y-4">
                       <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                         <Icon className="w-6 h-6" />
@@ -439,13 +478,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. ABOUT THE SCHOOL SECTION — Image LEFT / Story RIGHT */}
-      <section id="about" className="py-20 bg-white border-y border-slate-200/80">
+      {/* 4. ABOUT THE SCHOOL SECTION — Frosted Glass Container */}
+      <section id="about" className="py-20 bg-white/70 backdrop-blur-xl border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left: Large High-Quality Campus Visual */}
           <RevealOnScroll className="lg:col-span-6 relative" delay={100}>
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 group">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white group">
               <img
                 src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&auto=format&fit=crop&q=80"
                 alt="Students at The Hayatabad Model School"
@@ -462,7 +501,7 @@ export default function HomePage() {
           {/* Right: School Mission & Narrative */}
           <RevealOnScroll className="lg:col-span-6 space-y-6" delay={200}>
             <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
+              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
                 About The School
               </span>
               <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight leading-tight">
@@ -475,7 +514,7 @@ export default function HomePage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-orange-50/60 border border-orange-200/80 space-y-1">
+              <div className="p-4 rounded-2xl bg-white/80 backdrop-blur-md border border-orange-200/80 shadow-sm space-y-1">
                 <span className="font-black text-xs text-orange-950 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-orange-600" />
                   Holistic Development
@@ -483,7 +522,7 @@ export default function HomePage() {
                 <p className="text-[11px] text-slate-600 font-medium">Balancing academic rigor with sports, arts, and character building.</p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-1">
+              <div className="p-4 rounded-2xl bg-white/80 backdrop-blur-md border border-amber-200/80 shadow-sm space-y-1">
                 <span className="font-black text-xs text-amber-950 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-amber-600" />
                   Islamic Moral Values
@@ -506,12 +545,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. CAMPUS & FACILITIES (Large Image-Driven Alternating Layout) */}
+      {/* 5. CAMPUS & FACILITIES (Frosted Glass Layout) */}
       <section id="campus" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Campus Infrastructure
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -528,7 +567,7 @@ export default function HomePage() {
               return (
                 <RevealOnScroll key={idx} delay={idx * 100}>
                   <div
-                    className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all ${
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all ${
                       isEven ? '' : 'lg:flex-row-reverse'
                     }`}
                   >
@@ -565,7 +604,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. DEDICATED LIBRARY SECTION ("Knowledge Lives Here") */}
+      {/* 6. DEDICATED LIBRARY SECTION */}
       <section className="py-20 bg-slate-950 text-white relative overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-25"
@@ -575,7 +614,7 @@ export default function HomePage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <RevealOnScroll className="lg:col-span-7 space-y-6" delay={100}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 text-orange-400 text-xs font-black border border-orange-400/30">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 text-orange-400 text-xs font-black border border-orange-400/30 backdrop-blur-md">
               <BookOpen className="w-3.5 h-3.5" />
               <span>Central School Library</span>
             </div>
@@ -589,17 +628,17 @@ export default function HomePage() {
             </p>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
                 <span className="text-2xl font-black text-orange-400 block font-mono">10,000+</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Books & References</span>
+                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Books & References</span>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
                 <span className="text-2xl font-black text-orange-400 block font-mono">100%</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Digital Catalog</span>
+                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Digital Catalog</span>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
                 <span className="text-2xl font-black text-orange-400 block font-mono">Daily</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Reading Hours</span>
+                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Reading Hours</span>
               </div>
             </div>
 
@@ -615,7 +654,7 @@ export default function HomePage() {
           </RevealOnScroll>
 
           <RevealOnScroll className="lg:col-span-5" delay={200}>
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/20 group">
               <img
                 src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80"
                 alt="Library Interior"
@@ -627,11 +666,11 @@ export default function HomePage() {
       </section>
 
       {/* 7. CHARACTER, DISCIPLINE & VALUES */}
-      <section className="py-20 lg:py-28 bg-white border-b border-slate-200/80">
+      <section className="py-20 lg:py-28 bg-white/70 backdrop-blur-xl border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Moral Foundation
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -644,7 +683,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <RevealOnScroll delay={100}>
-              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                 <span className="text-3xl">🤝</span>
                 <h3 className="font-black text-lg text-slate-900">Mutual Respect & Kindness</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-medium">
@@ -654,7 +693,7 @@ export default function HomePage() {
             </RevealOnScroll>
 
             <RevealOnScroll delay={200}>
-              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                 <span className="text-3xl">⏰</span>
                 <h3 className="font-black text-lg text-slate-900">Punctuality & Habitual Order</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-medium">
@@ -664,7 +703,7 @@ export default function HomePage() {
             </RevealOnScroll>
 
             <RevealOnScroll delay={300}>
-              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                 <span className="text-3xl">📖</span>
                 <h3 className="font-black text-lg text-slate-900">Academic Integrity</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-medium">
@@ -677,12 +716,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. LEARNING JOURNEY — 4 ACADEMIC WINGS (Visual Timeline) */}
+      {/* 8. LEARNING JOURNEY — 4 ACADEMIC WINGS (Frosted Glass) */}
       <section id="academics" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Academic Wings
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -696,14 +735,14 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {learningStages.map((st, idx) => (
               <RevealOnScroll key={idx} delay={idx * 100}>
-                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1 h-full">
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1 h-full">
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={st.image}
                       alt={st.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 text-white font-mono text-xs font-black">
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-white font-mono text-xs font-black">
                       {st.stage}
                     </div>
                   </div>
@@ -736,12 +775,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 9. FACULTY SHOWCASE (Real Faculty Profiles) */}
-      <section id="faculty" className="py-20 bg-white border-y border-slate-200/80">
+      {/* 9. FACULTY SHOWCASE */}
+      <section id="faculty" className="py-20 bg-white/70 backdrop-blur-xl border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Expert Educators
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
@@ -756,7 +795,7 @@ export default function HomePage() {
             {faculty.length > 0 ? (
               faculty.map((t, idx) => (
                 <RevealOnScroll key={t.id || idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group h-full">
+                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center space-y-4 hover:shadow-lg transition-all group h-full">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform overflow-hidden">
                       {t.photoUrl ? (
                         <img src={t.photoUrl} alt={t.fullName} className="w-full h-full object-cover" />
@@ -780,7 +819,7 @@ export default function HomePage() {
                 { name: 'Ms. Sadia Khan', role: 'Senior English Department', qual: 'M.A English Literature • 8 Yrs Exp' },
               ].map((f, idx) => (
                 <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-center space-y-4 hover:shadow-lg transition-all group h-full">
+                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center space-y-4 hover:shadow-lg transition-all group h-full">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform">
                       {f.name.charAt(0)}
                     </div>
@@ -803,7 +842,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Campus Moments
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -819,7 +858,7 @@ export default function HomePage() {
               <RevealOnScroll key={idx} delay={idx * 75}>
                 <div
                   onClick={() => setActiveLightboxImage(img.src)}
-                  className="relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group h-64"
+                  className="relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group h-64 border border-white/80"
                 >
                   <img
                     src={img.src}
@@ -859,12 +898,12 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 11. ADMISSIONS SECTION (5 Clear Steps) */}
+      {/* 11. ADMISSIONS SECTION */}
       <section id="admissions" className="py-20 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-y border-orange-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
           <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
               Admissions 2026-2027
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
@@ -884,7 +923,7 @@ export default function HomePage() {
               { step: '05', title: 'Smart Pass & Start', desc: 'Receive smart QR ID card, uniform kit guidelines, and welcome orientation.' },
             ].map((st, idx) => (
               <RevealOnScroll key={idx} delay={idx * 75}>
-                <div className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-orange-500/15 shadow-sm space-y-3 h-full">
+                <div className="bg-white/85 backdrop-blur-xl p-6 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                   <span className="text-3xl font-black text-orange-500/40 block font-mono">{st.step}</span>
                   <h3 className="font-black text-sm text-slate-900">{st.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed font-medium">{st.desc}</p>
@@ -904,7 +943,7 @@ export default function HomePage() {
 
             <Link
               href="/admissions/apply"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-black text-sm border border-slate-300 shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-105"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/90 backdrop-blur-md hover:bg-white text-slate-800 font-black text-sm border border-slate-200 shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
               <Search className="w-4 h-4 text-orange-600" />
               <span>Track Existing Application</span>
@@ -915,12 +954,12 @@ export default function HomePage() {
       </section>
 
       {/* 12. LIVE SCHOOL UPDATES / ANNOUNCEMENTS */}
-      <section id="news" className="py-20 bg-white">
+      <section id="news" className="py-20 bg-white/70 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <RevealOnScroll className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-6">
             <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
+              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
                 Notice Board
               </span>
               <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
@@ -940,7 +979,7 @@ export default function HomePage() {
             {announcements.length > 0 ? (
               announcements.map((a, idx) => (
                 <RevealOnScroll key={a.id || idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                     <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-1 rounded-full">
                       {a.type || 'Academic'}
                     </span>
@@ -957,7 +996,7 @@ export default function HomePage() {
                 { title: 'Smart QR ID Rollout', type: 'Security', date: 'Active', desc: 'Encrypted smart cards active for instant real-time parent gate notifications.' },
               ].map((n, idx) => (
                 <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3 h-full">
+                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-0.5 rounded-full">
                         {n.type}
@@ -976,10 +1015,10 @@ export default function HomePage() {
       </section>
 
       {/* 13. FAQ ACCORDION SECTION */}
-      <section className="py-20 bg-slate-50 border-t border-slate-200/80">
+      <section className="py-20 bg-slate-50/70 border-t border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <RevealOnScroll className="text-center space-y-2">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3.5 py-1 rounded-full border border-orange-200">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
               Got Questions?
             </span>
             <h2 className="text-3xl font-black text-slate-950 tracking-tight">
@@ -990,7 +1029,7 @@ export default function HomePage() {
           <div className="space-y-3">
             {faqs.map((faq, idx) => (
               <RevealOnScroll key={idx} delay={idx * 50}>
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="bg-white/90 backdrop-blur-xl rounded-2xl border border-white shadow-sm overflow-hidden">
                   <button
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                     className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-orange-50/40 transition-colors"
