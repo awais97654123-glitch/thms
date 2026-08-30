@@ -36,19 +36,19 @@ export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const classesCatalog = [
-    { name: 'Playgroup', level: 'Early Montessori', age: 'Age 3-4', badge: 'Play & Learn', desc: 'Sensory exploration, motor skills development, phonics, and socialization in a caring Montessori environment.', color: 'from-orange-500 to-amber-500' },
-    { name: 'Nursery', level: 'Early Montessori', age: 'Age 4-5', badge: 'Foundation', desc: 'Alphabet phonetics, basic number concepts, Urdu/English vocabulary, and creative artistic expression.', color: 'from-amber-500 to-orange-500' },
-    { name: 'Prep / KG', level: 'Kindergarten', age: 'Age 5-6', badge: 'Pre-Primary', desc: 'Sentence formation, elementary arithmetic, Islamic morals, and environmental awareness.', color: 'from-orange-600 to-amber-600' },
-    { name: 'Class 1', level: 'Primary Wing', age: 'Age 6-7', badge: 'Primary', desc: 'Fundamental literacy, mental math, basic computer concepts, and general science exploration.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 2', level: 'Primary Wing', age: 'Age 7-8', badge: 'Primary', desc: 'Creative writing, addition/subtraction problem solving, and social studies foundations.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 3', level: 'Primary Wing', age: 'Age 8-9', badge: 'Primary', desc: 'Multiplication/division mastery, Urdu grammar, English comprehension, and science experiments.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 4', level: 'Primary Wing', age: 'Age 9-10', badge: 'Primary', desc: 'Critical thinking, computer programming basics, geography, and language fluency.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 5', level: 'Primary Capstone', age: 'Age 10-11', badge: 'Primary Capstone', desc: 'Preparation for middle school, advanced arithmetic, science labs, and bilingual debate.', color: 'from-orange-500 to-amber-600' },
-    { name: 'Class 6', level: 'Middle Wing', age: 'Age 11-12', badge: 'Middle School', desc: 'Integrated sciences, algebraic expressions, computer science, and Pakistan studies.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 7', level: 'Middle Wing', age: 'Age 12-13', badge: 'Middle School', desc: 'Physics/Chemistry/Biology foundations, geometric proofs, and robotics workshop orientation.', color: 'from-slate-900 to-slate-800' },
-    { name: 'Class 8', level: 'Pre-Matric', age: 'Age 13-14', badge: 'Pre-Matric Capstone', desc: 'Rigorous preparatory curriculum aligned with BISE Peshawar Board standards.', color: 'from-orange-600 to-amber-700' },
-    { name: 'Class 9', level: 'Secondary (Matric-I)', age: 'Age 14-15', badge: 'BISE Matric Part 1', desc: 'Specialized science (Bio/Comp) & humanities tracks under BISE Peshawar board registration.', color: 'from-slate-950 to-orange-950' },
-    { name: 'Class 10', level: 'Secondary (Matric-II)', age: 'Age 15-16', badge: 'BISE Matric Part 2', desc: 'Board exam mastery, intensive mock examinations, laboratory practicals, and career counseling.', color: 'from-slate-950 to-orange-950' },
+    { name: 'Playgroup', level: 'Early Montessori', age: 'Age 3-4', badge: 'Play & Learn', desc: 'Sensory exploration, motor skills development, phonics, and socialization in a caring Montessori environment.' },
+    { name: 'Nursery', level: 'Early Montessori', age: 'Age 4-5', badge: 'Foundation', desc: 'Alphabet phonetics, basic number concepts, Urdu/English vocabulary, and creative artistic expression.' },
+    { name: 'Prep / KG', level: 'Kindergarten', age: 'Age 5-6', badge: 'Pre-Primary', desc: 'Sentence formation, elementary arithmetic, Islamic morals, and environmental awareness.' },
+    { name: 'Class 1', level: 'Primary Wing', age: 'Age 6-7', badge: 'Primary', desc: 'Fundamental literacy, mental math, basic computer concepts, and general science exploration.' },
+    { name: 'Class 2', level: 'Primary Wing', age: 'Age 7-8', badge: 'Primary', desc: 'Creative writing, addition/subtraction problem solving, and social studies foundations.' },
+    { name: 'Class 3', level: 'Primary Wing', age: 'Age 8-9', badge: 'Primary', desc: 'Multiplication/division mastery, Urdu grammar, English comprehension, and science experiments.' },
+    { name: 'Class 4', level: 'Primary Wing', age: 'Age 9-10', badge: 'Primary', desc: 'Critical thinking, computer programming basics, geography, and language fluency.' },
+    { name: 'Class 5', level: 'Primary Capstone', age: 'Age 10-11', badge: 'Primary Capstone', desc: 'Preparation for middle school, advanced arithmetic, science labs, and bilingual debate.' },
+    { name: 'Class 6', level: 'Middle Wing', age: 'Age 11-12', badge: 'Middle School', desc: 'Integrated sciences, algebraic expressions, computer science, and Pakistan studies.' },
+    { name: 'Class 7', level: 'Middle Wing', age: 'Age 12-13', badge: 'Middle School', desc: 'Physics/Chemistry/Biology foundations, geometric proofs, and robotics workshop orientation.' },
+    { name: 'Class 8', level: 'Pre-Matric', age: 'Age 13-14', badge: 'Pre-Matric Capstone', desc: 'Rigorous preparatory curriculum aligned with BISE Peshawar Board standards.' },
+    { name: 'Class 9', level: 'Secondary (Matric-I)', age: 'Age 14-15', badge: 'BISE Matric Part 1', desc: 'Specialized science (Bio/Comp) & humanities tracks under BISE Peshawar board registration.' },
+    { name: 'Class 10', level: 'Secondary (Matric-II)', age: 'Age 15-16', badge: 'BISE Matric Part 2', desc: 'Board exam mastery, intensive mock examinations, laboratory practicals, and career counseling.' },
   ];
 
   const academicWings = [
@@ -90,56 +90,69 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] text-slate-900 mesh-orange-bg subtle-grid-orange flex flex-col font-sans selection:bg-orange-500 selection:text-white">
-      {/* Universal Sticky Header (Clean 3D Logo + Center Nav + Action Buttons) */}
+    <div className="min-h-screen bg-[#fdfdfd] text-slate-900 mesh-orange-bg subtle-grid-orange flex flex-col font-sans selection:bg-orange-500 selection:text-white">
+      {/* Universal Sticky Header */}
       <Header />
 
-      {/* HERO SECTION — Fully Animated on Load with Official School Headings & Glowing Effects */}
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-32">
-        {/* Ambient Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-gradient-to-tr from-orange-500/20 via-amber-500/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+      {/* HERO SECTION — Animated on Load with 3D Logo, Shifting Gradient Headline & Floating Glows */}
+      <section className="relative overflow-hidden pt-8 pb-20 lg:pt-14 lg:pb-32">
+        {/* Dynamic Background Ambient Glowing Orbs */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[750px] h-[450px] bg-gradient-to-tr from-orange-500/25 via-amber-500/15 to-transparent rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow"></div>
+        <div className="absolute top-10 right-10 w-72 h-72 bg-orange-400/10 rounded-full blur-2xl pointer-events-none -z-10 animate-float"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
-          {/* Main Hero Header Stack with Staggered Entrance Animations */}
+          {/* Main Hero Content Stack */}
           <div className="text-center space-y-6 max-w-4xl mx-auto">
             
-            {/* Animated Badge */}
-            <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-orange-500/10 text-orange-700 text-xs font-black border border-orange-500/25 shadow-sm backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-700">
-              <Sparkles className="w-4 h-4 text-orange-600 animate-spin" />
-              <span>Phase 3, Hayatabad, Peshawar • Established 1998 (28+ Years of Excellence)</span>
+            {/* 3D Metallic THMS Logo Display in Hero */}
+            <div className="flex justify-center animate-in fade-in zoom-in-90 duration-700">
+              <div className="relative group">
+                <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/30 to-amber-500/30 rounded-3xl blur-xl group-hover:opacity-100 transition-opacity opacity-75"></div>
+                <img
+                  src="/logo.png"
+                  alt="The Hayatabad Model School 3D Crest"
+                  className="relative h-24 sm:h-28 lg:h-32 w-auto object-contain drop-shadow-[0_8px_24px_rgba(249,115,22,0.4)] animate-float"
+                />
+              </div>
             </div>
 
-            {/* Main Headline (Animated Staggered Glow) */}
+            {/* Animated Location & Heritage Badge */}
+            <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-orange-500/10 text-orange-800 text-xs font-black border border-orange-500/30 shadow-sm backdrop-blur-md animate-in fade-in slide-in-from-top-4 duration-700">
+              <Sparkles className="w-4 h-4 text-orange-600 animate-spin" />
+              <span>Phase 3, Hayatabad, Peshawar • Established 1998 (28+ Years of Academic Legacy)</span>
+            </div>
+
+            {/* Shifting Metallic Gold / Orange Headline */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-[1.1] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
               The Hayatabad Model School
-              <span className="block mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+              <span className="block mt-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent animate-gradient-text drop-shadow-sm">
                 Admissions Open 2026-2027
               </span>
             </h1>
 
-            {/* Sub-headline Text */}
-            <p className="text-base sm:text-xl text-slate-600 font-medium leading-relaxed max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-              Empowering future leaders from <strong className="text-slate-900 font-bold">Playgroup to Class 10 (Matric)</strong> with state-of-the-art AI labs, robotics, bilingual English fluency, and proven BISE Peshawar Board position holders.
+            {/* Sub-headline Text with Rich Details */}
+            <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+              A premier academic institution in Peshawar delivering character building, state-of-the-art AI & Robotics laboratories, bilingual English fluency, and 100% position-holding results under <strong className="text-slate-900 font-bold">BISE Peshawar Board</strong> from <strong className="text-orange-600 font-bold">Playgroup to Class 10 (Matric)</strong>.
             </p>
 
-            {/* Floating Feature Pills (Animated Slide-in) */}
+            {/* Floating Feature Pills */}
             <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/90 shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-transform">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-all">
                 <Cpu className="w-4 h-4 text-orange-600" />
                 <span>Modern Computer & AI Lab</span>
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/90 shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-transform">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-all">
                 <Compass className="w-4 h-4 text-amber-600" />
-                <span>Robotics & STEM Education</span>
+                <span>Robotics & STEM Workshops</span>
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/90 shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-transform">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-all">
                 <Palette className="w-4 h-4 text-orange-500" />
-                <span>Creative Arts Studio</span>
+                <span>Creative Arts & Design</span>
               </span>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/90 shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-transform">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white shadow-md shadow-orange-500/5 text-slate-800 text-xs font-black border border-orange-500/20 hover:scale-105 transition-all">
                 <Mic className="w-4 h-4 text-amber-500" />
-                <span>Public Speaking & Fluency</span>
+                <span>Bilingual Public Speaking</span>
               </span>
             </div>
 
@@ -154,7 +167,7 @@ export default function HomePage() {
               </Link>
               <a
                 href="#classes"
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/90 hover:bg-white text-slate-800 font-black text-sm border border-slate-300 shadow-md shadow-slate-200/50 flex items-center justify-center gap-2 transition-all hover:scale-105"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-black text-sm border border-slate-300 shadow-md shadow-slate-200/50 flex items-center justify-center gap-2 transition-all hover:scale-105"
               >
                 <span>Explore All 13 Classes</span>
                 <ChevronDown className="w-4 h-4 text-orange-600" />
@@ -163,16 +176,16 @@ export default function HomePage() {
 
             {/* Scholarship & Merit Discount Bar */}
             <div className="pt-2 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500">
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 text-xs text-orange-950 font-bold flex items-center justify-center gap-2">
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 text-xs text-orange-950 font-bold flex items-center justify-center gap-2 shadow-sm">
                 <Award className="w-4 h-4 text-orange-600 shrink-0" />
                 <span>100% Merit & Need-Based Tuition Scholarships Available for High Achievers & Siblings</span>
               </div>
             </div>
           </div>
 
-          {/* 4 Interactive KPI Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-6">
-            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm hover:shadow-md transition-all text-center space-y-2 group">
+          {/* 4 Interactive KPI Metric Cards with Dynamic Hover Lifts */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-4">
+            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover text-center space-y-2 group">
               <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                 <School className="w-6 h-6" />
               </div>
@@ -180,7 +193,7 @@ export default function HomePage() {
               <p className="text-xs font-bold text-slate-500">Years of Academic Legacy</p>
             </div>
 
-            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm hover:shadow-md transition-all text-center space-y-2 group">
+            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover text-center space-y-2 group">
               <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                 <Award className="w-6 h-6" />
               </div>
@@ -188,7 +201,7 @@ export default function HomePage() {
               <p className="text-xs font-bold text-slate-500">BISE Matric Board Pass Rate</p>
             </div>
 
-            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm hover:shadow-md transition-all text-center space-y-2 group">
+            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover text-center space-y-2 group">
               <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                 <BookOpen className="w-6 h-6" />
               </div>
@@ -196,7 +209,7 @@ export default function HomePage() {
               <p className="text-xs font-bold text-slate-500">Complete Classes (Playgroup - 10)</p>
             </div>
 
-            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm hover:shadow-md transition-all text-center space-y-2 group">
+            <div className="glass-panel p-6 rounded-3xl border border-white shadow-sm glass-card-hover text-center space-y-2 group">
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-6 h-6" />
               </div>
@@ -209,7 +222,7 @@ export default function HomePage() {
       </section>
 
       {/* COMPLETE 13 CLASSES DIRECTORY SECTION (Playgroup to Class 10) */}
-      <section id="classes" className="py-16 bg-white/70 backdrop-blur-md border-y border-orange-500/10">
+      <section id="classes" className="py-16 bg-white/80 backdrop-blur-md border-y border-orange-500/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center space-y-3 max-w-3xl mx-auto">
@@ -225,10 +238,10 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {classesCatalog.map((cls, idx) => (
+            {classesCatalog.map((cls) => (
               <div
                 key={cls.name}
-                className="glass-panel p-6 sm:p-7 rounded-3xl border border-white shadow-sm hover:shadow-xl transition-all duration-300 space-y-5 flex flex-col justify-between group hover:-translate-y-1"
+                className="glass-panel p-6 sm:p-7 rounded-3xl border border-white shadow-sm glass-card-hover space-y-5 flex flex-col justify-between group"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
@@ -285,12 +298,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {academicWings.map((wing, idx) => {
+            {academicWings.map((wing) => {
               const Icon = wing.icon;
               return (
                 <div
                   key={wing.title}
-                  className="glass-panel p-8 rounded-3xl border border-white shadow-sm space-y-4 flex flex-col justify-between"
+                  className="glass-panel p-8 rounded-3xl border border-white shadow-sm glass-card-hover space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
@@ -343,7 +356,7 @@ export default function HomePage() {
               { step: '03', title: 'Receive 3-Copy Voucher', desc: 'Get your official admission confirmation, student ID, and 3-copy fee voucher.' },
               { step: '04', title: 'Smart Pass & Orientation', desc: 'Receive your smart QR ID card, uniform guidelines, and welcome orientation schedule.' },
             ].map((st, idx) => (
-              <div key={idx} className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-orange-500/15 shadow-sm space-y-3">
+              <div key={idx} className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-orange-500/15 shadow-sm space-y-3 glass-card-hover">
                 <span className="text-3xl font-black text-orange-500/40 block font-mono">{st.step}</span>
                 <h3 className="font-black text-sm text-slate-900">{st.title}</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-medium">{st.desc}</p>

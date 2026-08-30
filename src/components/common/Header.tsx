@@ -88,10 +88,10 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-orange-500/15 shadow-[0_4px_30px_rgba(249,115,22,0.08)]">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 shadow-[0_4px_30px_rgba(249,115,22,0.06)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         
-        {/* Left: Prominent 3D THMS Logo (Clean, No extra session/school text next to it) */}
+        {/* Left: Prominent 3D Metallic THMS Logo (Clean, No extra session/school text beside it) */}
         <div className="flex items-center gap-3">
           {onToggleSidebar && (
             <button
@@ -114,18 +114,18 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
           </Link>
         </div>
 
-        {/* Center: Navigation Pill Bar Directly Inside Header */}
-        <nav className="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/80 shadow-inner backdrop-blur-md">
+        {/* Center: Clean Standalone Navigation Buttons (No bounding box / gray container) */}
+        <nav className="hidden lg:flex items-center gap-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-4 py-2 rounded-full text-xs font-black transition-all duration-200 ${
+                className={`px-4 py-2 rounded-2xl text-xs font-black transition-all duration-200 ${
                   isActive
-                    ? 'bg-white text-orange-600 shadow-md shadow-orange-500/10'
-                    : 'text-slate-700 hover:text-orange-600 hover:bg-white/80'
+                    ? 'bg-orange-500/10 text-orange-600 border border-orange-300 shadow-sm'
+                    : 'text-slate-800 hover:text-orange-600 hover:bg-orange-50/80 border border-transparent hover:border-orange-200/70 hover:scale-105'
                 }`}
               >
                 {link.name}
@@ -140,7 +140,7 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
           <div className="relative hidden md:block">
             <button
               onClick={() => setShowLangMenu(!showLangMenu)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-black text-slate-700 bg-white hover:bg-orange-50/70 border border-slate-200 shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-black text-slate-700 bg-white hover:bg-orange-50/70 border border-slate-200 shadow-sm transition-all hover:scale-105"
             >
               <Globe className="w-3.5 h-3.5 text-orange-600" />
               <span className="uppercase tracking-wider">{lang}</span>
@@ -178,7 +178,7 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2.5 p-1.5 pr-3.5 rounded-2xl bg-white hover:bg-orange-50/50 border border-orange-500/20 shadow-sm transition-all group"
+                className="flex items-center gap-2.5 p-1.5 pr-3.5 rounded-2xl bg-white hover:bg-orange-50/50 border border-orange-500/20 shadow-sm transition-all group hover:scale-105"
               >
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black flex items-center justify-center text-xs shadow-md group-hover:scale-105 transition-transform">
                   {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : currentUser.username.charAt(0).toUpperCase()}
@@ -226,7 +226,7 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-black transition-all hover:scale-105 border border-slate-200/80"
+                className="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-black transition-all hover:scale-105 border border-slate-200/80 shadow-sm"
               >
                 Student Login
               </Link>
