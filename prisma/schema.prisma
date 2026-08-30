@@ -42,11 +42,12 @@ model AcademicSession {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  students    Student[]
-  admissions  AdmissionApplication[]
-  invoices    FeeInvoice[]
-  exams       Exam[]
-  feeStructures FeeStructure[]
+  students           Student[]
+  admissions         AdmissionApplication[]
+  invoices           FeeInvoice[]
+  exams              Exam[]
+  feeStructures      FeeStructure[]
+  teacherAssignments TeacherAssignment[]
 }
 
 model User {
@@ -80,15 +81,16 @@ model Class {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  sections       Section[]
-  subjects       Subject[]
-  students       Student[]
-  timetables     Timetable[]
-  feeStructures  FeeStructure[]
-  homeworks      Homework[]
-  studyMaterials StudyMaterial[]
-  announcements  Announcement[]
-  examSchedules  ExamSchedule[]
+  sections           Section[]
+  subjects           Subject[]
+  students           Student[]
+  timetables         Timetable[]
+  feeStructures      FeeStructure[]
+  homeworks          Homework[]
+  studyMaterials     StudyMaterial[]
+  announcements      Announcement[]
+  examSchedules      ExamSchedule[]
+  teacherAssignments TeacherAssignment[]
 }
 
 model Section {
@@ -101,13 +103,14 @@ model Section {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  class          Class       @relation(fields: [classId], references: [id], onDelete: Cascade)
-  classTeacher   Teacher?    @relation("ClassTeacher", fields: [classTeacherId], references: [id])
-  students       Student[]
-  timetables     Timetable[]
-  homeworks      Homework[]
-  examSchedules  ExamSchedule[]
-  announcements  Announcement[]
+  class              Class               @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classTeacher       Teacher?            @relation("ClassTeacher", fields: [classTeacherId], references: [id])
+  students           Student[]
+  timetables         Timetable[]
+  homeworks          Homework[]
+  examSchedules      ExamSchedule[]
+  announcements      Announcement[]
+  teacherAssignments TeacherAssignment[]
 }
 
 model Subject {
@@ -122,12 +125,13 @@ model Subject {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  class          Class           @relation(fields: [classId], references: [id], onDelete: Cascade)
-  teacher        Teacher?        @relation(fields: [teacherId], references: [id])
-  timetables     Timetable[]
-  examSchedules  ExamSchedule[]
-  homeworks      Homework[]
-  studyMaterials StudyMaterial[]
+  class              Class               @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher            Teacher?            @relation(fields: [teacherId], references: [id])
+  timetables         Timetable[]
+  examSchedules      ExamSchedule[]
+  homeworks          Homework[]
+  studyMaterials     StudyMaterial[]
+  teacherAssignments TeacherAssignment[]
 }
 
 model Parent {
@@ -229,13 +233,36 @@ model Teacher {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  user           User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  managedSections Section[]     @relation("ClassTeacher")
+  user           User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  managedSections Section[]          @relation("ClassTeacher")
   subjects       Subject[]
+  assignments    TeacherAssignment[]
   timetables     Timetable[]
   homeworks      Homework[]
   studyMaterials StudyMaterial[]
   libraryIssues  LibraryIssue[]
+}
+
+model TeacherAssignment {
+  id                String   @id @default(uuid())
+  teacherId         String
+  classId           String
+  sectionId         String
+  subjectId         String
+  academicSessionId String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  teacher           Teacher          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  class             Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  section           Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  subject           Subject          @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  academicSession   AcademicSession? @relation(fields: [academicSessionId], references: [id], onDelete: SetNull)
+
+  @@unique([teacherId, classId, sectionId, subjectId])
+  @@index([teacherId])
+  @@index([classId, sectionId])
+  @@index([subjectId])
 }
 
 model Staff {

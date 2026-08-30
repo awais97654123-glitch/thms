@@ -2,10 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CalendarCheck, Save, RefreshCw, ArrowLeft, CheckCircle2, Users, AlertCircle, Sparkles } from 'lucide-react';
+import { 
+  CalendarCheck, 
+  Save, 
+  RefreshCw, 
+  ArrowLeft, 
+  CheckCircle2, 
+  Users, 
+  AlertCircle, 
+  Sparkles,
+  UserCheck,
+  Clock,
+  ShieldCheck
+} from 'lucide-react';
+import PortalCircularLoader from '@/components/common/PortalCircularLoader';
 
 export default function TeacherAttendancePage() {
-  const [classes, setClasses] = useState<any[]>([]);
+  const [assignedClasses, setAssignedClasses] = useState<any[]>([]);
   const [selectedClassId, setSelectedClassId] = useState('');
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [students, setStudents] = useState<any[]>([]);
@@ -15,27 +28,30 @@ export default function TeacherAttendancePage() {
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Load teacher's assigned classes
+  // Load teacher's assigned classes ONLY
   useEffect(() => {
-    fetch('/api/classes')
+    fetch('/api/teacher/classes')
       .then((res) => res.json())
       .then((data) => {
-        if (data.classes && data.classes.length > 0) {
-          setClasses(data.classes);
-          setSelectedClassId(data.classes[0].id);
-          if (data.classes[0].sections?.length > 0) {
-            setSelectedSectionId(data.classes[0].sections[0].id);
+        if (data.assignedClasses && data.assignedClasses.length > 0) {
+          setAssignedClasses(data.assignedClasses);
+          setSelectedClassId(data.assignedClasses[0].id);
+          if (data.assignedClasses[0].sections?.length > 0) {
+            setSelectedSectionId(data.assignedClasses[0].sections[0].id);
           }
         }
       })
       .catch(console.error);
   }, []);
 
-  // Load students for selected class and section
+  // Load students for selected assigned class and section
   const loadClassStudents = () => {
-    if (!selectedClassId) return;
+    if (!selectedClassId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-    let url = `/api/students?classId=${selectedClassId}`;
+    let url = `/api/teacher/students?classId=${selectedClassId}`;
     if (selectedSectionId) url += `&sectionId=${selectedSectionId}`;
 
     fetch(url)
@@ -45,7 +61,7 @@ export default function TeacherAttendancePage() {
         setStudents(studentList);
 
         // Fetch existing attendance records for this date
-        fetch(`/api/attendance?date=${selectedDate}&classId=${selectedClassId}${selectedSectionId ? `&sectionId=${selectedSectionId}` : ''}`)
+        fetch(`/api/teacher/attendance?date=${selectedDate}&classId=${selectedClassId}${selectedSectionId ? `&sectionId=${selectedSectionId}` : ''}`)
           .then((res) => res.json())
           .then((attData) => {
             const map: Record<string, string> = {};
@@ -71,7 +87,7 @@ export default function TeacherAttendancePage() {
 
   const handleClassChange = (cId: string) => {
     setSelectedClassId(cId);
-    const selected = classes.find((c) => c.id === cId);
+    const selected = assignedClasses.find((c) => c.id === cId);
     if (selected?.sections?.length > 0) {
       setSelectedSectionId(selected.sections[0].id);
     } else {
@@ -100,230 +116,203 @@ export default function TeacherAttendancePage() {
         status,
       }));
 
-      const res = await fetch('/api/attendance', {
+      const res = await fetch('/api/teacher/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: selectedDate, records }),
+        body: JSON.stringify({
+          classId: selectedClassId,
+          sectionId: selectedSectionId,
+          date: selectedDate,
+          records,
+        }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setStatusMessage({ text: data.message || 'Attendance saved successfully to official records.', type: 'success' });
-        setTimeout(() => setStatusMessage(null), 5000);
+        setStatusMessage({ text: data.message || 'Attendance saved successfully to PostgreSQL', type: 'success' });
       } else {
-        setStatusMessage({ text: data.error || 'Failed to save attendance', type: 'error' });
+        setStatusMessage({ text: data.error || 'Unable to save attendance. Please try again.', type: 'error' });
       }
     } catch {
-      setStatusMessage({ text: 'Error saving attendance. Please check connection.', type: 'error' });
+      setStatusMessage({ text: 'Unable to save attendance. Network error.', type: 'error' });
     } finally {
       setSaving(false);
     }
   };
 
+  const currentClass = assignedClasses.find((c) => c.id === selectedClassId);
+  const availableSections = currentClass?.sections || [];
+
   const presentCount = Object.values(attendanceMap).filter((s) => s === 'PRESENT').length;
-  const lateCount = Object.values(attendanceMap).filter((s) => s === 'LATE').length;
   const absentCount = Object.values(attendanceMap).filter((s) => s === 'ABSENT').length;
+  const lateCount = Object.values(attendanceMap).filter((s) => s === 'LATE').length;
   const excusedCount = Object.values(attendanceMap).filter((s) => s === 'EXCUSED').length;
 
-  const currentClassObj = classes.find((c) => c.id === selectedClassId);
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Link
-          href="/teacher"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-emerald-600 transition-colors"
+    <div className="space-y-6 animate-in fade-in">
+      {/* Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 glass-panel p-6 rounded-3xl border border-white shadow-sm">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-600">
+              Classroom Attendance Hub
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+            Daily Student Attendance
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">
+            Take roll-call attendance for your authorized classes with instant student & parent portal synchronization.
+          </p>
+        </div>
+
+        <button
+          onClick={handleSave}
+          disabled={saving || students.length === 0}
+          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black flex items-center gap-2 shadow-lg shadow-orange-500/25 transition-all hover:scale-105 disabled:opacity-50"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Teacher Dashboard</span>
-        </Link>
+          <Save className="w-4 h-4" />
+          <span>{saving ? 'Saving...' : 'Save Attendance to Database'}</span>
+        </button>
       </div>
 
+      {/* Status Alert Banner */}
       {statusMessage && (
-        <div
-          className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm animate-in fade-in ${
-            statusMessage.type === 'success'
-              ? 'bg-emerald-50 text-emerald-900 border border-emerald-300'
-              : 'bg-red-50 text-red-900 border border-red-300'
-          }`}
-        >
-          {statusMessage.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          ) : (
-            <AlertCircle className="w-4 h-4 text-red-600" />
-          )}
+        <div className={`p-4 rounded-2xl border text-xs font-bold flex items-center gap-2.5 ${
+          statusMessage.type === 'success'
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            : 'bg-rose-50 text-rose-800 border-rose-200'
+        }`}>
+          {statusMessage.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-rose-600" />}
           <span>{statusMessage.text}</span>
         </div>
       )}
 
-      {/* Top Header Card */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-            Classroom Register
-          </span>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
-            {currentClassObj?.name || 'Class'} Daily Roll Call
-          </h1>
-          <p className="text-xs text-slate-500">
-            Mark attendance for students. Records are synced instantly to central admin and parent monitoring portals.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
+      {/* Class Selection & Controls Bar */}
+      <div className="glass-panel p-5 rounded-3xl border border-white shadow-sm space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Your Assigned Class</label>
             <select
               value={selectedClassId}
               onChange={(e) => handleClassChange(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
             >
-              {classes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
+              {assignedClasses.length > 0 ? (
+                assignedClasses.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))
+              ) : (
+                <option value="">No classes assigned</option>
+              )}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Assigned Section</label>
+            <select
+              value={selectedSectionId}
+              onChange={(e) => setSelectedSectionId(e.target.value)}
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
+            >
+              {availableSections.map((sec: any) => (
+                <option key={sec.id} value={sec.id}>{sec.name}</option>
               ))}
             </select>
+          </div>
 
-            {currentClassObj?.sections && currentClassObj.sections.length > 0 && (
-              <select
-                value={selectedSectionId}
-                onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
-              >
-                {currentClassObj.sections.map((sec: any) => (
-                  <option key={sec.id} value={sec.id}>
-                    {sec.name}
-                  </option>
-                ))}
-              </select>
-            )}
-
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Attendance Date</label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
             />
           </div>
+        </div>
 
-          <button
-            onClick={handleSave}
-            disabled={saving || loading || students.length === 0}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition-all"
-          >
-            {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            <span>Save Attendance</span>
-          </button>
+        {/* Quick Marking Buttons & Live Summary */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-slate-500">Quick Fill:</span>
+            <button
+              onClick={() => handleMarkAll('PRESENT')}
+              className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-xl transition-colors"
+            >
+              ✓ Mark All Present
+            </button>
+            <button
+              onClick={() => handleMarkAll('ABSENT')}
+              className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-xl transition-colors"
+            >
+              ✗ Mark All Absent
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs font-bold">
+            <span className="text-emerald-700">Present: {presentCount}</span>
+            <span className="text-rose-700">Absent: {absentCount}</span>
+            <span className="text-amber-700">Late: {lateCount}</span>
+            <span className="text-blue-700">Excused: {excusedCount}</span>
+          </div>
         </div>
       </div>
 
-      {/* Live Counter Badges & Quick Action Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-bold text-slate-500 mr-1">Roster Summary:</span>
-          <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 font-bold">
-            Total: {students.length}
-          </span>
-          <span className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-bold">
-            Present: {presentCount}
-          </span>
-          <span className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold">
-            Late: {lateCount}
-          </span>
-          <span className="px-2.5 py-1 rounded-lg bg-red-100 text-red-800 font-bold">
-            Absent: {absentCount}
-          </span>
-          <span className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-bold">
-            Excused: {excusedCount}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-400">Quick Fill:</span>
-          <button
-            type="button"
-            onClick={() => handleMarkAll('PRESENT')}
-            className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs rounded-lg transition-colors border border-emerald-200"
-          >
-            All Present
-          </button>
-          <button
-            type="button"
-            onClick={() => handleMarkAll('ABSENT')}
-            className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs rounded-lg transition-colors border border-red-200"
-          >
-            All Absent
-          </button>
-        </div>
-      </div>
-
-      {/* Students Register Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      {/* Student Roster & Attendance Table */}
+      <div className="glass-panel rounded-3xl border border-white shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-500 space-y-2">
-            <span className="animate-spin inline-block text-xl">⏳</span>
-            <p>Loading classroom roster...</p>
+          <div className="p-12 text-center">
+            <PortalCircularLoader message="Loading student roster from PostgreSQL..." />
           </div>
         ) : students.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-400">
-            No active students enrolled in this section.
+          <div className="p-12 text-center text-slate-400 space-y-2">
+            <Users className="w-10 h-10 text-slate-300 mx-auto" />
+            <p className="text-xs font-bold text-slate-700">No students enrolled in this section</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-black uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="p-4">Roll No</th>
-                  <th className="p-4">Student ID</th>
                   <th className="p-4">Student Name</th>
-                  <th className="p-4">Father / Guardian</th>
-                  <th className="p-4 text-center">Status Action</th>
+                  <th className="p-4">Student ID</th>
+                  <th className="p-4">Guardian Contact</th>
+                  <th className="p-4 text-center">Attendance Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {students.map((st) => {
-                  const currentStatus = attendanceMap[st.id] || 'PRESENT';
+                {students.map((student) => {
+                  const currentStatus = attendanceMap[student.id] || 'PRESENT';
                   return (
-                    <tr key={st.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="p-4 font-mono font-bold text-emerald-800">{st.rollNo}</td>
-                      <td className="p-4 font-mono text-blue-900 font-bold">{st.studentId}</td>
-                      <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-slate-200 overflow-hidden text-[10px] flex items-center justify-center font-bold">
-                          {st.photoUrl ? (
-                            <img src={st.photoUrl} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            st.firstName?.charAt(0)
-                          )}
-                        </div>
-                        <span>{st.fullName}</span>
-                      </td>
-                      <td className="p-4 text-slate-600 font-medium">
-                        {st.parent?.fatherName || st.emergencyName || 'N/A'}
-                      </td>
+                    <tr key={student.id} className="hover:bg-orange-50/30 transition-colors">
+                      <td className="p-4 font-mono font-bold text-slate-900">{student.rollNo}</td>
+                      <td className="p-4 font-bold text-slate-900">{student.fullName}</td>
+                      <td className="p-4 font-mono text-slate-500 text-[11px]">{student.studentId}</td>
+                      <td className="p-4 text-slate-600">{student.fatherName} ({student.fatherPhone})</td>
                       <td className="p-4">
                         <div className="flex items-center justify-center gap-1.5">
-                          {[
-                            { code: 'PRESENT', label: 'Present', activeColor: 'bg-emerald-600 text-white shadow-sm' },
-                            { code: 'LATE', label: 'Late', activeColor: 'bg-amber-500 text-white shadow-sm' },
-                            { code: 'ABSENT', label: 'Absent', activeColor: 'bg-red-600 text-white shadow-sm' },
-                            { code: 'EXCUSED', label: 'Excused', activeColor: 'bg-blue-600 text-white shadow-sm' },
-                          ].map((opt) => {
-                            const isSelected = currentStatus === opt.code;
-                            return (
-                              <button
-                                key={opt.code}
-                                type="button"
-                                onClick={() => handleStatusChange(st.id, opt.code)}
-                                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                                  isSelected
-                                    ? opt.activeColor
-                                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                                }`}
-                              >
-                                {opt.label}
-                              </button>
-                            );
-                          })}
+                          {['PRESENT', 'ABSENT', 'LATE', 'EXCUSED'].map((st) => (
+                            <button
+                              key={st}
+                              type="button"
+                              onClick={() => handleStatusChange(student.id, st)}
+                              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                                currentStatus === st
+                                  ? st === 'PRESENT'
+                                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                                    : st === 'ABSENT'
+                                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                                    : st === 'LATE'
+                                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/30'
+                                    : 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                              }`}
+                            >
+                              {st}
+                            </button>
+                          ))}
                         </div>
                       </td>
                     </tr>
@@ -334,6 +323,8 @@ export default function TeacherAttendancePage() {
           </div>
         )}
       </div>
+
+      {saving && <PortalCircularLoader isFullScreen message="Saving verified attendance to PostgreSQL..." />}
     </div>
   );
 }

@@ -2,309 +2,366 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Award, Save, RefreshCw, ArrowLeft, CheckCircle2, AlertCircle, BookOpen, Layers } from 'lucide-react';
+import { 
+  Award, 
+  Save, 
+  Search, 
+  Sparkles, 
+  CheckCircle2, 
+  Users, 
+  BookOpen, 
+  Calendar,
+  AlertCircle
+} from 'lucide-react';
+import PortalCircularLoader from '@/components/common/PortalCircularLoader';
 
 export default function TeacherMarksPage() {
+  const [assignedClasses, setAssignedClasses] = useState<any[]>([]);
   const [exams, setExams] = useState<any[]>([]);
+  const [selectedClassId, setSelectedClassId] = useState('');
+  const [selectedSectionId, setSelectedSectionId] = useState('');
+  const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [selectedExamId, setSelectedExamId] = useState('');
-  const [schedules, setSchedules] = useState<any[]>([]);
-  const [selectedScheduleId, setSelectedScheduleId] = useState('');
+  const [totalMarks, setTotalMarks] = useState('100');
+
   const [students, setStudents] = useState<any[]>([]);
-  const [marksMap, setMarksMap] = useState<Record<string, { marksObtained: number; remarks: string }>>({});
-  const [saving, setSaving] = useState(false);
+  const [marksMap, setMarksMap] = useState<Record<string, { marksObtained: string; remarks: string }>>({});
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Load published exams
+  // 1. Load teacher assigned classes & exams
   useEffect(() => {
-    fetch('/api/examinations')
+    fetch('/api/teacher/classes')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.assignedClasses && data.assignedClasses.length > 0) {
+          setAssignedClasses(data.assignedClasses);
+          const firstCls = data.assignedClasses[0];
+          const firstSec = firstCls.sections[0];
+          const firstSub = firstSec?.subjects[0];
+          setSelectedClassId(firstCls.id);
+          setSelectedSectionId(firstSec?.id || '');
+          setSelectedSubjectId(firstSub?.id || '');
+        }
+      })
+      .catch(console.error);
+
+    fetch('/api/teacher/marks')
       .then((res) => res.json())
       .then((data) => {
         if (data.exams && data.exams.length > 0) {
           setExams(data.exams);
           setSelectedExamId(data.exams[0].id);
-          if (data.exams[0].schedules?.length > 0) {
-            setSchedules(data.exams[0].schedules);
-            setSelectedScheduleId(data.exams[0].schedules[0].id);
-          }
         }
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .catch(console.error);
   }, []);
 
-  const handleExamChange = (eId: string) => {
-    setSelectedExamId(eId);
-    const targetExam = exams.find((x) => x.id === eId);
-    if (targetExam?.schedules?.length > 0) {
-      setSchedules(targetExam.schedules);
-      setSelectedScheduleId(targetExam.schedules[0].id);
-    } else {
-      setSchedules([]);
-      setSelectedScheduleId('');
+  // 2. Load students & existing marks for selected class/section/subject/exam
+  const loadStudentsAndMarks = () => {
+    if (!selectedClassId || !selectedSectionId) {
+      setLoading(false);
+      return;
     }
-  };
-
-  // Load students and existing marks for selected schedule
-  useEffect(() => {
-    if (!selectedScheduleId) return;
-    const currentSchedule = schedules.find((s) => s.id === selectedScheduleId);
-    if (!currentSchedule) return;
-
     setLoading(true);
-    let url = `/api/students?classId=${currentSchedule.classId}`;
-    if (currentSchedule.sectionId) url += `&sectionId=${currentSchedule.sectionId}`;
 
-    fetch(url)
+    fetch(`/api/teacher/students?classId=${selectedClassId}&sectionId=${selectedSectionId}`)
       .then((res) => res.json())
       .then((data) => {
         const studentList = data.students || [];
         setStudents(studentList);
 
-        // Fetch marks
-        fetch(`/api/examinations/marks?examScheduleId=${selectedScheduleId}`)
-          .then((res) => res.json())
-          .then((mData) => {
-            const map: Record<string, { marksObtained: number; remarks: string }> = {};
-            studentList.forEach((st: any) => {
-              map[st.id] = { marksObtained: 0, remarks: '' };
-            });
-
-            if (mData.marks) {
-              mData.marks.forEach((m: any) => {
-                map[m.studentId] = {
-                  marksObtained: m.marksObtained,
-                  remarks: m.remarks || '',
-                };
+        // Fetch existing marks if subject & exam selected
+        if (selectedSubjectId && selectedExamId) {
+          fetch(`/api/teacher/marks?classId=${selectedClassId}&sectionId=${selectedSectionId}&subjectId=${selectedSubjectId}&examId=${selectedExamId}`)
+            .then((mRes) => mRes.json())
+            .then((mData) => {
+              const map: Record<string, { marksObtained: string; remarks: string }> = {};
+              studentList.forEach((s: any) => {
+                map[s.id] = { marksObtained: '', remarks: '' };
               });
-            }
-            setMarksMap(map);
-          })
-          .catch(console.error);
+
+              if (mData.examSchedules && mData.examSchedules.length > 0) {
+                const schedule = mData.examSchedules[0];
+                if (schedule.totalMarks) setTotalMarks(schedule.totalMarks.toString());
+                if (schedule.marks) {
+                  schedule.marks.forEach((m: any) => {
+                    map[m.studentId] = {
+                      marksObtained: m.marksObtained.toString(),
+                      remarks: m.remarks || '',
+                    };
+                  });
+                }
+              }
+              setMarksMap(map);
+            })
+            .catch(console.error);
+        }
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [selectedScheduleId, schedules]);
+  };
 
-  const activeSchedule = schedules.find((s) => s.id === selectedScheduleId);
-  const totalMarks = activeSchedule?.totalMarks || 100;
+  useEffect(() => {
+    loadStudentsAndMarks();
+  }, [selectedClassId, selectedSectionId, selectedSubjectId, selectedExamId]);
 
-  const handleScoreChange = (studentId: string, value: number) => {
-    const safeScore = Math.min(totalMarks, Math.max(0, isNaN(value) ? 0 : value));
+  const handleMarksChange = (studentId: string, val: string) => {
     setMarksMap((prev) => ({
       ...prev,
       [studentId]: {
         ...prev[studentId],
-        marksObtained: safeScore,
+        marksObtained: val,
       },
     }));
   };
 
-  const handleRemarksChange = (studentId: string, remarks: string) => {
-    setMarksMap((prev) => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        remarks,
-      },
-    }));
-  };
-
-  const getComputedGrade = (obtained: number, total: number) => {
-    const pct = total > 0 ? (obtained / total) * 100 : 0;
-    if (pct >= 90) return { grade: 'A+', gpa: '4.0', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
-    if (pct >= 80) return { grade: 'A', gpa: '3.7', color: 'bg-blue-100 text-blue-800 border-blue-200' };
-    if (pct >= 70) return { grade: 'B+', gpa: '3.3', color: 'bg-teal-100 text-teal-800 border-teal-200' };
-    if (pct >= 60) return { grade: 'B', gpa: '3.0', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' };
-    if (pct >= 50) return { grade: 'C', gpa: '2.0', color: 'bg-amber-100 text-amber-800 border-amber-200' };
-    if (pct >= 33) return { grade: 'D', gpa: '1.0', color: 'bg-orange-100 text-orange-800 border-orange-200' };
-    return { grade: 'F', gpa: '0.0', color: 'bg-red-100 text-red-800 border-red-200' };
-  };
-
-  const handleSave = async () => {
-    if (!selectedScheduleId) return;
+  const handleSaveMarks = async () => {
     setSaving(true);
     setStatusMessage(null);
 
     try {
-      const entries = Object.entries(marksMap).map(([studentId, item]) => ({
-        studentId,
-        marksObtained: item.marksObtained,
-        remarks: item.remarks,
-      }));
+      const marksList = Object.entries(marksMap)
+        .filter(([_, data]) => data.marksObtained !== '')
+        .map(([studentId, data]) => ({
+          studentId,
+          marksObtained: data.marksObtained,
+          remarks: data.remarks,
+        }));
 
-      const res = await fetch('/api/examinations/marks', {
+      if (marksList.length === 0) {
+        setStatusMessage({ text: 'Please enter marks for at least one student', type: 'error' });
+        setSaving(false);
+        return;
+      }
+
+      const res = await fetch('/api/teacher/marks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          examScheduleId: selectedScheduleId,
-          entries,
+          examId: selectedExamId,
+          classId: selectedClassId,
+          sectionId: selectedSectionId,
+          subjectId: selectedSubjectId,
+          totalMarks: parseFloat(totalMarks) || 100,
+          marksList,
         }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setStatusMessage({
-          text: data.message || 'Exam marks saved successfully to the official ledger!',
-          type: 'success',
-        });
-        setTimeout(() => setStatusMessage(null), 5000);
+        setStatusMessage({ text: data.message || 'Marks saved and published successfully!', type: 'success' });
       } else {
         setStatusMessage({ text: data.error || 'Failed to save marks', type: 'error' });
       }
     } catch {
-      setStatusMessage({ text: 'Error connecting to database to save marks.', type: 'error' });
+      setStatusMessage({ text: 'Error saving marks to database', type: 'error' });
     } finally {
       setSaving(false);
     }
   };
 
+  const currentClass = assignedClasses.find((c) => c.id === selectedClassId);
+  const availableSections = currentClass?.sections || [];
+  const currentSection = availableSections.find((s: any) => s.id === selectedSectionId);
+  const availableSubjects = currentSection?.subjects || [];
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Link
-          href="/teacher"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-emerald-600 transition-colors"
+    <div className="space-y-6 animate-in fade-in">
+      {/* Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 glass-panel p-6 rounded-3xl border border-white shadow-sm">
+        <div className="space-y-1">
+          <span className="text-xs font-black uppercase tracking-wider text-orange-600">
+            Assessment & Gradebook Management
+          </span>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+            Exam Marks & Results Entry
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">
+            Enter examination marks with auto percentage, letter grade, and GPA calculation for official student & parent report cards.
+          </p>
+        </div>
+
+        <button
+          onClick={handleSaveMarks}
+          disabled={saving || students.length === 0}
+          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black flex items-center gap-2 shadow-lg shadow-orange-500/25 transition-all hover:scale-105 disabled:opacity-50"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Teacher Dashboard</span>
-        </Link>
+          <Save className="w-4 h-4" />
+          <span>{saving ? 'Saving...' : 'Save & Publish Marks'}</span>
+        </button>
       </div>
 
+      {/* Status Alert Banner */}
       {statusMessage && (
-        <div
-          className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm animate-in fade-in ${
-            statusMessage.type === 'success'
-              ? 'bg-emerald-50 text-emerald-900 border border-emerald-300'
-              : 'bg-red-50 text-red-900 border border-red-300'
-          }`}
-        >
-          {statusMessage.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          ) : (
-            <AlertCircle className="w-4 h-4 text-red-600" />
-          )}
+        <div className={`p-4 rounded-2xl border text-xs font-bold flex items-center gap-2.5 ${
+          statusMessage.type === 'success'
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            : 'bg-rose-50 text-rose-800 border-rose-200'
+        }`}>
+          {statusMessage.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-rose-600" />}
           <span>{statusMessage.text}</span>
         </div>
       )}
 
-      {/* Top Header Card */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+      {/* Class, Section, Subject, Exam Filter Bar */}
+      <div className="glass-panel p-5 rounded-3xl border border-white shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-3.5 text-xs">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-            Subject Evaluation Matrix
-          </span>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
-            {activeSchedule?.subject?.name || 'Subject'} Marks Ledger
-          </h1>
-          <p className="text-xs text-slate-500">
-            Class: {activeSchedule?.class?.name} ({activeSchedule?.section?.name}) • Maximum Marks: {totalMarks} • Passing: {activeSchedule?.passingMarks || 33}
-          </p>
+          <label className="block font-bold text-slate-700 mb-1">Assigned Class</label>
+          <select
+            value={selectedClassId}
+            onChange={(e) => {
+              const newCId = e.target.value;
+              const cls = assignedClasses.find((c) => c.id === newCId);
+              const sec = cls?.sections?.[0];
+              setSelectedClassId(newCId);
+              setSelectedSectionId(sec?.id || '');
+              setSelectedSubjectId(sec?.subjects?.[0]?.id || '');
+            }}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
+          >
+            {assignedClasses.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <select
-              value={selectedExamId}
-              onChange={(e) => handleExamChange(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {exams.map((ex) => (
-                <option key={ex.id} value={ex.id}>
-                  {ex.name}
-                </option>
-              ))}
-            </select>
-
-            {schedules.length > 0 && (
-              <select
-                value={selectedScheduleId}
-                onChange={(e) => setSelectedScheduleId(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {schedules.map((sc) => (
-                  <option key={sc.id} value={sc.id}>
-                    {sc.subject?.name} - {sc.class?.name} ({sc.section?.name})
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={saving || loading || students.length === 0}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center gap-1.5 transition-all"
+        <div>
+          <label className="block font-bold text-slate-700 mb-1">Section</label>
+          <select
+            value={selectedSectionId}
+            onChange={(e) => {
+              const newSecId = e.target.value;
+              const sec = availableSections.find((s: any) => s.id === newSecId);
+              setSelectedSectionId(newSecId);
+              setSelectedSubjectId(sec?.subjects?.[0]?.id || '');
+            }}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
           >
-            {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            <span>Save Marks Matrix</span>
-          </button>
+            {availableSections.map((sec: any) => (
+              <option key={sec.id} value={sec.id}>{sec.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-bold text-slate-700 mb-1">Assigned Subject</label>
+          <select
+            value={selectedSubjectId}
+            onChange={(e) => setSelectedSubjectId(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
+          >
+            {availableSubjects.map((sub: any) => (
+              <option key={sub.id} value={sub.id}>{sub.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-bold text-slate-700 mb-1">Examination</label>
+          <select
+            value={selectedExamId}
+            onChange={(e) => setSelectedExamId(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
+          >
+            {exams.length > 0 ? (
+              exams.map((ex) => (
+                <option key={ex.id} value={ex.id}>{ex.name}</option>
+              ))
+            ) : (
+              <option value="">Mid-Term Exam 2026</option>
+            )}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-bold text-slate-700 mb-1">Total Max Marks</label>
+          <input
+            type="number"
+            value={totalMarks}
+            onChange={(e) => setTotalMarks(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-mono font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
+          />
         </div>
       </div>
 
-      {/* Spreadsheet Marks Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6">
+      {/* Marks Entry Table */}
+      <div className="glass-panel rounded-3xl border border-white shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-500 space-y-2">
-            <span className="animate-spin inline-block text-xl">⏳</span>
-            <p>Loading student examination roster...</p>
+          <div className="p-12 text-center">
+            <PortalCircularLoader message="Loading student mark roster..." />
           </div>
         ) : students.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-400">
-            No students found for this examination schedule.
+          <div className="p-12 text-center text-slate-400 space-y-2">
+            <Users className="w-10 h-10 text-slate-300 mx-auto" />
+            <p className="text-xs font-bold text-slate-700">No students enrolled in this section</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-black uppercase text-[10px] tracking-wider">
                 <tr>
-                  <th className="p-3">Roll No</th>
-                  <th className="p-3">Student ID</th>
-                  <th className="p-3">Student Name</th>
-                  <th className="p-3">Obtained Score (Max: {totalMarks})</th>
-                  <th className="p-3">Computed Grade & GPA</th>
-                  <th className="p-3">Teacher Remarks</th>
+                  <th className="p-4">Roll No</th>
+                  <th className="p-4">Student Name</th>
+                  <th className="p-4">Student ID</th>
+                  <th className="p-4 w-40">Marks Obtained</th>
+                  <th className="p-4">Percentage</th>
+                  <th className="p-4">Grade</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {students.map((st) => {
-                  const entry = marksMap[st.id] || { marksObtained: 0, remarks: '' };
-                  const { grade, gpa, color } = getComputedGrade(entry.marksObtained, totalMarks);
+                {students.map((student) => {
+                  const data = marksMap[student.id] || { marksObtained: '', remarks: '' };
+                  const maxM = parseFloat(totalMarks) || 100;
+                  const obtainedNum = parseFloat(data.marksObtained);
+                  const hasVal = !isNaN(obtainedNum);
+                  const pct = hasVal ? parseFloat(((obtainedNum / maxM) * 100).toFixed(1)) : null;
+
+                  let grade = '-';
+                  if (pct !== null) {
+                    if (pct >= 90) grade = 'A+';
+                    else if (pct >= 80) grade = 'A';
+                    else if (pct >= 70) grade = 'B+';
+                    else if (pct >= 60) grade = 'B';
+                    else if (pct >= 50) grade = 'C';
+                    else if (pct >= 40) grade = 'D';
+                    else grade = 'F';
+                  }
 
                   return (
-                    <tr key={st.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="p-3 font-mono font-bold text-emerald-800">{st.rollNo}</td>
-                      <td className="p-3 font-mono text-blue-900 font-bold">{st.studentId}</td>
-                      <td className="p-3 font-bold text-slate-900">{st.fullName}</td>
-                      <td className="p-3">
-                        <div className="flex items-center gap-1.5">
+                    <tr key={student.id} className="hover:bg-orange-50/30 transition-colors">
+                      <td className="p-4 font-mono font-bold text-slate-900">{student.rollNo}</td>
+                      <td className="p-4 font-bold text-slate-900">{student.fullName}</td>
+                      <td className="p-4 font-mono text-slate-500 text-[11px]">{student.studentId}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
                           <input
                             type="number"
                             min="0"
                             max={totalMarks}
-                            value={entry.marksObtained}
-                            onChange={(e) => handleScoreChange(st.id, parseFloat(e.target.value))}
-                            className="w-24 px-3 py-1.5 font-mono font-bold text-blue-900 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                            step="0.5"
+                            placeholder="0"
+                            value={data.marksObtained}
+                            onChange={(e) => handleMarksChange(student.id, e.target.value)}
+                            className="w-24 px-3 py-1.5 rounded-xl border border-slate-200 bg-white font-mono font-bold text-slate-900 focus:ring-2 focus:ring-orange-500 outline-none"
                           />
                           <span className="text-slate-400 font-mono">/ {totalMarks}</span>
                         </div>
                       </td>
-                      <td className="p-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold border ${color}`}>
-                            Grade {grade}
-                          </span>
-                          <span className="font-mono text-slate-600 font-bold text-[11px]">GPA {gpa}</span>
-                        </div>
+                      <td className="p-4 font-mono font-bold text-slate-700">
+                        {pct !== null ? `${pct}%` : '-'}
                       </td>
-                      <td className="p-3">
-                        <input
-                          type="text"
-                          placeholder="Optional feedback e.g. Excellent"
-                          value={entry.remarks}
-                          onChange={(e) => handleRemarksChange(st.id, e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
-                        />
+                      <td className="p-4">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
+                          grade === 'A+' || grade === 'A'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : grade === 'F'
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                            : 'bg-orange-50 text-orange-700 border-orange-200'
+                        }`}>
+                          {grade}
+                        </span>
                       </td>
                     </tr>
                   );
@@ -314,6 +371,8 @@ export default function TeacherMarksPage() {
           </div>
         )}
       </div>
+
+      {saving && <PortalCircularLoader isFullScreen message="Saving & Publishing Exam Marks to PostgreSQL..." />}
     </div>
   );
 }
