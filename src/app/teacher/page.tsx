@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function TeacherDashboardPage() {
+  const [teacher, setTeacher] = useState<any | null>(null);
   const [assignedClasses, setAssignedClasses] = useState<any[]>([
     { className: 'Class 8', sectionName: 'Section A', subject: 'Mathematics', studentCount: 35, room: 'Room 201' },
     { className: 'Class 9', sectionName: 'Section A', subject: 'Physics', studentCount: 32, room: 'Room 302' },
@@ -31,7 +32,28 @@ export default function TeacherDashboardPage() {
   const [syncAlert, setSyncAlert] = useState(false);
 
   useEffect(() => {
-    const handleSync = (e: any) => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.teacher) {
+          setTeacher(data.user.teacher);
+          if (data.user.teacher.subjects && data.user.teacher.subjects.length > 0) {
+            const mapped = data.user.teacher.subjects.map((sub: any) => ({
+              className: sub.class?.name || 'Class 8',
+              sectionName: 'Section A',
+              subject: sub.name,
+              studentCount: 35,
+              room: 'Main Academic Wing',
+            }));
+            setAssignedClasses(mapped);
+          }
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const handleSync = () => {
       setLastSyncTime(new Date().toLocaleTimeString('en-GB'));
       setSyncAlert(true);
       setTimeout(() => setSyncAlert(false), 4000);
@@ -64,10 +86,10 @@ export default function TeacherDashboardPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
-            Welcome, Engr. Farooq Ahmad
+            Welcome, {teacher?.fullName || 'Teacher Portal'}
           </h1>
           <p className="text-xs text-emerald-200">
-            Head of Mathematics Department • Class Incharge: Class 8 (Section A)
+            {teacher?.designation || 'Faculty Member'} • Employee ID: {teacher?.employeeId || 'EMP-T-0101'}
           </p>
         </div>
 
