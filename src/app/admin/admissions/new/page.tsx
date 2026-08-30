@@ -22,9 +22,25 @@ import {
 } from 'lucide-react';
 import { recordOfflineAction } from '@/lib/offline-sync';
 
+const INITIAL_CLASSES = [
+  { id: 'c-pg', name: 'Playgroup (Pre-School)', code: 'PG', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-nur', name: 'Nursery (Early Years)', code: 'NUR', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-prep', name: 'Prep (Kindergarten)', code: 'PREP', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-01', name: 'Class 1', code: 'C01', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-02', name: 'Class 2', code: 'C02', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-03', name: 'Class 3', code: 'C03', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-04', name: 'Class 4', code: 'C04', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-05', name: 'Class 5', code: 'C05', sections: [{ id: 'sec-a', name: 'Section A' }] },
+  { id: 'c-06', name: 'Class 6', code: 'C06', sections: [{ id: 'sec-a', name: 'Section A' }, { id: 'sec-b', name: 'Section B' }] },
+  { id: 'c-07', name: 'Class 7', code: 'C07', sections: [{ id: 'sec-a', name: 'Section A' }, { id: 'sec-b', name: 'Section B' }] },
+  { id: 'c-08', name: 'Class 8', code: 'C08', sections: [{ id: 'sec-a', name: 'Section A' }, { id: 'sec-b', name: 'Section B' }] },
+  { id: 'c-09', name: 'Class 9 (Science)', code: 'C09', sections: [{ id: 'sec-a', name: 'Section A' }, { id: 'sec-b', name: 'Section B' }] },
+  { id: 'c-10', name: 'Class 10 (Science)', code: 'C10', sections: [{ id: 'sec-a', name: 'Section A' }, { id: 'sec-b', name: 'Section B' }] },
+];
+
 export default function AdminNewAdmissionPage() {
   const router = useRouter();
-  const [classes, setClasses] = useState<any[]>([]);
+  const [classes, setClasses] = useState<any[]>(INITIAL_CLASSES);
   const [loading, setLoading] = useState(false);
   const [enrollDirectly, setEnrollDirectly] = useState(true);
   const [enrollmentResult, setEnrollmentResult] = useState<any | null>(null);
@@ -62,7 +78,7 @@ export default function AdminNewAdmissionPage() {
     emergencyPhone: '',
 
     // Academic
-    applyingClassId: '',
+    applyingClassId: INITIAL_CLASSES[10].id, // Default to Class 8
     preferredSectionId: '',
     customRollNo: '',
     previousSchool: '',
@@ -74,15 +90,24 @@ export default function AdminNewAdmissionPage() {
     fetch('/api/classes')
       .then((res) => res.json())
       .then((data) => {
-        if (data.classes && data.classes.length > 0) {
-          setClasses(data.classes);
-          setFormData((prev) => ({ 
-            ...prev, 
-            applyingClassId: data.classes[0].id 
-          }));
+        const liveList = Array.isArray(data.classes) ? data.classes : Array.isArray(data) ? data : [];
+        if (liveList.length > 0) {
+          setClasses(liveList);
+          setFormData((prev) => {
+            const match = liveList.find(
+              (c: any) => c.id === prev.applyingClassId || c.code === 'C08' || c.name?.includes('8')
+            );
+            const targetClass = match || liveList[0];
+            const defaultSection = targetClass?.sections?.[0]?.id || '';
+            return { 
+              ...prev, 
+              applyingClassId: targetClass.id,
+              preferredSectionId: prev.preferredSectionId || defaultSection,
+            };
+          });
         }
       })
-      .catch(console.error);
+      .catch((err) => console.warn('Using standard class roster:', err));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -499,11 +524,16 @@ export default function AdminNewAdmissionPage() {
 
           {/* Section 3: Academic Placement */}
           <div className="space-y-4 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-              <GraduationCap className="w-5 h-5 text-purple-600" />
-              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                3. Academic Class Placement & Previous School
-              </h2>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-purple-600" />
+                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                  3. Academic Class Placement & Previous School
+                </h2>
+              </div>
+              <span className="text-[11px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+                {classes.length} Classes Available
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -513,12 +543,21 @@ export default function AdminNewAdmissionPage() {
                   name="applyingClassId"
                   required
                   value={formData.applyingClassId}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const newClassId = e.target.value;
+                    const matched = classes.find((c) => c.id === newClassId);
+                    const firstSec = matched?.sections?.[0]?.id || '';
+                    setFormData((prev) => ({
+                      ...prev,
+                      applyingClassId: newClassId,
+                      preferredSectionId: firstSec,
+                    }));
+                  }}
                   className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   {classes.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name}
+                      {c.name} {c.code ? `(${c.code})` : ''}
                     </option>
                   ))}
                 </select>
@@ -531,9 +570,20 @@ export default function AdminNewAdmissionPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 outline-none"
                 >
-                  <option value="">Default (Section A)</option>
-                  <option value="sec-a">Section A</option>
-                  <option value="sec-b">Section B</option>
+                  {(() => {
+                    const currentClass = classes.find((c) => c.id === formData.applyingClassId);
+                    const sections = currentClass?.sections && currentClass.sections.length > 0
+                      ? currentClass.sections
+                      : [
+                          { id: 'sec-a', name: 'Section A' },
+                          { id: 'sec-b', name: 'Section B' },
+                        ];
+                    return sections.map((s: any) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} {s.roomNo ? `(${s.roomNo})` : ''}
+                      </option>
+                    ));
+                  })()}
                 </select>
               </div>
               <div>
