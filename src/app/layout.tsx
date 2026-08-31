@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const viewport: Viewport = {
-  themeColor: '#0b1626',
+  themeColor: '#0a192f',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -48,7 +48,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-[#faf9f5] text-slate-800 font-sans antialiased selection:bg-gold-500 selection:text-navy-950">
+      <body className="min-h-screen bg-[#ffffff] bg-white text-slate-900 font-sans antialiased selection:bg-blue-600 selection:text-white">
         {children}
       </body>
     </html>

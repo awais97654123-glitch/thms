@@ -3,6 +3,7 @@ import prisma from '@/lib/db';
 import { generateStudentId, generateAdmissionNumber, generateRollNumber, generateQrToken, generateInvoiceNumber } from '@/lib/id-generator';
 import { hashPassword, getCurrentUser } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
+import { emailProvider } from '@/lib/email/provider';
 
 export const dynamic = 'force-dynamic';
 
@@ -221,10 +222,111 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         student,
         invoice,
         parentUsername,
+        studentUser,
+        parentUser: parent.userId ? { id: parent.userId } : null,
       };
     }, { timeout: 60000, maxWait: 30000 });
 
-    // 7. Audit Log outside transaction
+    // 6. Create in-app notifications for Student & Parent
+    try {
+      if (enrollmentResult.studentUser?.id) {
+        await prisma.notification.create({
+          data: {
+            userId: enrollmentResult.studentUser.id,
+            title: 'Welcome to The Hayatabad Model School!',
+            message: `Congratulations ${enrollmentResult.student.fullName}! Your admission has been approved for ${enrollmentResult.student.class.name} (${enrollmentResult.student.section.name}). Student ID: ${enrollmentResult.student.studentId}`,
+            type: 'ADMISSION',
+            link: '/student',
+          },
+        });
+      }
+
+      if (enrollmentResult.parentUser?.id) {
+        await prisma.notification.create({
+          data: {
+            userId: enrollmentResult.parentUser.id,
+            title: 'Admission Approved & Student Enrolled',
+            message: `Your child ${enrollmentResult.student.fullName} has been officially enrolled in ${enrollmentResult.student.class.name}. Admission Fee Voucher: ${enrollmentResult.invoice.invoiceNo}`,
+            type: 'ADMISSION',
+            link: '/parent',
+          },
+        });
+      }
+    } catch (notifErr) {
+      console.warn('In-app notification creation warning:', notifErr);
+    }
+
+    // 7. Dispatch Official Admission Approval & Credentials Email to Parent
+    const parentTargetEmail = application.fatherEmail || application.guardianEmail;
+    if (parentTargetEmail) {
+      const emailHtml = `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+          <div style="background: #0a192f; padding: 28px 24px; text-align: center; border-bottom: 3px solid #2563eb;">
+            <h1 style="color: #ffffff; font-size: 20px; margin: 0; font-family: Georgia, serif; letter-spacing: 0.5px;">THE HAYATABAD MODEL SCHOOL</h1>
+            <p style="color: #60a5fa; font-size: 11px; margin: 6px 0 0 0; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px;">Official Admission & Enrollment Confirmation</p>
+          </div>
+          
+          <div style="padding: 28px 24px; color: #1e293b;">
+            <p style="font-size: 15px; margin-top: 0;">Dear <strong>${application.fatherName || 'Parent / Guardian'}</strong>,</p>
+            <p style="font-size: 14px; line-height: 1.6; color: #475569;">
+              We are pleased to inform you that the admission application for <strong>${enrollmentResult.student.fullName}</strong> has been <strong>OFFICIALLY APPROVED</strong> and enrolled for Academic Session 2026–2027.
+            </p>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 20px 0;">
+              <h3 style="color: #0f172a; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+                Student Academic Credentials
+              </h3>
+              <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b; width: 45%;">Student ID / Username:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #2563eb; font-family: monospace; font-size: 14px;">${enrollmentResult.student.studentId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b;">Class & Section:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #0f172a;">${enrollmentResult.student.class.name} (${enrollmentResult.student.section.name})</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b;">Roll Number:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #0f172a;">${enrollmentResult.student.rollNo}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b;">Parent Portal Username:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #0f172a; font-family: monospace;">${enrollmentResult.parentUsername}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b;">Default Temporary Password:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #0f172a; font-family: monospace;">Parent@123</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #64748b;">Fee Voucher Number:</td>
+                  <td style="padding: 4px 0; font-weight: bold; color: #0f172a;">${enrollmentResult.invoice.invoiceNo}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="text-align: center; margin: 26px 0 10px 0;">
+              <a href="http://localhost:3000/login" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+                Access Portal Login ➔
+              </a>
+            </div>
+          </div>
+
+          <div style="background: #f1f5f9; padding: 14px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0;">
+            The Hayatabad Model School • Phase 3, Hayatabad, Peshawar, Pakistan • Tel: +92 91 5828850
+          </div>
+        </div>
+      `;
+
+      // Trigger email non-blockingly
+      emailProvider.sendEmail({
+        to: parentTargetEmail,
+        toName: application.fatherName || 'Parent',
+        subject: `Official Admission Confirmation — ${enrollmentResult.student.fullName} (ID: ${enrollmentResult.student.studentId})`,
+        html: emailHtml,
+      }).catch((e) => console.warn('Enrollment email dispatch warning:', e));
+    }
+
+    // 8. Audit Log outside transaction
     await logAuditEvent({
       userId: session?.userId,
       userName: session?.fullName || 'Admin',
@@ -245,7 +347,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({
       success: true,
-      message: 'Student approved and enrolled successfully with all accounts created',
+      message: 'Student approved and enrolled successfully with all accounts and email notifications dispatched',
       enrollment: {
         studentId: enrollmentResult.student.studentId,
         admissionNo: enrollmentResult.student.admissionNo,

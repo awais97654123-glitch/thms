@@ -120,84 +120,84 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
   return (
     <>
       {/* ================================================================
-          1. THIN NAVY TOP INFORMATION BAR
+          1. THIN BLUE/NAVY TOP INFORMATION BAR
          ================================================================ */}
-      <div className="bg-navy-950 text-slate-300 text-[11px] font-medium border-b border-gold-500/20 py-1.5 px-4 sm:px-6 lg:px-8 relative z-50">
+      <div className="bg-[#0a192f] text-slate-200 text-[11px] font-medium border-b border-blue-900/40 py-1.5 px-4 sm:px-6 lg:px-8 relative z-50">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
           {/* Left: Location & Contact */}
           <div className="flex items-center gap-4 text-slate-300">
-            <div className="flex items-center gap-1.5 hover:text-gold-400 transition-colors">
-              <MapPin className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+            <div className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
+              <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
               <span className="truncate">Phase 3, Hayatabad, Peshawar, Pakistan</span>
             </div>
             <div className="hidden lg:flex items-center gap-1.5 text-slate-400">
-              <span className="text-gold-500">•</span>
-              <PhoneCall className="w-3 h-3 text-gold-400 shrink-0" />
+              <span className="text-blue-500">•</span>
+              <PhoneCall className="w-3 h-3 text-blue-400 shrink-0" />
               <span>+92 91 5828850</span>
             </div>
           </div>
 
           {/* Center: Admissions Announcement Badge */}
           <div className="hidden md:flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-300 text-[10px] font-bold tracking-wide uppercase">
-              <Sparkles className="w-3 h-3 text-gold-400" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-600/25 border border-blue-500/40 text-blue-300 text-[10px] font-bold tracking-wide uppercase">
+              <Sparkles className="w-3 h-3 text-blue-400" />
               Admissions Open 2026–2027
             </span>
-            <span className="text-slate-400 text-[11px]">Limited Seats & Merit Scholarships</span>
+            <span className="text-slate-300 text-[11px]">Limited Seats & Merit Scholarships</span>
           </div>
 
           {/* Right: Quick Portals & Language */}
           <div className="flex items-center gap-3">
             <Link 
               href="/parent" 
-              className="text-slate-300 hover:text-gold-300 transition-colors flex items-center gap-1"
+              className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1"
             >
-              <Users className="w-3 h-3 text-gold-400" />
+              <Users className="w-3 h-3 text-blue-400" />
               <span>Parent Portal</span>
             </Link>
-            <span className="text-navy-700">|</span>
+            <span className="text-slate-600">|</span>
             <Link 
               href="/student" 
-              className="text-slate-300 hover:text-gold-300 transition-colors flex items-center gap-1"
+              className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1"
             >
-              <GraduationCap className="w-3 h-3 text-gold-400" />
+              <GraduationCap className="w-3 h-3 text-blue-400" />
               <span>Student Portal</span>
             </Link>
-            <span className="text-navy-700">|</span>
+            <span className="text-slate-600">|</span>
             
             {/* Language Selector */}
             <div className="relative">
               <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
-                className="flex items-center gap-1 text-slate-300 hover:text-gold-400 transition-colors"
+                className="flex items-center gap-1 text-slate-300 hover:text-blue-400 transition-colors"
                 aria-label="Select language"
               >
-                <Globe className="w-3 h-3 text-gold-400" />
+                <Globe className="w-3 h-3 text-blue-400" />
                 <span className="uppercase font-semibold">{lang}</span>
                 <ChevronDown className="w-2.5 h-2.5" />
               </button>
               {showLangMenu && (
-                <div className="absolute right-0 mt-1 w-32 bg-navy-900 border border-gold-500/30 rounded-lg shadow-xl py-1 z-50 text-slate-200">
+                <div className="absolute right-0 mt-1 w-32 bg-[#0a192f] border border-blue-800/80 rounded-lg shadow-xl py-1 z-50 text-slate-200">
                   <button
                     onClick={() => { setLang('en'); setShowLangMenu(false); }}
-                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-navy-800 ${lang === 'en' ? 'font-bold text-gold-400' : ''}`}
+                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-blue-950/60 ${lang === 'en' ? 'font-bold text-blue-400' : ''}`}
                   >
                     <span>English</span>
-                    {lang === 'en' && <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />}
+                    {lang === 'en' && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
                   </button>
                   <button
                     onClick={() => { setLang('ur'); setShowLangMenu(false); }}
-                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-navy-800 ${lang === 'ur' ? 'font-bold text-gold-400' : ''}`}
+                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-blue-950/60 ${lang === 'ur' ? 'font-bold text-blue-400' : ''}`}
                   >
                     <span>اردو (Urdu)</span>
-                    {lang === 'ur' && <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />}
+                    {lang === 'ur' && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
                   </button>
                   <button
                     onClick={() => { setLang('ps'); setShowLangMenu(false); }}
-                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-navy-800 ${lang === 'ps' ? 'font-bold text-gold-400' : ''}`}
+                    className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between hover:bg-blue-950/60 ${lang === 'ps' ? 'font-bold text-blue-400' : ''}`}
                   >
                     <span>پښتو (Pashto)</span>
-                    {lang === 'ps' && <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />}
+                    {lang === 'ps' && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
                   </button>
                 </div>
               )}
@@ -212,8 +212,8 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md border-b border-gold-500/20 shadow-md py-2.5'
-            : 'bg-white/90 backdrop-blur-sm border-b border-slate-100 py-3.5'
+            ? 'bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-md py-2.5'
+            : 'bg-white/95 backdrop-blur-sm border-b border-slate-200 py-3.5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
@@ -223,10 +223,10 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
             {onToggleSidebar && (
               <button
                 onClick={onToggleSidebar}
-                className="p-2 rounded-lg text-slate-700 hover:bg-gold-50 border border-slate-200 focus:outline-none transition-all lg:hidden"
+                className="p-2 rounded-lg text-slate-700 hover:bg-blue-50 border border-slate-200 focus:outline-none transition-all lg:hidden"
                 aria-label="Toggle Portal Sidebar"
               >
-                <Menu className="w-5 h-5 text-navy-900" />
+                <Menu className="w-5 h-5 text-blue-900" />
               </button>
             )}
 
@@ -239,10 +239,10 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
                 />
               </div>
               <div className="text-left">
-                <span className="font-serif font-bold text-navy-950 tracking-tight text-base sm:text-lg block leading-tight group-hover:text-gold-700 transition-colors">
+                <span className="font-serif font-bold text-[#0a192f] tracking-tight text-base sm:text-lg block leading-tight group-hover:text-blue-600 transition-colors">
                   THE HAYATABAD MODEL SCHOOL
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-gold-600 block">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-blue-600 block">
                   Peshawar • Established 1998
                 </span>
               </div>
@@ -259,8 +259,8 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
                   href={link.href}
                   className={`px-3 py-2 text-xs font-semibold tracking-wide transition-all duration-200 rounded-lg relative ${
                     isActive
-                      ? 'text-gold-600 font-bold bg-gold-50/80'
-                      : 'text-slate-700 hover:text-navy-950 hover:bg-slate-50'
+                      ? 'text-blue-600 font-bold bg-blue-50'
+                      : 'text-slate-700 hover:text-blue-600 hover:bg-blue-50/60'
                   }`}
                 >
                   {link.name}
@@ -275,33 +275,33 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-navy-900 text-white hover:bg-navy-800 transition-all text-xs font-medium border border-gold-500/30"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0a192f] text-white hover:bg-blue-900 transition-all text-xs font-medium border border-blue-500/30"
                 >
-                  <div className="w-5 h-5 rounded-full bg-gold-500 text-navy-950 flex items-center justify-center font-bold text-[10px]">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[10px]">
                     {currentUser.username?.[0]?.toUpperCase() || 'U'}
                   </div>
                   <span className="max-w-[100px] truncate hidden sm:inline">
                     {currentUser.fullName || currentUser.username}
                   </span>
-                  <ChevronDown className="w-3 h-3 text-gold-400" />
+                  <ChevronDown className="w-3 h-3 text-blue-300" />
                 </button>
 
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border border-slate-100 py-2 z-50 text-slate-800">
                     <div className="px-4 py-2 border-b border-slate-100">
-                      <p className="text-xs font-bold text-navy-950 truncate">
+                      <p className="text-xs font-bold text-slate-900 truncate">
                         {currentUser.fullName || currentUser.username}
                       </p>
-                      <p className="text-[10px] text-gold-600 font-semibold uppercase tracking-wider">
+                      <p className="text-[10px] text-blue-600 font-semibold uppercase tracking-wider">
                         {currentUser.role}
                       </p>
                     </div>
                     <Link
                       href={`/${currentUser.role.toLowerCase()}`}
                       onClick={() => setShowUserMenu(false)}
-                      className="flex items-center gap-2 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"
+                      className="flex items-center gap-2 px-4 py-2 text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-700"
                     >
-                      <Building2 className="w-3.5 h-3.5 text-navy-900" />
+                      <Building2 className="w-3.5 h-3.5 text-blue-600" />
                       <span>Go to Dashboard</span>
                     </Link>
                     <button
@@ -318,15 +318,15 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold text-navy-900 bg-slate-100 hover:bg-navy-900 hover:text-white border border-slate-200 transition-all"
+                  className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-800 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 transition-all"
                 >
-                  <KeyRound className="w-3.5 h-3.5 text-gold-500" />
+                  <KeyRound className="w-3.5 h-3.5 text-blue-600" />
                   <span>Portal Login</span>
                 </Link>
 
                 <Link
                   href="/admissions/apply"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-white btn-blue-prestige shadow-md"
                 >
                   <span>Apply Now</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -337,10 +337,10 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
             {/* Mobile Hamburger Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 hover:text-navy-950 border border-slate-200 transition-colors"
+              className="xl:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 hover:text-blue-600 border border-slate-200 transition-colors"
               aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6 text-navy-950" /> : <Menu className="w-6 h-6 text-navy-950" />}
+              {mobileMenuOpen ? <X className="w-6 h-6 text-slate-900" /> : <Menu className="w-6 h-6 text-slate-900" />}
             </button>
           </div>
         </div>
@@ -353,24 +353,24 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
         <div className="fixed inset-0 z-50 xl:hidden">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-navy-950/70 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-[#0a192f]/70 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
 
           {/* Drawer Container */}
-          <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl flex flex-col z-50 border-l border-gold-500/30">
+          <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl flex flex-col z-50 border-l border-blue-200">
             {/* Drawer Top */}
-            <div className="p-4 bg-navy-950 text-white flex items-center justify-between border-b border-gold-500/20">
+            <div className="p-4 bg-[#0a192f] text-white flex items-center justify-between border-b border-blue-900/40">
               <div className="flex items-center gap-2">
                 <img src="/logo.png" alt="School Logo" className="h-8 w-auto" />
                 <div>
                   <span className="font-serif text-xs font-bold block text-white">Hayatabad Model School</span>
-                  <span className="text-[9px] uppercase tracking-widest text-gold-400">Peshawar • 1998</span>
+                  <span className="text-[9px] uppercase tracking-widest text-blue-300">Peshawar • 1998</span>
                 </div>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-navy-800"
+                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-blue-900/50"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
@@ -387,14 +387,14 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-gold-50 hover:text-gold-700 transition-all"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-blue-50 hover:text-blue-600 transition-all"
                 >
                   <span>{link.name}</span>
                   <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
                 </Link>
               ))}
 
-              <div className="gold-hairline my-4" />
+              <div className="blue-hairline my-4" />
 
               <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 px-3 py-1">
                 Portals & Services
@@ -402,33 +402,33 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               <Link
                 href="/parent"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
               >
-                <Users className="w-4 h-4 text-gold-600" />
+                <Users className="w-4 h-4 text-blue-600" />
                 <span>Parent Portal</span>
               </Link>
               <Link
                 href="/student"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
               >
-                <GraduationCap className="w-4 h-4 text-gold-600" />
+                <GraduationCap className="w-4 h-4 text-blue-600" />
                 <span>Student Portal</span>
               </Link>
               <Link
                 href="/teacher"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
               >
-                <BookOpen className="w-4 h-4 text-gold-600" />
+                <BookOpen className="w-4 h-4 text-blue-600" />
                 <span>Faculty Portal</span>
               </Link>
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
               >
-                <Building2 className="w-4 h-4 text-gold-600" />
+                <Building2 className="w-4 h-4 text-blue-600" />
                 <span>Administration ERP</span>
               </Link>
             </div>
@@ -438,7 +438,7 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               <Link
                 href="/admissions/apply"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-xs font-bold text-white btn-blue-prestige shadow-md"
               >
                 <span>Apply for Admission</span>
                 <ArrowRight className="w-4 h-4" />
@@ -446,9 +446,9 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-xs font-bold text-navy-900 bg-white border border-slate-200 hover:bg-slate-100"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-blue-50 hover:text-blue-600"
               >
-                <KeyRound className="w-3.5 h-3.5 text-gold-600" />
+                <KeyRound className="w-3.5 h-3.5 text-blue-600" />
                 <span>Staff / Student Login</span>
               </Link>
             </div>

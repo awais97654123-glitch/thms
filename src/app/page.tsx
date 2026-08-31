@@ -133,7 +133,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = '', prefix = '' }: { e
 
 // Curated High-Res Educational Assets
 const IMAGES = {
-  heroCampus: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=2000&q=85',
+  heroCampus: '/hero-campus.jpg',
   aboutMain: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=85',
   aboutSecondary: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=85',
   primaryWing: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=85',
@@ -342,9 +342,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf9f5] text-slate-800 selection:bg-gold-500 selection:text-navy-950">
+    <div className="min-h-screen flex flex-col bg-[#ffffff] bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
       
-      {/* Sticky Header with Thin Navy Top Bar */}
+      {/* Sticky Header with Thin Top Bar */}
       <Header />
 
       <main className="flex-grow">
@@ -352,7 +352,7 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 1: CINEMATIC PRESTIGE HERO SECTION
            ================================================================ */}
-        <section className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-navy-950 text-white">
+        <section className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#0a192f] text-white">
           
           {/* Background Image with Ken Burns Slow Zoom */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -361,10 +361,10 @@ export default function HomePage() {
               alt="The Hayatabad Model School Campus"
               className="w-full h-full object-cover object-center animate-ken-burns filter brightness-90"
             />
-            {/* Deep Navy Vignette & Academic Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/85 to-navy-950/70" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40" />
-            <div className="absolute inset-0 bg-crest-watermark opacity-20" />
+            {/* Deep Royal Blue Vignette & Academic Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a192f] via-[#0a192f]/90 to-[#0a192f]/70" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-transparent to-[#0a192f]/40" />
+            <div className="absolute inset-0 bg-crest-watermark opacity-25" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
@@ -375,21 +375,21 @@ export default function HomePage() {
                 
                 {/* Small Section Label */}
                 <RevealOnScroll delay={100}>
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/20 border border-gold-500/40 backdrop-blur-md">
-                    <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                    <span className="text-[11px] sm:text-xs uppercase font-bold tracking-widest text-gold-300">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600/25 border border-blue-500/40 backdrop-blur-md">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-[11px] sm:text-xs uppercase font-bold tracking-widest text-blue-300">
                       Welcome to The Hayatabad Model School
                     </span>
                   </div>
                 </RevealOnScroll>
 
-                {/* Main Heading: Staggered Line Reveal with Gold Accents */}
+                {/* Main Heading: Staggered Line Reveal with Blue Accents */}
                 <RevealOnScroll delay={250}>
                   <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
                     Shaping Bright Minds, <br />
-                    <span className="text-gold-400 relative inline-block">
+                    <span className="text-blue-400 relative inline-block">
                       Building Strong Futures.
-                      <span className="absolute left-0 bottom-1 w-full h-[2px] bg-gradient-to-r from-gold-400 to-transparent" />
+                      <span className="absolute left-0 bottom-1 w-full h-[2px] bg-gradient-to-r from-blue-400 to-transparent" />
                     </span>
                   </h1>
                 </RevealOnScroll>
@@ -406,7 +406,7 @@ export default function HomePage() {
                   <div className="flex flex-wrap items-center gap-4 pt-2">
                     <Link
                       href="/admissions/apply"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold text-navy-950 btn-gold-prestige shadow-xl"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold text-white btn-blue-prestige shadow-xl shadow-blue-600/25"
                     >
                       <span>Explore Admissions 2026–27</span>
                       <ArrowRight className="w-4 h-4" />
@@ -414,10 +414,10 @@ export default function HomePage() {
 
                     <button
                       onClick={() => openTour(0)}
-                      className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-navy-900/80 hover:bg-navy-800 border border-gold-500/30 hover:border-gold-400 backdrop-blur-md transition-all shadow-lg group"
+                      className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-[#0f274a]/80 hover:bg-[#163765] border border-blue-500/30 hover:border-blue-400 backdrop-blur-md transition-all shadow-lg group"
                     >
-                      <div className="w-6 h-6 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Play className="w-3 h-3 fill-gold-400 ml-0.5" />
+                      <div className="w-6 h-6 rounded-full bg-blue-600/30 text-blue-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-3 h-3 fill-blue-300 ml-0.5" />
                       </div>
                       <span>Watch Campus Tour</span>
                     </button>
@@ -426,17 +426,17 @@ export default function HomePage() {
 
                 {/* Institutional Trust Badges */}
                 <RevealOnScroll delay={700}>
-                  <div className="pt-6 border-t border-white/10 flex flex-wrap items-center gap-6 text-xs text-slate-400">
+                  <div className="pt-6 border-t border-white/10 flex flex-wrap items-center gap-6 text-xs text-slate-300">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-gold-400" />
+                      <ShieldCheck className="w-4 h-4 text-blue-400" />
                       <span>BISE Peshawar Affiliated</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4 text-gold-400" />
+                      <Award className="w-4 h-4 text-blue-400" />
                       <span>28+ Years of Educational Legacy</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-gold-400" />
+                      <Building2 className="w-4 h-4 text-blue-400" />
                       <span>Purpose-Built Peshawar Campus</span>
                     </div>
                   </div>
@@ -447,14 +447,14 @@ export default function HomePage() {
               {/* Right Column: Floating Admissions Notice Card */}
               <div className="lg:col-span-4">
                 <RevealOnScroll delay={600} animation="reveal-slide-right">
-                  <div className="relative rounded-2xl p-6 sm:p-7 bg-gradient-to-b from-navy-900/95 to-navy-950/95 border border-gold-500/40 shadow-2xl backdrop-blur-xl space-y-5">
+                  <div className="relative rounded-2xl p-6 sm:p-7 bg-gradient-to-b from-[#0f274a]/95 to-[#0a192f]/95 border border-blue-500/30 shadow-2xl backdrop-blur-xl space-y-5">
                     
                     {/* Floating Corner Accent */}
                     <div className="flex items-center justify-between">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-gold-500 text-navy-950 shadow-md">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-blue-600 text-white shadow-md">
                         ADMISSIONS OPEN
                       </span>
-                      <span className="text-xs text-gold-400 font-semibold">
+                      <span className="text-xs text-blue-300 font-semibold">
                         Session 2026–2027
                       </span>
                     </div>
@@ -471,15 +471,15 @@ export default function HomePage() {
                     {/* Feature Bullets */}
                     <div className="space-y-2 text-xs text-slate-200">
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                         <span>Merit Scholarships for High Achievers</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                         <span>Modern Computer & Science Labs</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                         <span>Safe GPS-Monitored School Transport</span>
                       </div>
                     </div>
@@ -487,22 +487,22 @@ export default function HomePage() {
                     <div className="pt-2">
                       <Link
                         href="/admissions/apply"
-                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold text-white btn-blue-prestige shadow-md"
                       >
                         <span>Start Online Application</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-white/10">
+                    <div className="flex items-center justify-between text-[11px] text-slate-300 pt-1 border-t border-white/10">
                       <button
                         onClick={() => setProspectusModalOpen(true)}
-                        className="hover:text-gold-300 transition-colors flex items-center gap-1"
+                        className="hover:text-blue-300 transition-colors flex items-center gap-1"
                       >
-                        <Download className="w-3 h-3 text-gold-400" />
+                        <Download className="w-3 h-3 text-blue-400" />
                         <span>Download Prospectus</span>
                       </button>
-                      <Link href="/admissions/track" className="hover:text-gold-300 transition-colors">
+                      <Link href="/admissions/track" className="hover:text-blue-300 transition-colors">
                         Track Application →
                       </Link>
                     </div>
@@ -523,17 +523,17 @@ export default function HomePage() {
             
             {/* Stat Card 1 */}
             <RevealOnScroll delay={100}>
-              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+              <div className="academic-card bg-white rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-blue-600">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                   <Users className="w-5 h-5" />
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900">
                   <AnimatedCounter end={stats.totalStudents} suffix="+" />
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                   Students Enrolled
                 </p>
-                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                <p className="text-[11px] text-blue-600 mt-0.5 font-semibold">
                   Playgroup to Matric
                 </p>
               </div>
@@ -541,17 +541,17 @@ export default function HomePage() {
 
             {/* Stat Card 2 */}
             <RevealOnScroll delay={200}>
-              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+              <div className="academic-card bg-white rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-blue-600">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                   <GraduationCap className="w-5 h-5" />
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900">
                   <AnimatedCounter end={stats.totalTeachers} suffix="+" />
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                   Qualified Teachers
                 </p>
-                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                <p className="text-[11px] text-blue-600 mt-0.5 font-semibold">
                   Subject Specialists
                 </p>
               </div>
@@ -559,17 +559,17 @@ export default function HomePage() {
 
             {/* Stat Card 3 */}
             <RevealOnScroll delay={300}>
-              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+              <div className="academic-card bg-white rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-blue-600">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                   <Award className="w-5 h-5" />
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900">
                   <AnimatedCounter end={stats.matricPassRate} suffix="%" />
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                   Board Exam Success
                 </p>
-                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                <p className="text-[11px] text-blue-600 mt-0.5 font-semibold">
                   BISE Peshawar Top Marks
                 </p>
               </div>
@@ -577,17 +577,17 @@ export default function HomePage() {
 
             {/* Stat Card 4 */}
             <RevealOnScroll delay={400}>
-              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
-                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+              <div className="academic-card bg-white rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-blue-600">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900">
                   <AnimatedCounter end={stats.safeCampus} suffix="%" />
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                   Safe & Secure Campus
                 </p>
-                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                <p className="text-[11px] text-blue-600 mt-0.5 font-semibold">
                   24/7 CCTV & Guards
                 </p>
               </div>
@@ -599,7 +599,7 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 3: ABOUT US ("Why Choose Hayatabad Model School?")
            ================================================================ */}
-        <section id="about" className="py-24 sm:py-28 bg-[#faf9f5] relative overflow-hidden">
+        <section id="about" className="py-24 sm:py-28 bg-[#ffffff] bg-white relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               
@@ -608,18 +608,18 @@ export default function HomePage() {
                 <RevealOnScroll animation="reveal-slide-left">
                   <div className="relative">
                     
-                    {/* Main Image with Gold Border Frame */}
-                    <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl border-2 border-gold-500/40 bg-navy-950 group">
+                    {/* Main Image with Blue Border Frame */}
+                    <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl border-2 border-blue-500/30 bg-[#0a192f] group">
                       <img
                         src={IMAGES.aboutMain}
                         alt="Hayatabad Model School Classroom"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/70 via-transparent to-transparent" />
                     </div>
 
                     {/* Secondary Floating Student Photo */}
-                    <div className="hidden sm:block absolute -bottom-8 -right-8 w-3/5 rounded-xl overflow-hidden aspect-[4/3] shadow-2xl border-4 border-white bg-navy-950 group">
+                    <div className="hidden sm:block absolute -bottom-8 -right-8 w-3/5 rounded-xl overflow-hidden aspect-[4/3] shadow-2xl border-4 border-white bg-[#0a192f] group">
                       <img
                         src={IMAGES.aboutSecondary}
                         alt="Students engaging in laboratory learning"
@@ -628,12 +628,12 @@ export default function HomePage() {
                     </div>
 
                     {/* Established Badge Overlay */}
-                    <div className="absolute top-4 left-4 p-3 sm:p-4 rounded-xl bg-navy-950/90 text-white border border-gold-500/40 backdrop-blur-md shadow-xl flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gold-500 flex items-center justify-center text-navy-950 font-black font-serif text-lg">
+                    <div className="absolute top-4 left-4 p-3 sm:p-4 rounded-xl bg-[#0a192f]/95 text-white border border-blue-500/40 backdrop-blur-md shadow-xl flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black font-serif text-lg">
                         28
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block">
+                        <span className="text-[10px] uppercase font-bold tracking-widest text-blue-300 block">
                           Years of Legacy
                         </span>
                         <span className="text-xs font-semibold text-slate-200">
@@ -650,13 +650,13 @@ export default function HomePage() {
               <div className="lg:col-span-6 space-y-6">
                 <RevealOnScroll>
                   <div className="space-y-3">
-                    <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                    <span className="text-xs uppercase font-bold tracking-widest text-blue-600 block">
                       ABOUT OUR INSTITUTION
                     </span>
-                    <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight leading-tight">
+                    <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
                       Why Choose Hayatabad Model School?
                     </h2>
-                    <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                    <div className="w-16 h-1 bg-blue-600 rounded-full" />
                   </div>
                 </RevealOnScroll>
 
@@ -671,11 +671,11 @@ export default function HomePage() {
                   
                   {/* Feature 1 */}
                   <RevealOnScroll delay={200}>
-                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                    <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-blue-500 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                         <Award className="w-4 h-4" />
                       </div>
-                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                      <h4 className="font-serif font-bold text-slate-900 text-sm">
                         Quality Education
                       </h4>
                       <p className="text-xs text-slate-500 leading-relaxed">
@@ -686,11 +686,11 @@ export default function HomePage() {
 
                   {/* Feature 2 */}
                   <RevealOnScroll delay={300}>
-                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                    <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-blue-500 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                         <Users className="w-4 h-4" />
                       </div>
-                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                      <h4 className="font-serif font-bold text-slate-900 text-sm">
                         Experienced Faculty
                       </h4>
                       <p className="text-xs text-slate-500 leading-relaxed">
@@ -701,11 +701,11 @@ export default function HomePage() {
 
                   {/* Feature 3 */}
                   <RevealOnScroll delay={400}>
-                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                    <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-blue-500 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                         <ShieldCheck className="w-4 h-4" />
                       </div>
-                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                      <h4 className="font-serif font-bold text-slate-900 text-sm">
                         Safe Environment
                       </h4>
                       <p className="text-xs text-slate-500 leading-relaxed">
@@ -716,11 +716,11 @@ export default function HomePage() {
 
                   {/* Feature 4 */}
                   <RevealOnScroll delay={500}>
-                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                    <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-blue-500 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                         <HeartHandshake className="w-4 h-4" />
                       </div>
-                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                      <h4 className="font-serif font-bold text-slate-900 text-sm">
                         Holistic Development
                       </h4>
                       <p className="text-xs text-slate-500 leading-relaxed">
@@ -736,14 +736,14 @@ export default function HomePage() {
                   <div className="flex flex-wrap items-center gap-4 pt-3">
                     <button
                       onClick={() => setProspectusModalOpen(true)}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige shadow-md"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-white btn-blue-prestige shadow-md"
                     >
                       <Download className="w-4 h-4" />
                       <span>Download School Prospectus</span>
                     </button>
                     <Link
                       href="/admissions/apply"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
                     >
                       <span>Apply Online for 2026–2027</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -760,19 +760,19 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 4: ACADEMICS SECTION (Wings & Programs)
            ================================================================ */}
-        <section id="academics" className="py-24 sm:py-28 bg-white border-y border-slate-200 relative">
+        <section id="academics" className="py-24 sm:py-28 bg-[#ffffff] bg-white border-y border-slate-200 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Section Header */}
             <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
               <RevealOnScroll>
-                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                <span className="text-xs uppercase font-bold tracking-widest text-blue-600 block">
                   OUR ACADEMICS
                 </span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
                   Academic Excellence Across All Wings
                 </h2>
-                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <div className="w-16 h-1 bg-blue-600 rounded-full mx-auto" />
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
                   Our structured educational pipeline guides children from early foundational discovery to top-tier matriculation board distinctions.
                 </p>
@@ -784,22 +784,22 @@ export default function HomePage() {
               
               {/* Wing 1: Primary School */}
               <RevealOnScroll delay={100}>
-                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                <div className="academic-card bg-white rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                     <img
                       src={IMAGES.primaryWing}
                       alt="Primary School"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                         Playgroup – Class 5
                       </span>
                     </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                         Primary School
                       </h3>
                       <p className="text-xs text-slate-500 mt-2 leading-relaxed">
@@ -808,11 +808,11 @@ export default function HomePage() {
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Interactive Phonics & Reading</span>
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Foundational Mathematics</span>
                       </li>
                     </ul>
@@ -822,22 +822,22 @@ export default function HomePage() {
 
               {/* Wing 2: Middle School */}
               <RevealOnScroll delay={200}>
-                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                <div className="academic-card bg-white rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                     <img
                       src={IMAGES.middleWing}
                       alt="Middle School"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                         Class 6 – Class 8
                       </span>
                     </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                         Middle School
                       </h3>
                       <p className="text-xs text-slate-500 mt-2 leading-relaxed">
@@ -846,11 +846,11 @@ export default function HomePage() {
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Introductory Lab Sciences</span>
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Coding & Digital Literacy</span>
                       </li>
                     </ul>
@@ -860,22 +860,22 @@ export default function HomePage() {
 
               {/* Wing 3: Secondary School */}
               <RevealOnScroll delay={300}>
-                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                <div className="academic-card bg-white rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                     <img
                       src={IMAGES.secondaryWing}
                       alt="Secondary School"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                         Class 9 & Class 10
                       </span>
                     </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                         Secondary School
                       </h3>
                       <p className="text-xs text-slate-500 mt-2 leading-relaxed">
@@ -884,11 +884,11 @@ export default function HomePage() {
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Physics, Chem & Biology</span>
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>High Speed Computer Lab</span>
                       </li>
                     </ul>
@@ -898,22 +898,22 @@ export default function HomePage() {
 
               {/* Wing 4: Matriculation & Board Prep */}
               <RevealOnScroll delay={400}>
-                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                <div className="academic-card bg-white rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                     <img
                       src={IMAGES.matricWing}
                       alt="Matriculation Board Prep"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                         BISE Peshawar
                       </span>
                     </div>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                         Matriculation Prep
                       </h3>
                       <p className="text-xs text-slate-500 mt-2 leading-relaxed">
@@ -922,11 +922,11 @@ export default function HomePage() {
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Mock Board Examinations</span>
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                         <span>Top Position Mentorship</span>
                       </li>
                     </ul>
@@ -939,9 +939,9 @@ export default function HomePage() {
         </section>
 
         {/* ================================================================
-            SECTION 5: CAMPUS SECTION (Dark Navy Showcase)
+            SECTION 5: CAMPUS SECTION (Deep Academic Blue Showcase)
            ================================================================ */}
-        <section id="campus" className="py-24 sm:py-28 bg-navy-950 text-white relative overflow-hidden">
+        <section id="campus" className="py-24 sm:py-28 bg-[#0a192f] text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-navy-pattern opacity-40" />
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -951,13 +951,13 @@ export default function HomePage() {
               <div className="lg:col-span-5 space-y-6">
                 <RevealOnScroll>
                   <div className="space-y-3">
-                    <span className="text-xs uppercase font-bold tracking-widest text-gold-400 block">
+                    <span className="text-xs uppercase font-bold tracking-widest text-blue-400 block">
                       OUR CAMPUS
                     </span>
                     <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
                       World-Class Campus & Modern Facilities
                     </h2>
-                    <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                    <div className="w-16 h-1 bg-blue-500 rounded-full" />
                   </div>
                 </RevealOnScroll>
 
@@ -974,22 +974,22 @@ export default function HomePage() {
                       <div
                         key={fac.id}
                         onClick={() => openTour(idx)}
-                        className="p-3.5 rounded-xl bg-navy-900/80 border border-navy-800 hover:border-gold-500/50 cursor-pointer transition-all flex items-center justify-between group"
+                        className="p-3.5 rounded-xl bg-[#0f274a]/80 border border-blue-900/50 hover:border-blue-500/50 cursor-pointer transition-all flex items-center justify-between group"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-gold-500/20 text-gold-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <div className="w-8 h-8 rounded-lg bg-blue-600/25 text-blue-300 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Sparkles className="w-4 h-4" />
                           </div>
                           <div>
-                            <h4 className="text-xs sm:text-sm font-serif font-bold text-white group-hover:text-gold-300 transition-colors">
+                            <h4 className="text-xs sm:text-sm font-serif font-bold text-white group-hover:text-blue-300 transition-colors">
                               {fac.title}
                             </h4>
-                            <p className="text-[11px] text-slate-400 truncate max-w-[240px]">
+                            <p className="text-[11px] text-slate-300 truncate max-w-[240px]">
                               {fac.category}
                             </p>
                           </div>
                         </div>
-                        <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-gold-400 group-hover:translate-x-1 transition-all" />
+                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
                       </div>
                     ))}
                   </div>
@@ -999,9 +999,9 @@ export default function HomePage() {
                   <div className="pt-2">
                     <button
                       onClick={() => openTour(0)}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige shadow-lg"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-white btn-blue-prestige shadow-lg shadow-blue-600/30"
                     >
-                      <Play className="w-3.5 h-3.5 fill-navy-950" />
+                      <Play className="w-3.5 h-3.5 fill-white" />
                       <span>Take a Virtual Campus Tour</span>
                     </button>
                   </div>
@@ -1016,44 +1016,44 @@ export default function HomePage() {
                     
                     <div 
                       onClick={() => openTour(0)}
-                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-blue-900/50 hover:border-blue-500/50 transition-all shadow-xl"
                     >
                       <img src={IMAGES.scienceLab} alt="Science Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
-                        <span className="text-[10px] uppercase font-bold text-gold-400">STEM & Research</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/90 via-[#0a192f]/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-blue-300">STEM & Research</span>
                         <h5 className="font-serif text-sm font-bold text-white">Modern Science Labs</h5>
                       </div>
                     </div>
 
                     <div 
                       onClick={() => openTour(2)}
-                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-blue-900/50 hover:border-blue-500/50 transition-all shadow-xl"
                     >
                       <img src={IMAGES.computerLab} alt="Computer Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
-                        <span className="text-[10px] uppercase font-bold text-gold-400">Technology</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/90 via-[#0a192f]/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-blue-300">Technology</span>
                         <h5 className="font-serif text-sm font-bold text-white">Computer & AI Lab</h5>
                       </div>
                     </div>
 
                     <div 
                       onClick={() => openTour(3)}
-                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-blue-900/50 hover:border-blue-500/50 transition-all shadow-xl"
                     >
                       <img src={IMAGES.library} alt="Library" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
-                        <span className="text-[10px] uppercase font-bold text-gold-400">Knowledge Hub</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/90 via-[#0a192f]/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-blue-300">Knowledge Hub</span>
                         <h5 className="font-serif text-sm font-bold text-white">Academic Library</h5>
                       </div>
                     </div>
 
                     <div 
                       onClick={() => openTour(4)}
-                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-blue-900/50 hover:border-blue-500/50 transition-all shadow-xl"
                     >
                       <img src={IMAGES.sports} alt="Sports Ground" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
-                        <span className="text-[10px] uppercase font-bold text-gold-400">Athletics</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/90 via-[#0a192f]/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-blue-300">Athletics</span>
                         <h5 className="font-serif text-sm font-bold text-white">Sports Complex</h5>
                       </div>
                     </div>
@@ -1069,18 +1069,18 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 6: FACILITIES SECTION ("Everything Your Child Needs")
            ================================================================ */}
-        <section className="py-24 sm:py-28 bg-[#faf9f5]">
+        <section className="py-24 sm:py-28 bg-[#ffffff] bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
               <RevealOnScroll>
-                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                <span className="text-xs uppercase font-bold tracking-widest text-blue-600 block">
                   INFRASTRUCTURE & ENVIRONMENT
                 </span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
                   Everything Your Child Needs to Excel
                 </h2>
-                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <div className="w-16 h-1 bg-blue-600 rounded-full mx-auto" />
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
                   Comprehensive amenities ensuring physical safety, mental wellness, and intellectual enrichment.
                 </p>
@@ -1092,29 +1092,29 @@ export default function HomePage() {
                 <RevealOnScroll key={fac.id} delay={idx * 100}>
                   <div 
                     onClick={() => openTour(idx)}
-                    className="academic-card rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
+                    className="academic-card bg-white rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                       <img
                         src={fac.image}
                         alt={fac.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
-                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-navy-900/90 text-gold-400 border border-gold-500/30">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/70 via-transparent to-transparent" />
+                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#0a192f]/90 text-blue-300 border border-blue-500/30">
                         {fac.category}
                       </span>
                     </div>
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                       <div>
-                        <h4 className="font-serif text-base font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                        <h4 className="font-serif text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                           {fac.title}
                         </h4>
                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                           {fac.description}
                         </p>
                       </div>
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-gold-700">
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-600">
                         <span>Explore Space & Specs</span>
                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -1130,18 +1130,18 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 7: FACULTY SECTION
            ================================================================ */}
-        <section id="faculty" className="py-24 sm:py-28 bg-white border-t border-slate-200">
+        <section id="faculty" className="py-24 sm:py-28 bg-[#ffffff] bg-white border-t border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
               <RevealOnScroll>
-                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                <span className="text-xs uppercase font-bold tracking-widest text-blue-600 block">
                   OUR FACULTY
                 </span>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
                   Meet Our Dedicated Teachers & Leadership
                 </h2>
-                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <div className="w-16 h-1 bg-blue-600 rounded-full mx-auto" />
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
                   Our distinguished academic faculty comprises experienced educators, M.Phil subject scholars, and caring mentors.
                 </p>
@@ -1151,24 +1151,24 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {faculty.map((teacher, idx) => (
                 <RevealOnScroll key={idx} delay={idx * 100}>
-                  <div className="academic-card rounded-2xl overflow-hidden text-center group flex flex-col h-full border border-slate-200/80">
-                    <div className="relative aspect-[4/4] overflow-hidden bg-navy-950">
+                  <div className="academic-card bg-white rounded-2xl overflow-hidden text-center group flex flex-col h-full border border-slate-200">
+                    <div className="relative aspect-[4/4] overflow-hidden bg-[#0a192f]">
                       <img
                         src={teacher.image}
                         alt={teacher.name}
                         className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent" />
-                      <span className="absolute bottom-3 left-3 right-3 text-[11px] font-medium text-gold-300 truncate">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-3 left-3 right-3 text-[11px] font-medium text-blue-300 truncate">
                         {teacher.qualification}
                       </span>
                     </div>
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
                       <div>
-                        <h4 className="font-serif text-base font-bold text-navy-950">
+                        <h4 className="font-serif text-base font-bold text-slate-900">
                           {teacher.name}
                         </h4>
-                        <p className="text-xs font-semibold text-gold-700 mt-0.5">
+                        <p className="text-xs font-semibold text-blue-600 mt-0.5">
                           {teacher.designation}
                         </p>
                         <p className="text-[11px] text-slate-500 mt-1">
@@ -1190,29 +1190,29 @@ export default function HomePage() {
         </section>
 
         {/* ================================================================
-            SECTION 8: TESTIMONIALS SECTION (Dark Navy Luxury)
+            SECTION 8: TESTIMONIALS SECTION (Deep Academic Blue)
            ================================================================ */}
-        <section id="testimonials" className="py-24 sm:py-28 bg-navy-950 text-white relative overflow-hidden">
+        <section id="testimonials" className="py-24 sm:py-28 bg-[#0a192f] text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-navy-pattern opacity-50" />
           <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             
             <RevealOnScroll>
-              <span className="text-xs uppercase font-bold tracking-widest text-gold-400 block mb-2">
+              <span className="text-xs uppercase font-bold tracking-widest text-blue-400 block mb-2">
                 TESTIMONIALS & TRUST
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
                 What Parents & Alumni Say
               </h2>
-              <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto mb-12" />
+              <div className="w-16 h-1 bg-blue-500 rounded-full mx-auto mb-12" />
             </RevealOnScroll>
 
             {/* Testimonial Card */}
-            <div className="relative rounded-2xl p-8 sm:p-12 bg-navy-900/90 border border-gold-500/30 shadow-2xl backdrop-blur-xl space-y-6 min-h-[280px] flex flex-col justify-between">
+            <div className="relative rounded-2xl p-8 sm:p-12 bg-[#0f274a]/90 border border-blue-500/30 shadow-2xl backdrop-blur-xl space-y-6 min-h-[280px] flex flex-col justify-between">
               
               {/* Star Rating Indicator */}
-              <div className="flex items-center justify-center gap-1 text-gold-400">
+              <div className="flex items-center justify-center gap-1 text-blue-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-gold-400" />
+                  <Star key={i} className="w-5 h-5 fill-blue-400" />
                 ))}
               </div>
 
@@ -1223,7 +1223,7 @@ export default function HomePage() {
 
               {/* Parent Info */}
               <div className="space-y-1">
-                <h4 className="font-serif font-bold text-base text-gold-400">
+                <h4 className="font-serif font-bold text-base text-blue-400">
                   {TESTIMONIALS[currentTestimonial].parentName}
                 </h4>
                 <p className="text-xs text-slate-300">
@@ -1232,10 +1232,10 @@ export default function HomePage() {
               </div>
 
               {/* Slider Controls */}
-              <div className="flex items-center justify-between pt-4 border-t border-navy-800">
+              <div className="flex items-center justify-between pt-4 border-t border-blue-900/60">
                 <button
                   onClick={() => setCurrentTestimonial((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
-                  className="p-2 rounded-full bg-navy-800 hover:bg-gold-500 hover:text-navy-950 text-slate-300 transition-all"
+                  className="p-2 rounded-full bg-blue-950 hover:bg-blue-600 hover:text-white text-slate-300 transition-all"
                   aria-label="Previous testimonial"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -1248,7 +1248,7 @@ export default function HomePage() {
                       key={i}
                       onClick={() => setCurrentTestimonial(i)}
                       className={`h-2 rounded-full transition-all ${
-                        currentTestimonial === i ? 'w-6 bg-gold-400' : 'w-2 bg-slate-600'
+                        currentTestimonial === i ? 'w-6 bg-blue-400' : 'w-2 bg-slate-600'
                       }`}
                       aria-label={`Slide ${i + 1}`}
                     />
@@ -1257,7 +1257,7 @@ export default function HomePage() {
 
                 <button
                   onClick={() => setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length)}
-                  className="p-2 rounded-full bg-navy-800 hover:bg-gold-500 hover:text-navy-950 text-slate-300 transition-all"
+                  className="p-2 rounded-full bg-blue-950 hover:bg-blue-600 hover:text-white text-slate-300 transition-all"
                   aria-label="Next testimonial"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -1272,25 +1272,25 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 9: NEWS & EVENTS SECTION
            ================================================================ */}
-        <section id="news" className="py-24 sm:py-28 bg-[#faf9f5] border-t border-slate-200">
+        <section id="news" className="py-24 sm:py-28 bg-[#ffffff] bg-white border-t border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
               <RevealOnScroll>
                 <div className="space-y-3">
-                  <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                  <span className="text-xs uppercase font-bold tracking-widest text-blue-600 block">
                     NEWS & EVENTS
                   </span>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
                     Latest News & Campus Events
                   </h2>
-                  <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                  <div className="w-16 h-1 bg-blue-600 rounded-full" />
                 </div>
               </RevealOnScroll>
               <RevealOnScroll delay={150}>
                 <Link
                   href="/admissions/apply"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   <span>View All Academic Notices</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1303,33 +1303,33 @@ export default function HomePage() {
                 <RevealOnScroll key={item.id || idx} delay={idx * 100}>
                   <div 
                     onClick={() => setSelectedNotice(item)}
-                    className="academic-card rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
+                    className="academic-card bg-white rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-[#0a192f]">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute top-3 left-3">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                           {item.category}
                         </span>
                       </div>
-                      <div className="absolute bottom-3 right-3 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-navy-950/80 text-slate-300 backdrop-blur-sm">
+                      <div className="absolute bottom-3 right-3 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-[#0a192f]/80 text-slate-200 backdrop-blur-sm">
                         {item.date}
                       </div>
                     </div>
                     <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                       <div>
-                        <h3 className="font-serif text-base font-bold text-navy-950 group-hover:text-gold-700 transition-colors leading-snug">
+                        <h3 className="font-serif text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
                           {item.title}
                         </h3>
                         <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                           {item.excerpt}
                         </p>
                       </div>
-                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-navy-950 group-hover:text-gold-700">
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600 group-hover:text-blue-700">
                         <span>Read Full Announcement</span>
                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -1345,23 +1345,23 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 10: HIGH-CONVERSION ADMISSIONS CALL TO ACTION
            ================================================================ */}
-        <section id="admissions" className="relative py-24 sm:py-28 bg-navy-950 text-white overflow-hidden">
+        <section id="admissions" className="relative py-24 sm:py-28 bg-[#0a192f] text-white overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
               src={IMAGES.ctaBg}
               alt="Hayatabad Model School Students"
-              className="w-full h-full object-cover filter brightness-50"
+              className="w-full h-full object-cover filter brightness-40"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/80" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a192f] via-[#0a192f]/90 to-[#0a192f]/80" />
             <div className="absolute inset-0 bg-crest-watermark opacity-25" />
           </div>
 
           <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
             
             <RevealOnScroll>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/20 border border-gold-500/40 backdrop-blur-md mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                <span className="text-[11px] uppercase font-bold tracking-widest text-gold-300">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600/25 border border-blue-500/40 backdrop-blur-md mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-[11px] uppercase font-bold tracking-widest text-blue-300">
                   Begin Your Child's Journey of Excellence
                 </span>
               </div>
@@ -1380,7 +1380,7 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                 <Link
                   href="/admissions/apply"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold text-navy-950 btn-gold-prestige shadow-2xl"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold text-white btn-blue-prestige shadow-2xl shadow-blue-600/30"
                 >
                   <span>Apply for Admission Online</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1388,9 +1388,9 @@ export default function HomePage() {
 
                 <button
                   onClick={() => setProspectusModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white bg-navy-900/90 hover:bg-navy-800 border border-gold-500/40 backdrop-blur-md transition-all shadow-lg"
+                  className="inline-flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white bg-[#0f274a]/90 hover:bg-[#163765] border border-blue-500/40 backdrop-blur-md transition-all shadow-lg"
                 >
-                  <Download className="w-4 h-4 text-gold-400" />
+                  <Download className="w-4 h-4 text-blue-400" />
                   <span>Download Prospectus</span>
                 </button>
               </div>
@@ -1400,15 +1400,15 @@ export default function HomePage() {
             <RevealOnScroll delay={300}>
               <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-center gap-8 text-xs text-slate-300">
                 <div className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-gold-400" />
+                  <PhoneCall className="w-4 h-4 text-blue-400" />
                   <span>Admissions Desk: +92 91 5828850</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-gold-400" />
+                  <Mail className="w-4 h-4 text-blue-400" />
                   <span>admissions@hayatabadmodel.edu.pk</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-gold-400" />
+                  <MapPin className="w-4 h-4 text-blue-400" />
                   <span>Phase 3, Hayatabad, Peshawar</span>
                 </div>
               </div>
@@ -1422,7 +1422,7 @@ export default function HomePage() {
       {/* ================================================================
           SECTION 11: GRAND ACADEMIC FOOTER
          ================================================================ */}
-      <footer id="contact" className="bg-navy-950 text-slate-300 border-t border-gold-500/20 pt-16 pb-12">
+      <footer id="contact" className="bg-[#0a192f] text-slate-300 border-t border-blue-900/40 pt-16 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -1435,7 +1435,7 @@ export default function HomePage() {
                   <span className="font-serif font-bold text-white text-base tracking-tight block">
                     THE HAYATABAD MODEL SCHOOL
                   </span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400 block">
                     Peshawar • Established 1998
                   </span>
                 </div>
@@ -1444,8 +1444,8 @@ export default function HomePage() {
                 A prestigious academic institution providing premier education from Playgroup through Matriculation (BISE Peshawar). Committed to developing intellect, character, and progressive leadership.
               </p>
               <div className="pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-semibold bg-navy-900 border border-gold-500/30 text-gold-300">
-                  <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-semibold bg-blue-950 border border-blue-800 text-blue-300">
+                  <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
                   BISE Peshawar Registered & Affiliated
                 </span>
               </div>
@@ -1453,22 +1453,22 @@ export default function HomePage() {
 
             {/* Column 2: Quick Links (2 cols) */}
             <div className="lg:col-span-2 space-y-3">
-              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-blue-900/60 pb-2">
                 Quick Navigation
               </h4>
               <ul className="space-y-2 text-xs">
-                <li><Link href="/" className="hover:text-gold-400 transition-colors">Home Page</Link></li>
-                <li><Link href="/#about" className="hover:text-gold-400 transition-colors">About Our Legacy</Link></li>
-                <li><Link href="/#academics" className="hover:text-gold-400 transition-colors">Academic Programs</Link></li>
-                <li><Link href="/#campus" className="hover:text-gold-400 transition-colors">Campus & Labs</Link></li>
-                <li><Link href="/#faculty" className="hover:text-gold-400 transition-colors">Faculty & Staff</Link></li>
-                <li><Link href="/#news" className="hover:text-gold-400 transition-colors">News & Events</Link></li>
+                <li><Link href="/" className="hover:text-blue-400 transition-colors">Home Page</Link></li>
+                <li><Link href="/#about" className="hover:text-blue-400 transition-colors">About Our Legacy</Link></li>
+                <li><Link href="/#academics" className="hover:text-blue-400 transition-colors">Academic Programs</Link></li>
+                <li><Link href="/#campus" className="hover:text-blue-400 transition-colors">Campus & Labs</Link></li>
+                <li><Link href="/#faculty" className="hover:text-blue-400 transition-colors">Faculty & Staff</Link></li>
+                <li><Link href="/#news" className="hover:text-blue-400 transition-colors">News & Events</Link></li>
               </ul>
             </div>
 
             {/* Column 3: Academic Programs (2 cols) */}
             <div className="lg:col-span-2 space-y-3">
-              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-blue-900/60 pb-2">
                 Academic Wings
               </h4>
               <ul className="space-y-2 text-xs">
@@ -1483,24 +1483,24 @@ export default function HomePage() {
 
             {/* Column 4: Portals & Contact Info (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
-              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-blue-900/60 pb-2">
                 Campus Location & Contact
               </h4>
               <div className="space-y-2.5 text-xs text-slate-300">
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                   <span>Phase 3, Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <PhoneCall className="w-4 h-4 text-gold-400 shrink-0" />
+                  <PhoneCall className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>+92 91 5828850 / +92 333 9123456</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-gold-400 shrink-0" />
+                  <Mail className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>info@hayatabadmodel.edu.pk</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Clock className="w-4 h-4 text-gold-400 shrink-0" />
+                  <Clock className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Mon – Sat: 8:00 AM – 2:00 PM</span>
                 </div>
               </div>
@@ -1511,7 +1511,7 @@ export default function HomePage() {
                   Subscribe to School Newsletter & Circulars
                 </p>
                 {newsletterSubscribed ? (
-                  <div className="p-2.5 rounded-lg bg-gold-500/20 text-gold-300 text-xs flex items-center gap-2">
+                  <div className="p-2.5 rounded-lg bg-blue-600/20 text-blue-300 text-xs flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Thank you for subscribing!</span>
                   </div>
@@ -1523,11 +1523,11 @@ export default function HomePage() {
                       placeholder="Enter parent email address"
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg bg-navy-900 border border-navy-700 text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="flex-1 px-3 py-2 rounded-lg bg-[#0f274a] border border-blue-900 text-white text-xs focus:outline-none focus:border-blue-500"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige shrink-0"
+                      className="px-4 py-2 rounded-lg text-xs font-bold text-white btn-blue-prestige shrink-0 shadow-md"
                     >
                       Subscribe
                     </button>
@@ -1539,18 +1539,18 @@ export default function HomePage() {
           </div>
 
           {/* Bottom Bar: Copyright & Accreditation */}
-          <div className="pt-8 border-t border-navy-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="pt-8 border-t border-blue-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
             <p>
               © {new Date().getFullYear()} The Hayatabad Model School, Peshawar. All Rights Reserved.
             </p>
             <div className="flex items-center gap-6">
-              <button onClick={() => setProspectusModalOpen(true)} className="hover:text-gold-400 transition-colors">
+              <button onClick={() => setProspectusModalOpen(true)} className="hover:text-blue-400 transition-colors">
                 Prospectus PDF
               </button>
-              <Link href="/admissions/track" className="hover:text-gold-400 transition-colors">
+              <Link href="/admissions/track" className="hover:text-blue-400 transition-colors">
                 Track Application
               </Link>
-              <Link href="/login" className="hover:text-gold-400 transition-colors">
+              <Link href="/login" className="hover:text-blue-400 transition-colors">
                 Staff Portal
               </Link>
               <a
@@ -1559,7 +1559,7 @@ export default function HomePage() {
                   e.preventDefault();
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-1 hover:text-gold-400 transition-colors ml-2"
+                className="flex items-center gap-1 hover:text-blue-400 transition-colors ml-2"
               >
                 <span>Back to Top</span>
                 <ChevronUp className="w-3.5 h-3.5" />

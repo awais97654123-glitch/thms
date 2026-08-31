@@ -4,14 +4,18 @@
 
 @layer base {
   :root {
-    --navy-deep: #0b1626;
-    --navy-midnight: #060e18;
-    --navy-card: #0e1d30;
-    --gold-primary: #c59b27;
-    --gold-light: #dfc469;
-    --gold-dark: #855e1a;
-    --ivory-bg: #faf9f5;
+    --navy-deep: #0a192f;
+    --navy-midnight: #030b17;
+    --navy-card: #0c1e38;
+    --blue-primary: #2563eb;
+    --blue-light: #60a5fa;
+    --blue-dark: #1d4ed8;
+    --gold-primary: #2563eb;
+    --gold-light: #60a5fa;
+    --gold-dark: #1d4ed8;
+    --ivory-bg: #ffffff;
     --ivory-card: #ffffff;
+    --pure-white: #ffffff;
   }
 
   html {
@@ -19,8 +23,8 @@
   }
 
   body {
-    color: #1e293b;
-    background-color: var(--ivory-bg);
+    color: #0f172a;
+    background-color: #ffffff;
     font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -33,7 +37,7 @@
 }
 
 /* ================================================================
-   PRESTIGE ACADEMIC DESIGN SYSTEM & LUXURY UTILITIES
+   PRESTIGE BLUE & PURE WHITE DESIGN SYSTEM & UTILITIES
    ================================================================ */
 
 /* Hero Cinematic Ken Burns Zoom */
@@ -53,72 +57,73 @@
   animation: kenBurnsSlow 22s ease-in-out infinite alternate;
 }
 
-/* Subtle Gold Hairline & Dividers */
-.gold-hairline {
-  background: linear-gradient(90deg, transparent 0%, #c59b27 35%, #e5c058 50%, #c59b27 65%, transparent 100%);
+/* Subtle Blue Hairline & Dividers */
+.blue-hairline, .gold-hairline {
+  background: linear-gradient(90deg, transparent 0%, #2563eb 35%, #60a5fa 50%, #2563eb 65%, transparent 100%);
   height: 1px;
 }
 
-.gold-hairline-vertical {
-  background: linear-gradient(180deg, transparent 0%, #c59b27 35%, #e5c058 50%, #c59b27 65%, transparent 100%);
+.blue-hairline-vertical, .gold-hairline-vertical {
+  background: linear-gradient(180deg, transparent 0%, #2563eb 35%, #60a5fa 50%, #2563eb 65%, transparent 100%);
   width: 1px;
 }
 
 /* Luxury Academic Cards */
 .academic-card {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.85);
-  box-shadow: 0 4px 20px -2px rgba(11, 22, 38, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .academic-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(197, 155, 39, 0.45);
-  box-shadow: 0 20px 35px -8px rgba(11, 22, 38, 0.12), 0 0 0 1px rgba(197, 155, 39, 0.25);
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 20px 35px -8px rgba(37, 99, 235, 0.12), 0 0 0 1px rgba(37, 99, 235, 0.25);
 }
 
 .navy-luxury-card {
-  background: linear-gradient(145deg, #0e1d30 0%, #08121f 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(145deg, #0c1e38 0%, #061325 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.4);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navy-luxury-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(197, 155, 39, 0.5);
-  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.5), 0 0 18px rgba(197, 155, 39, 0.2);
+  border-color: rgba(37, 99, 235, 0.6);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 99, 235, 0.25);
 }
 
-/* Gold Accent Buttons */
-.btn-gold-prestige {
-  background: linear-gradient(135deg, #d4af37 0%, #c59b27 60%, #a77c1d 100%);
-  color: #07121d;
+/* Blue Accent Buttons */
+.btn-blue-prestige, .btn-gold-prestige {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 60%, #1d4ed8 100%);
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 4px 14px 0 rgba(197, 155, 39, 0.35);
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.35);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-gold-prestige:hover {
-  background: linear-gradient(135deg, #dfc469 0%, #d4af37 60%, #c59b27 100%);
+.btn-blue-prestige:hover, .btn-gold-prestige:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 60%, #2563eb 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px 0 rgba(197, 155, 39, 0.45);
+  box-shadow: 0 8px 24px 0 rgba(37, 99, 235, 0.45);
+  color: #ffffff;
 }
 
 .btn-navy-prestige {
-  background: #0b1626;
+  background: #0a192f;
   color: #ffffff;
-  border: 1px solid rgba(197, 155, 39, 0.3);
-  box-shadow: 0 4px 12px rgba(11, 22, 38, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 12px rgba(10, 25, 47, 0.2);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-navy-prestige:hover {
-  background: #11223a;
-  border-color: #c59b27;
+  background: #0f274a;
+  border-color: #3b82f6;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(11, 22, 38, 0.25);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 /* Scroll-triggered reveal states */
@@ -154,15 +159,15 @@
 
 /* Elegant Watermark Background */
 .bg-crest-watermark {
-  background-image: radial-gradient(rgba(197, 155, 39, 0.04) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .bg-navy-pattern {
-  background-color: #0b1626;
+  background-color: #0a192f;
   background-image: 
-    radial-gradient(circle at 100% 0%, rgba(197, 155, 39, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 0% 100%, rgba(26, 55, 79, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(30, 58, 138, 0.4) 0%, transparent 50%),
     radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: auto, auto, 24px 24px;
 }
@@ -173,14 +178,14 @@
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b1626;
+  background: #0a192f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c59b27;
+  background: #2563eb;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #dfc469;
+  background: #60a5fa;
 }
 
 /* Accessibility & Reduced Motion */

@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
+import NotificationBell from '@/components/common/NotificationBell';
 
 export default function StudentDashboardPage() {
   const [student, setStudent] = useState<any | null>(null);
@@ -174,9 +175,10 @@ export default function StudentDashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+            <NotificationBell />
             <Link
               href="/student/ai-assistant"
-              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
+              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl btn-blue-prestige text-white text-xs font-bold shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
               <Bot className="w-4 h-4 animate-pulse" />
               <span>Ask AI Copilot</span>

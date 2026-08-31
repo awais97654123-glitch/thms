@@ -57,10 +57,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ffffff] flex flex-col justify-between text-slate-900 relative overflow-hidden mesh-orange-bg subtle-grid-orange">
+    <div className="min-h-screen bg-[#ffffff] flex flex-col justify-between text-slate-900 relative overflow-hidden">
       {/* Background Ambient Glow Orbs */}
-      <div className="absolute top-10 left-10 w-[500px] h-[500px] bg-orange-400/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-amber-400/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-10 left-10 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
       {/* Top Floating Header */}
       <header className="p-4 sm:p-6 max-w-7xl w-full mx-auto flex items-center justify-between z-10">
@@ -68,13 +68,13 @@ export default function LoginPage() {
           <img
             src="/logo.png"
             alt="THMS"
-            className="h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.2)] group-hover:scale-105 transition-transform"
+            className="h-12 w-auto object-contain drop-shadow-[0_2px_8px_rgba(37,99,235,0.2)] group-hover:scale-105 transition-transform"
           />
           <div>
             <span className="font-black text-sm text-slate-900 tracking-tight block">
               The Hayatabad Model School
             </span>
-            <span className="text-[11px] text-orange-700 block font-bold">
+            <span className="text-[11px] text-blue-700 block font-bold">
               Central Portal Authentication Gateway
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function LoginPage() {
 
         <Link
           href="/"
-          className="px-4 py-2 rounded-2xl text-xs font-bold text-slate-700 bg-white hover:bg-orange-50 border border-slate-200 shadow-sm transition-all hover:scale-105"
+          className="px-4 py-2 rounded-2xl text-xs font-bold text-slate-700 bg-white hover:bg-blue-50 border border-slate-200 shadow-sm transition-all hover:scale-105"
         >
           ← Back to Website
         </Link>
@@ -94,8 +94,8 @@ export default function LoginPage() {
           
           {/* Left Column: Branding & Overview */}
           <div className="lg:col-span-6 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100 border border-orange-200 text-orange-800 text-xs font-black backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-orange-600 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 border border-blue-200 text-blue-800 text-xs font-black backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
               <span>Session 2026-2027 Academic Network</span>
             </div>
 
@@ -110,28 +110,28 @@ export default function LoginPage() {
 
             {/* Role Features Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="glass-panel p-3.5 rounded-2xl border border-white space-y-1">
-                <span className="text-orange-600 font-black flex items-center gap-1.5">
+              <div className="glass-panel p-3.5 rounded-2xl border border-slate-200 bg-white/80 space-y-1">
+                <span className="text-blue-600 font-black flex items-center gap-1.5">
                   <Building2 className="w-3.5 h-3.5" /> Admin Control
                 </span>
                 <p className="text-[11px] text-slate-500 font-medium">Admissions, 3-copy fee billing & gate scanning</p>
               </div>
 
-              <div className="glass-panel p-3.5 rounded-2xl border border-white space-y-1">
+              <div className="glass-panel p-3.5 rounded-2xl border border-slate-200 bg-white/80 space-y-1">
                 <span className="text-blue-600 font-black flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" /> Teacher Hub
                 </span>
                 <p className="text-[11px] text-slate-500 font-medium">Daily attendance, homework tasks & marks</p>
               </div>
 
-              <div className="glass-panel p-3.5 rounded-2xl border border-white space-y-1">
-                <span className="text-purple-600 font-black flex items-center gap-1.5">
+              <div className="glass-panel p-3.5 rounded-2xl border border-slate-200 bg-white/80 space-y-1">
+                <span className="text-indigo-600 font-black flex items-center gap-1.5">
                   <GraduationCap className="w-3.5 h-3.5" /> Student Desk
                 </span>
                 <p className="text-[11px] text-slate-500 font-medium">Exam report card, timetable & digital ID</p>
               </div>
 
-              <div className="glass-panel p-3.5 rounded-2xl border border-white space-y-1">
+              <div className="glass-panel p-3.5 rounded-2xl border border-slate-200 bg-white/80 space-y-1">
                 <span className="text-emerald-600 font-black flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" /> Parent Portal
                 </span>
@@ -148,21 +148,21 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => handleQuickFill('admin', 'Admin@123')}
-                  className="px-2.5 py-1 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-800 text-[11px] font-bold border border-orange-200 transition-colors"
+                  className="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-bold border border-blue-200 transition-colors"
                 >
                   Super Admin
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickFill('teacher.farooq', 'Teacher@123')}
-                  className="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-bold border border-blue-200 transition-colors"
+                  className="px-2.5 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 text-[11px] font-bold border border-sky-200 transition-colors"
                 >
                   Teacher
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickFill('THMS-2026-000001', 'Student@123')}
-                  className="px-2.5 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 text-[11px] font-bold border border-purple-200 transition-colors"
+                  className="px-2.5 py-1 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-[11px] font-bold border border-indigo-200 transition-colors"
                 >
                   Student
                 </button>
@@ -179,7 +179,7 @@ export default function LoginPage() {
 
           {/* Right Column: Glassmorphic Login Form */}
           <div className="lg:col-span-6">
-            <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-white shadow-2xl space-y-6">
+            <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-slate-200 bg-white/95 shadow-2xl space-y-6">
               
               <div className="space-y-1.5 text-center">
                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -210,7 +210,7 @@ export default function LoginPage() {
                       placeholder="e.g. admin or THMS-2026-000001"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200 bg-white focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 font-medium"
+                      className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 font-medium"
                     />
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export default function LoginPage() {
                     </label>
                     <Link
                       href="/forgot-password"
-                      className="text-[11px] font-bold text-orange-600 hover:text-orange-700"
+                      className="text-[11px] font-bold text-blue-600 hover:text-blue-700"
                     >
                       Forgot password?
                     </Link>
@@ -235,7 +235,7 @@ export default function LoginPage() {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200 bg-white focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 font-medium"
+                      className="w-full pl-10 pr-3.5 py-3 rounded-2xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 font-medium"
                     />
                   </div>
                 </div>
@@ -243,7 +243,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] hover:shadow-orange-500/35 disabled:opacity-50 cursor-pointer"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] hover:shadow-blue-500/35 disabled:opacity-50 cursor-pointer"
                 >
                   <span>Sign In to Portal</span>
                   <ArrowRight className="w-4 h-4" />
@@ -254,7 +254,7 @@ export default function LoginPage() {
                 <span>Looking for new admission? </span>
                 <Link
                   href="/admissions/apply"
-                  className="font-bold text-orange-600 hover:text-orange-700 inline-flex items-center gap-1"
+                  className="font-bold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
                 >
                   <span>Apply Online ➔</span>
                 </Link>

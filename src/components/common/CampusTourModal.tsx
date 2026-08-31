@@ -82,15 +82,15 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-navy-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#0a192f]/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-5xl bg-navy-900 border border-gold-500/30 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-5xl bg-[#0c1e38] border border-blue-500/30 rounded-2xl shadow-2xl overflow-hidden text-white flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-navy-800 bg-navy-950/90">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-blue-900/50 bg-[#0a192f]/95">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-navy-800 transition-all"
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-blue-900/50 transition-all"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -114,17 +114,17 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
         {/* Modal Body */}
         <div className="overflow-y-auto flex-1 p-6 space-y-6">
           {/* Main Visual Carousel */}
-          <div className="relative rounded-xl overflow-hidden aspect-[16/9] sm:aspect-[21/9] bg-navy-950 border border-navy-800 shadow-inner group">
+          <div className="relative rounded-xl overflow-hidden aspect-[16/9] sm:aspect-[21/9] bg-[#0a192f] border border-blue-900/60 shadow-inner group">
             <img
               src={current.image}
               alt={current.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-[#0a192f]/40 to-transparent" />
 
             {/* Top Badge */}
             <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-blue-600 text-white shadow-md">
                 {current.category}
               </span>
             </div>
@@ -132,14 +132,14 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
             {/* Navigation Arrows */}
             <button
               onClick={handlePrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-navy-900/80 hover:bg-gold-500 hover:text-navy-950 text-white border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0a192f]/80 hover:bg-blue-600 text-white border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg"
               aria-label="Previous facility"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-navy-900/80 hover:bg-gold-500 hover:text-navy-950 text-white border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0a192f]/80 hover:bg-blue-600 text-white border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm shadow-lg"
               aria-label="Next facility"
             >
               <ChevronRight className="w-5 h-5" />
@@ -148,7 +148,7 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
             {/* Slide Indicator Overlay */}
             <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
               <div>
-                <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
+                <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">
                   Facility {currentIdx + 1} of {CAMPUS_FACILITIES.length}
                 </p>
                 <h4 className="font-serif text-xl sm:text-2xl font-bold text-white">
@@ -159,9 +159,9 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
           </div>
 
           {/* Facility Details & Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-navy-950/60 p-5 rounded-xl border border-navy-800">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#0a192f]/60 p-5 rounded-xl border border-blue-900/50">
             <div className="md:col-span-2 space-y-3">
-              <h5 className="text-sm font-bold uppercase tracking-wider text-gold-400">
+              <h5 className="text-sm font-bold uppercase tracking-wider text-blue-400">
                 Facility Overview
               </h5>
               <p className="text-slate-300 text-sm leading-relaxed font-sans">
@@ -169,13 +169,13 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
               </p>
             </div>
             <div>
-              <h5 className="text-sm font-bold uppercase tracking-wider text-gold-400 mb-3">
+              <h5 className="text-sm font-bold uppercase tracking-wider text-blue-400 mb-3">
                 Key Highlights
               </h5>
               <ul className="space-y-2">
                 {current.features.map((feat, i) => (
                   <li key={i} className="flex items-center gap-2 text-xs text-slate-200">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                     <span>{feat}</span>
                   </li>
                 ))}
@@ -191,12 +191,12 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
                 onClick={() => setCurrentIdx(idx)}
                 className={`relative rounded-lg overflow-hidden aspect-[4/3] border transition-all text-left group ${
                   currentIdx === idx
-                    ? 'border-gold-500 ring-2 ring-gold-500/40 opacity-100 scale-105'
-                    : 'border-navy-800 opacity-60 hover:opacity-100'
+                    ? 'border-blue-500 ring-2 ring-blue-500/40 opacity-100 scale-105'
+                    : 'border-blue-900/60 opacity-60 hover:opacity-100'
                 }`}
               >
                 <img src={fac.image} alt={fac.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-navy-950/50 flex items-end p-1.5">
+                <div className="absolute inset-0 bg-[#0a192f]/50 flex items-end p-1.5">
                   <span className="text-[10px] font-bold text-white leading-tight truncate">
                     {fac.title}
                   </span>
@@ -207,21 +207,21 @@ export default function CampusTourModal({ isOpen, onClose, initialSlide = 0 }: C
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-navy-800 bg-navy-950 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <MapPin className="w-3.5 h-3.5 text-gold-400" />
+        <div className="px-6 py-4 border-t border-blue-900/50 bg-[#0a192f] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs text-slate-300">
+            <MapPin className="w-3.5 h-3.5 text-blue-400" />
             <span>On-site physical visits welcome Monday–Saturday, 8:00 AM – 2:00 PM</span>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white bg-navy-800 hover:bg-navy-700 transition-all"
+              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white bg-blue-950/80 hover:bg-blue-900 transition-all border border-blue-800"
             >
               Close Tour
             </button>
             <a
               href="/admissions/apply"
-              className="px-5 py-2 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige"
+              className="px-5 py-2 rounded-lg text-xs font-bold text-white btn-blue-prestige shadow-md"
             >
               Apply for Admission →
             </a>

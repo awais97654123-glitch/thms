@@ -52,9 +52,9 @@ function TrackContent() {
       case 'ENROLLED':
         return { label: 'Enrolled & Portal Active', color: 'bg-emerald-50 text-emerald-800 border-emerald-300' };
       case 'APPROVED':
-        return { label: 'Approved for Enrollment', color: 'bg-gold-50 text-gold-800 border-gold-400' };
+        return { label: 'Approved for Enrollment', color: 'bg-blue-50 text-blue-800 border-blue-300' };
       case 'INTERVIEW_SCHEDULED':
-        return { label: 'Interview Scheduled', color: 'bg-navy-50 text-navy-800 border-navy-300' };
+        return { label: 'Interview Scheduled', color: 'bg-indigo-50 text-indigo-800 border-indigo-300' };
       case 'UNDER_REVIEW':
         return { label: 'Under Review', color: 'bg-amber-50 text-amber-800 border-amber-300' };
       case 'REJECTED':
@@ -67,11 +67,11 @@ function TrackContent() {
   return (
     <div className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-10">
       <div className="text-center mb-8 space-y-2">
-        <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-navy-900 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
-          <Search className="w-3.5 h-3.5" />
+        <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0a192f] border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
+          <Search className="w-3.5 h-3.5 text-blue-400" />
           Live Application Tracker
         </span>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
           Track Admission Application Status
         </h1>
         <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -89,13 +89,13 @@ function TrackContent() {
               placeholder="Enter Application Code (e.g. THMS-APP-2026-0042)"
               value={applicationNo}
               onChange={(e) => setApplicationNo(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-gold-500 font-mono"
+              className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
             />
           </div>
           <button
             type="submit"
             disabled={loading || !applicationNo}
-            className="px-6 py-2.5 text-navy-950 text-xs font-bold rounded-xl btn-gold-prestige shadow transition-all flex items-center gap-1.5 disabled:opacity-50"
+            className="px-6 py-2.5 text-white text-xs font-bold rounded-xl btn-blue-prestige shadow transition-all flex items-center gap-1.5 disabled:opacity-50"
           >
             {loading ? <span className="animate-spin">⏳</span> : <Search className="w-4 h-4" />}
             <span>Track</span>
@@ -111,7 +111,7 @@ function TrackContent() {
               setApplicationNo('THMS-APP-2026-0042');
               fetchStatus('THMS-APP-2026-0042');
             }}
-            className="font-mono text-navy-900 hover:text-gold-600 underline font-bold"
+            className="font-mono text-blue-600 hover:text-blue-700 underline font-bold"
           >
             THMS-APP-2026-0042
           </button>
@@ -134,7 +134,7 @@ function TrackContent() {
               <span className="text-[10px] uppercase font-bold text-slate-400 block">
                 Application Tracking Code
               </span>
-              <h3 className="font-serif text-xl font-bold text-navy-950">
+              <h3 className="font-serif text-xl font-bold text-slate-900">
                 {appData.applicationNo}
               </h3>
             </div>
@@ -157,7 +157,7 @@ function TrackContent() {
             </div>
             <div>
               <span className="text-slate-400 block text-[10px]">Applying For</span>
-              <strong className="text-navy-900 font-bold">{appData.applyingClass?.name || 'Class 8'}</strong>
+              <strong className="text-blue-600 font-bold">{appData.applyingClass?.name || 'Class 8'}</strong>
             </div>
             <div>
               <span className="text-slate-400 block text-[10px]">Father / Guardian</span>
@@ -180,20 +180,20 @@ function TrackContent() {
           </div>
 
           {/* Next Steps Advisory */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
-            <h4 className="font-serif text-xs font-bold uppercase tracking-wider text-navy-950">
+          <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-1">
+            <h4 className="font-serif text-xs font-bold uppercase tracking-wider text-blue-950">
               Admissions Office Advisory
             </h4>
             <p className="text-xs text-slate-600">
-              Please ensure you bring the original B-Form/CNIC and previous school certificate on the date of entry assessment. For any queries, contact the admissions desk at <span className="font-bold text-navy-900">+92 91 5828850</span>.
+              Please ensure you bring the original B-Form/CNIC and previous school certificate on the date of entry assessment. For any queries, contact the admissions desk at <span className="font-bold text-blue-600">+92 91 5828850</span>.
             </p>
           </div>
 
           <div className="pt-2 flex justify-between items-center text-xs">
-            <Link href="/" className="text-navy-900 hover:text-gold-600 font-semibold">
+            <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold">
               ← Return to Main Website
             </Link>
-            <Link href="/admissions/apply" className="font-bold text-navy-900 hover:text-gold-600">
+            <Link href="/admissions/apply" className="font-bold text-blue-600 hover:text-blue-700">
               Submit Another Application →
             </Link>
           </div>
@@ -205,7 +205,7 @@ function TrackContent() {
 
 export default function AdmissionTrackPage() {
   return (
-    <div className="min-h-screen bg-[#faf9f5] flex flex-col selection:bg-gold-500 selection:text-navy-950">
+    <div className="min-h-screen bg-[#ffffff] bg-white flex flex-col selection:bg-blue-600 selection:text-white">
       <Header />
       <Suspense fallback={<div className="flex-1 flex items-center justify-center p-12 text-slate-500 text-xs">Loading Application Tracker...</div>}>
         <TrackContent />

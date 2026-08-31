@@ -157,17 +157,17 @@ export default function AdmissionApplyPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#faf9f5] flex flex-col selection:bg-gold-500 selection:text-navy-950">
+    <div className="min-h-screen bg-[#ffffff] bg-white flex flex-col selection:bg-blue-600 selection:text-white">
       <Header />
 
       <div className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-10">
         {/* Breadcrumb / Title */}
         <div className="text-center mb-8 space-y-2">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-navy-900 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0a192f] border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
             Online Admission Gateway 2026–2027
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
             The Hayatabad Model School Admission Portal
           </h1>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -184,9 +184,9 @@ export default function AdmissionApplyPage() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow transition-all ${
                       step === idx + 1
-                        ? 'bg-navy-900 text-gold-400 ring-4 ring-gold-500/20 border border-gold-500/50'
+                        ? 'bg-blue-600 text-white ring-4 ring-blue-500/20 border border-blue-500'
                         : step > idx + 1
-                        ? 'bg-gold-500 text-navy-950 font-black'
+                        ? 'bg-blue-600 text-white font-black'
                         : 'bg-slate-100 text-slate-400 border border-slate-200'
                     }`}
                   >
@@ -200,7 +200,7 @@ export default function AdmissionApplyPage() {
             </div>
             <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-navy-900 to-gold-500 h-full transition-all duration-300"
+                className="bg-gradient-to-r from-[#0a192f] to-blue-600 h-full transition-all duration-300"
                 style={{ width: `${((step - 1) / 4) * 100}%` }}
               />
             </div>
@@ -757,7 +757,7 @@ export default function AdmissionApplyPage() {
               )}
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between pt-6 border-t mt-6">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200 mt-6">
                 {step > 1 ? (
                   <button
                     type="button"
@@ -775,16 +775,16 @@ export default function AdmissionApplyPage() {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-6 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-all"
+                    className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-all"
                   >
                     <span>Continue Step</span>
-                    <ArrowRight className="w-4 h-4 text-gold-400" />
+                    <ArrowRight className="w-4 h-4 text-white" />
                   </button>
                 ) : (
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-8 py-3 rounded-xl text-navy-950 text-xs font-bold flex items-center gap-2 btn-gold-prestige shadow-lg transition-all"
+                    className="px-8 py-3 rounded-xl text-white text-xs font-bold flex items-center gap-2 btn-blue-prestige shadow-lg shadow-blue-600/30 transition-all"
                   >
                     {loading ? <span className="animate-spin">⏳</span> : <CheckCircle2 className="w-4 h-4" />}
                     <span>Submit Official Admission Application</span>

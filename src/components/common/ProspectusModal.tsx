@@ -26,19 +26,19 @@ export default function ProspectusModal({ isOpen, onClose }: ProspectusModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-navy-950/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#0a192f]/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-xl bg-white border border-gold-500/30 rounded-2xl shadow-2xl overflow-hidden text-slate-800 flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-xl bg-white border border-blue-500/30 rounded-2xl shadow-2xl overflow-hidden text-slate-800 flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="bg-navy-950 px-6 py-5 text-white flex items-center justify-between border-b border-gold-500/30">
+        <div className="bg-[#0a192f] px-6 py-5 text-white flex items-center justify-between border-b border-blue-900/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400 block">
                 Official Document
               </span>
               <h3 className="font-serif text-lg font-bold text-white leading-tight">
@@ -48,7 +48,7 @@ export default function ProspectusModal({ isOpen, onClose }: ProspectusModalProp
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-800 transition-all"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-blue-900/50 transition-all"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -56,11 +56,11 @@ export default function ProspectusModal({ isOpen, onClose }: ProspectusModalProp
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5 overflow-y-auto">
-          <div className="bg-gold-50/60 p-4 rounded-xl border border-gold-200 flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+        <div className="p-6 space-y-5 overflow-y-auto bg-white">
+          <div className="bg-blue-50/70 p-4 rounded-xl border border-blue-200 flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
             <div className="text-xs text-slate-700 space-y-1">
-              <p className="font-bold text-navy-900">Academic Session 2026–2027</p>
+              <p className="font-bold text-blue-950">Academic Session 2026–2027</p>
               <p>
                 Comprehensive curriculum breakdown from Playgroup through Matriculation (BISE Peshawar), fee structure, faculty credentials, co-curricular calendar, and rules of discipline.
               </p>
@@ -72,34 +72,34 @@ export default function ProspectusModal({ isOpen, onClose }: ProspectusModalProp
               Prospectus Table of Contents
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-gold-600 shrink-0" />
+              <div className="p-3 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                 <span className="font-medium text-slate-800">Academic Wings & Syllabus</span>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-gold-600 shrink-0" />
+              <div className="p-3 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                 <span className="font-medium text-slate-800">Transparent Fee Structure</span>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-gold-600 shrink-0" />
+              <div className="p-3 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                 <span className="font-medium text-slate-800">Merit Scholarship Criteria</span>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-gold-600 shrink-0" />
+              <div className="p-3 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                 <span className="font-medium text-slate-800">BISE Matric Board Prep</span>
               </div>
             </div>
           </div>
 
-          <div className="p-4 bg-navy-900 text-white rounded-xl border border-navy-800 flex items-center justify-between">
+          <div className="p-4 bg-[#0a192f] text-white rounded-xl border border-blue-900/60 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-gold-400">Digital Document (PDF)</p>
+              <p className="text-xs font-semibold text-blue-400">Digital Document (PDF)</p>
               <p className="text-sm font-bold">Hayatabad_Model_School_Prospectus_2026.pdf</p>
               <p className="text-[11px] text-slate-400">4.8 MB • High Resolution</p>
             </div>
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white btn-blue-prestige shadow-md"
             >
               <Download className="w-4 h-4" />
               <span>{downloaded ? 'Downloaded ✓' : 'Download PDF'}</span>
@@ -112,7 +112,7 @@ export default function ProspectusModal({ isOpen, onClose }: ProspectusModalProp
           <span className="text-xs text-slate-500">Need printed copy? Visit Campus Desk</span>
           <a
             href="/admissions/apply"
-            className="text-xs font-bold text-navy-900 hover:text-gold-600 transition-colors"
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
             Go directly to Online Admission →
           </a>
