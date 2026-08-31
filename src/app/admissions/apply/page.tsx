@@ -157,58 +157,58 @@ export default function AdmissionApplyPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-[#faf9f5] flex flex-col selection:bg-gold-500 selection:text-navy-950">
       <Header />
 
-      <div className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8">
+      <div className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-10">
         {/* Breadcrumb / Title */}
-        <div className="text-center mb-8">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            Online Admission Gateway 2026
+        <div className="text-center mb-8 space-y-2">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-navy-900 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            Online Admission Gateway 2026–2027
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            The Hayatabad Model School Admission Form
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
+            The Hayatabad Model School Admission Portal
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Please fill in accurate details. You will receive an instant tracking application number.
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            Please fill in accurate details. You will receive an official application tracking code upon completion.
           </p>
         </div>
 
         {/* Multi-step progress bar */}
         {!submittedApp && (
-          <div className="mb-8">
+          <div className="mb-8 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex items-center justify-between">
               {stepTitles.map((title, idx) => (
                 <div key={idx} className="flex flex-col items-center flex-1">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow transition-all ${
                       step === idx + 1
-                        ? 'bg-blue-600 text-white ring-4 ring-blue-100'
+                        ? 'bg-navy-900 text-gold-400 ring-4 ring-gold-500/20 border border-gold-500/50'
                         : step > idx + 1
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-slate-200 text-slate-500'
+                        ? 'bg-gold-500 text-navy-950 font-black'
+                        : 'bg-slate-100 text-slate-400 border border-slate-200'
                     }`}
                   >
                     {step > idx + 1 ? '✓' : idx + 1}
                   </div>
-                  <span className="text-[10px] text-slate-600 mt-1 font-medium hidden sm:block text-center">
+                  <span className="text-[10px] text-slate-600 mt-1 font-semibold hidden sm:block text-center">
                     {title}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-blue-600 to-emerald-500 h-full transition-all duration-300"
+                className="bg-gradient-to-r from-navy-900 to-gold-500 h-full transition-all duration-300"
                 style={{ width: `${((step - 1) / 4) * 100}%` }}
-              ></div>
+              />
             </div>
           </div>
         )}
 
         {/* Step Container Form */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200">
+        <div className="academic-card bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200">
           {submittedApp ? (
             /* Submission Success Screen */
             <div className="text-center py-8 space-y-6">
@@ -775,16 +775,16 @@ export default function AdmissionApplyPage() {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-all"
+                    className="px-6 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-all"
                   >
-                    <span>Continue</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>Continue Step</span>
+                    <ArrowRight className="w-4 h-4 text-gold-400" />
                   </button>
                 ) : (
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/25 transition-all"
+                    className="px-8 py-3 rounded-xl text-navy-950 text-xs font-bold flex items-center gap-2 btn-gold-prestige shadow-lg transition-all"
                   >
                     {loading ? <span className="animate-spin">⏳</span> : <CheckCircle2 className="w-4 h-4" />}
                     <span>Submit Official Admission Application</span>

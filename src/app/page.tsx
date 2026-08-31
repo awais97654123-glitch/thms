@@ -16,11 +16,9 @@ import {
   Mail, 
   CheckCircle2, 
   ChevronRight, 
+  ChevronLeft,
   Compass, 
   Cpu, 
-  Palette, 
-  Mic, 
-  Zap, 
   Star, 
   Clock, 
   HelpCircle, 
@@ -29,12 +27,32 @@ import {
   Search, 
   HeartHandshake, 
   KeyRound, 
-  X 
+  X,
+  Play,
+  Download,
+  FileText,
+  Building2,
+  Phone,
+  ArrowUpRight,
+  ChevronUp
 } from 'lucide-react';
 import Header from '@/components/common/Header';
+import CampusTourModal, { CAMPUS_FACILITIES } from '@/components/common/CampusTourModal';
+import NoticeModal from '@/components/common/NoticeModal';
+import ProspectusModal from '@/components/common/ProspectusModal';
 
 // Smooth Scroll Reveal Wrapper using IntersectionObserver
-function RevealOnScroll({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function RevealOnScroll({ 
+  children, 
+  className = '', 
+  delay = 0,
+  animation = 'reveal-init'
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+  delay?: number;
+  animation?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -46,7 +64,7 @@ function RevealOnScroll({ children, className = '', delay = 0 }: { children: Rea
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
     if (ref.current) {
@@ -60,15 +78,15 @@ function RevealOnScroll({ children, className = '', delay = 0 }: { children: Rea
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`reveal-init ${isVisible ? 'reveal-visible' : ''} ${className}`}
+      className={`${animation} ${isVisible ? 'reveal-visible' : ''} ${className}`}
     >
       {children}
     </div>
   );
 }
 
-// Animated Smooth Number Counter on Scroll
-function AnimatedCounter({ end, duration = 2000, suffix = '' }: { end: number; duration?: number; suffix?: string }) {
+// Smooth Number Counter on Viewport Enter
+function AnimatedCounter({ end, duration = 2000, suffix = '', prefix = '' }: { end: number; duration?: number; suffix?: string; prefix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const [started, setStarted] = useState(false);
@@ -106,32 +124,147 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }: { end: number; d
 
   return (
     <span ref={ref}>
+      {prefix}
       {count.toLocaleString()}
       {suffix}
     </span>
   );
 }
 
+// Curated High-Res Educational Assets
+const IMAGES = {
+  heroCampus: 'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=2000&q=85',
+  aboutMain: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=85',
+  aboutSecondary: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=85',
+  primaryWing: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=85',
+  middleWing: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=85',
+  secondaryWing: 'https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1000&q=85',
+  matricWing: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1000&q=85',
+  scienceLab: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1000&q=85',
+  computerLab: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=85',
+  library: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1000&q=85',
+  sports: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1000&q=85',
+  transport: 'https://images.unsplash.com/photo-1557223562-6c77ef16210f?auto=format&fit=crop&w=1000&q=85',
+  ctaBg: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=2000&q=85',
+};
+
+// Fallback faculty data if API is pending
+const DEFAULT_FACULTY = [
+  {
+    name: 'Prof. Muhammad Tariq Khan',
+    designation: 'Principal & Head of Academic Council',
+    department: 'Academic Leadership',
+    qualification: 'M.Phil Education (Gold Medalist), M.Sc Physics',
+    experience: '24+ Years Experience',
+    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    name: 'Dr. Shahida Parveen',
+    designation: 'Vice Principal & Head of Science Wing',
+    department: 'Biological Sciences',
+    qualification: 'Ph.D. Biotechnology, M.Sc Botany',
+    experience: '18+ Years Experience',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    name: 'Engr. Farhan Ali Afridi',
+    designation: 'Head of STEM & Computer Science',
+    department: 'Computer Science & Robotics',
+    qualification: 'MS Computer Engineering (UET Peshawar)',
+    experience: '12+ Years Experience',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    name: 'Mrs. Samina Qureshi',
+    designation: 'Head of Primary & Early Years Wing',
+    department: 'Child Development & Phonics',
+    qualification: 'M.A. English Literature & Montessori Certified',
+    experience: '15+ Years Experience',
+    image: 'https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80',
+  },
+];
+
+// Fallback announcements
+const DEFAULT_ANNOUNCEMENTS = [
+  {
+    id: 1,
+    title: 'Admissions Open for Session 2026–2027 (Playgroup to 10th Class)',
+    date: 'August 28, 2026',
+    category: 'Admissions',
+    excerpt: 'Registration is now open for prospective students across all academic wings. Entrance evaluation dates and merit scholarship test schedules announced.',
+    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    id: 2,
+    title: 'Outstanding BISE Peshawar Board Matriculation Examination Results',
+    date: 'August 20, 2026',
+    category: 'Academic Honor',
+    excerpt: 'Hayatabad Model School students secured top distinction positions in BISE Peshawar SSC annual exams with a 100% pass record in Pre-Medical & Pre-Engineering.',
+    image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    id: 3,
+    title: 'Annual Inter-School Science Olympiad & Robotics Exhibition 2026',
+    date: 'August 12, 2026',
+    category: 'STEM & Co-Curricular',
+    excerpt: 'Students showcased over 40 innovative prototypes in renewable energy, automated robotics, and environmental science before esteemed university judges.',
+    image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=800&q=80',
+  },
+];
+
+// Testimonials Data
+const TESTIMONIALS = [
+  {
+    id: 1,
+    quote:
+      'The Hayatabad Model School has provided my children with not only stellar academic preparation for their board exams, but also a deep sense of discipline, Islamic values, and self-confidence. The teachers are exceptional.',
+    parentName: 'Dr. Asadullah Jan',
+    parentRole: 'Parent of Class 9 & Class 7 Students • Consultant Surgeon, Hayatabad Medical Complex',
+    rating: 5,
+  },
+  {
+    id: 2,
+    quote:
+      'The focus on conceptual learning and hands-on science laboratories makes all the difference. My daughter secured 94% in BISE Peshawar Matric exams and effortlessly gained admission into top pre-medical colleges.',
+    parentName: 'Engr. Maria Bibi',
+    parentRole: 'Parent of 2025 SSC Alumna • Senior Telecommunications Engineer',
+    rating: 5,
+  },
+  {
+    id: 3,
+    quote:
+      'From safe transport to monitored classrooms and active parent-teacher communication via their portal, the administration operates with absolute transparency and prestige. A true model school.',
+    parentName: 'Col. (R) Tariq Mahmood',
+    parentRole: 'Parent of Class 5 Student • Phase 3 Resident, Peshawar',
+    rating: 5,
+  },
+];
+
 export default function HomePage() {
   const [stats, setStats] = useState({
     totalStudents: 1250,
-    totalTeachers: 48,
+    totalTeachers: 85,
     yearsExcellence: 28,
-    matricPassRate: 100,
-    academicWings: 4,
-    secureCampus: 100,
+    matricPassRate: 98,
+    safeCampus: 100,
   });
 
-  const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [faculty, setFaculty] = useState<any[]>([]);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [activeLightboxImage, setActiveLightboxImage] = useState<string | null>(null);
-
-  // Mouse position for subtle interactive hero ambient glow
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [announcements, setAnnouncements] = useState<any[]>(DEFAULT_ANNOUNCEMENTS);
+  const [faculty, setFaculty] = useState<any[]>(DEFAULT_FACULTY);
+  
+  // Modals state
+  const [tourModalOpen, setTourModalOpen] = useState(false);
+  const [tourInitialSlide, setTourInitialSlide] = useState(0);
+  const [selectedNotice, setSelectedNotice] = useState<any | null>(null);
+  const [prospectusModalOpen, setProspectusModalOpen] = useState(false);
+  
+  // Testimonials Slider State
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
   useEffect(() => {
-    // Fetch real dashboard stats
+    // Fetch live dashboard stats if available
     fetch('/api/admin/dashboard-stats')
       .then((res) => res.json())
       .then((data) => {
@@ -145,1006 +278,1316 @@ export default function HomePage() {
       })
       .catch(() => {});
 
-    // Fetch real faculty
+    // Fetch faculty
     fetch('/api/teachers')
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.teachers && data.teachers.length > 0) {
-          setFaculty(data.teachers.slice(0, 8));
+        if (data.success && Array.isArray(data.teachers) && data.teachers.length > 0) {
+          const formatted = data.teachers.slice(0, 4).map((t: any, idx: number) => ({
+            name: t.fullName || t.name,
+            designation: t.designation || 'Senior Educator',
+            department: t.department || t.subject || 'Faculty of Sciences',
+            qualification: t.qualification || 'M.Phil / Master Degree',
+            experience: t.experience || 'Experienced Educator',
+            image: t.photoUrl || DEFAULT_FACULTY[idx % DEFAULT_FACULTY.length].image,
+          }));
+          setFaculty(formatted);
         }
       })
       .catch(() => {});
 
-    // Fetch real announcements
+    // Fetch announcements
     fetch('/api/announcements')
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.announcements) {
-          setAnnouncements(data.announcements.slice(0, 4));
+        if (data.success && Array.isArray(data.announcements) && data.announcements.length > 0) {
+          const formatted = data.announcements.slice(0, 3).map((a: any, idx: number) => ({
+            id: a.id,
+            title: a.title,
+            date: new Date(a.createdAt || Date.now()).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+            category: a.category || 'Official Circular',
+            excerpt: a.content ? a.content.substring(0, 140) + '...' : DEFAULT_ANNOUNCEMENTS[idx % DEFAULT_ANNOUNCEMENTS.length].excerpt,
+            content: a.content,
+            image: a.imageUrl || DEFAULT_ANNOUNCEMENTS[idx % DEFAULT_ANNOUNCEMENTS.length].image,
+          }));
+          setAnnouncements(formatted);
         }
       })
       .catch(() => {});
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+  // Automatic Testimonial Slider
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const openTour = (slideIndex = 0) => {
+    setTourInitialSlide(slideIndex);
+    setTourModalOpen(true);
   };
 
-  // 8 Core Pillars
-  const whyChooseUs = [
-    {
-      title: 'Academic Excellence & BISE Top Positions',
-      desc: 'Proven track record of top positions in BISE Peshawar Board matric examinations with rigorous academic mentoring.',
-      icon: Award,
-      color: 'from-orange-500 to-amber-500',
-    },
-    {
-      title: 'Character, Discipline & Islamic Ethics',
-      desc: 'Holistic upbringing cultivating personal responsibility, Islamic values, punctuality, and mutual respect.',
-      icon: HeartHandshake,
-      color: 'from-amber-500 to-orange-600',
-    },
-    {
-      title: 'Modern Computer & AI Laboratories',
-      desc: 'High-speed coding workstations, computer programming, digital literacy, and artificial intelligence workshops.',
-      icon: Cpu,
-      color: 'from-slate-900 to-slate-800',
-    },
-    {
-      title: 'Robotics & STEM Hands-on Learning',
-      desc: 'Practical physics, chemistry, biology, and robotics kits that spark innovation and critical inquiry in young minds.',
-      icon: Compass,
-      color: 'from-orange-600 to-amber-600',
-    },
-    {
-      title: 'Certified & Caring Faculty Specialists',
-      desc: 'Experienced subject matter educators dedicated to individualized student attention and conceptual mastery.',
-      icon: Users,
-      color: 'from-amber-600 to-orange-500',
-    },
-    {
-      title: 'Smart Campus & Instant Gate QR Tracking',
-      desc: 'Encrypted digital ID cards with real-time gate entry/exit logging instantly notified to parents’ mobile portals.',
-      icon: ShieldCheck,
-      color: 'from-emerald-600 to-teal-600',
-    },
-    {
-      title: 'Sports, Arts & Co-Curricular Growth',
-      desc: 'Vibrant indoor & outdoor athletics, bilingual declamation contests, arts studio, and inter-school science exhibitions.',
-      icon: Palette,
-      color: 'from-orange-500 to-amber-500',
-    },
-    {
-      title: '100% Merit & Sibling Scholarships',
-      desc: 'Financial fee concessions and full merit scholarships rewarding high academic achievers, orphans, and siblings.',
-      icon: Sparkles,
-      color: 'from-amber-500 to-orange-600',
-    },
-  ];
-
-  // Campus Facilities
-  const campusFacilities = [
-    {
-      title: 'Modern Computer & AI Laboratory',
-      subtitle: 'Coding, Digital Literacy & Artificial Intelligence',
-      desc: 'Our dedicated IT and computer labs are equipped with high-speed networked workstations, modern software development tools, and multimedia projectors where students learn programming foundations, AI concepts, and digital design.',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80',
-      tag: 'Technology & Computing',
-    },
-    {
-      title: 'Advanced Science Laboratories',
-      subtitle: 'Physics, Chemistry & Biology Practical Work',
-      desc: 'Fully equipped experimental stations adhering to BISE Peshawar Board standards. Students conduct hands-on chemical reactions, microscopic biological observations, and optical physics experiments under certified lab instructors.',
-      image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80',
-      tag: 'Scientific Discovery',
-    },
-    {
-      title: 'Smart Classrooms & Audio-Visual Learning',
-      subtitle: 'Interactive Digital Whiteboards & Ergonomic Spaces',
-      desc: 'Airy, well-ventilated, and naturally lit classrooms featuring digital projectors, interactive learning displays, and comfortable seating designed to maximize student engagement and collaborative study.',
-      image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&auto=format&fit=crop&q=80',
-      tag: 'Modern Environment',
-    },
-    {
-      title: 'Sports Arena & Outdoor Playgrounds',
-      subtitle: 'Physical Fitness, Teamwork & Athletics',
-      desc: 'Spacious sports grounds catering to cricket, football, badminton, and table tennis. Regular physical training sessions promote sportsmanship, endurance, and physical health in a safe, monitored setting.',
-      image: 'https://images.unsplash.com/photo-1526676037777-05a232554f77?w=800&auto=format&fit=crop&q=80',
-      tag: 'Athletics & Health',
-    },
-  ];
-
-  // 4 Academic Stages
-  const learningStages = [
-    {
-      stage: '01',
-      name: 'Early Years Montessori',
-      grades: 'Playgroup • Nursery • Prep',
-      age: 'Ages 3 – 6 Years',
-      desc: 'Child-centric sensory exploration, phonics mastery, cognitive foundation, socialization, and nurturing care in safe classrooms.',
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      stage: '02',
-      name: 'Primary Foundation Wing',
-      grades: 'Class 1 to Class 5',
-      age: 'Ages 6 – 11 Years',
-      desc: 'Bilingual literacy, mathematical logic, basic computer skills, general sciences, and Islamic moral education development.',
-      image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      stage: '03',
-      name: 'Middle STEM Wing',
-      grades: 'Class 6 to Class 8',
-      age: 'Ages 11 – 14 Years',
-      desc: 'Integrated physical and biological sciences, algebraic reasoning, computer programming, and pre-matric academic rigor.',
-      image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      stage: '04',
-      name: 'Secondary / BISE Board (Matric)',
-      grades: 'Class 9 & Class 10',
-      age: 'Ages 14 – 16 Years',
-      desc: 'Comprehensive BISE Peshawar board examination preparation in Science & Computer Science groups with intensive practical labs.',
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80',
-    },
-  ];
-
-  const galleryImages = [
-    { src: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&auto=format&fit=crop&q=80', title: 'Smart Classroom Collaboration' },
-    { src: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80', title: 'Chemistry & Biology Laboratory' },
-    { src: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80', title: 'Computer Science & AI Lab' },
-    { src: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80', title: 'Central Reference Library' },
-    { src: 'https://images.unsplash.com/photo-1526676037777-05a232554f77?w=800&auto=format&fit=crop&q=80', title: 'Campus Sports & Activity Day' },
-    { src: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80', title: 'Montessori Play & Learn Session' },
-  ];
-
-  const faqs = [
-    { q: 'How do I submit an online admission application for Session 2026-2027?', a: 'Click the "Apply for Admission" button in the header or hero section. Fill in student details, parent contact information, and upload a student photograph. You will receive an instant application tracking ID.' },
-    { q: 'What curriculum and examination board is followed?', a: 'We follow the standardized National Curriculum aligned with BISE Peshawar Board for Matriculation, enriched with Oxford & Cambridge STEM, robotics, and bilingual English fluency programs.' },
-    { q: 'Are merit and need-based scholarships available?', a: 'Yes! We offer up to 100% tuition scholarships for academic position holders, orphans, and siblings.' },
-    { q: 'How does the Smart Attendance and QR gate system work?', a: 'Every student receives an official Smart ID card with an encrypted QR code. Attendance is recorded in real time upon arrival and departure and synced directly to the parent and student portals.' },
-  ];
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newsletterEmail) {
+      setNewsletterSubscribed(true);
+      setNewsletterEmail('');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-slate-900 font-sans selection:bg-orange-500 selection:text-white flex flex-col mesh-orange-bg subtle-grid-orange">
-      {/* Universal Sticky Header on Public Website */}
+    <div className="min-h-screen flex flex-col bg-[#faf9f5] text-slate-800 selection:bg-gold-500 selection:text-navy-950">
+      
+      {/* Sticky Header with Thin Navy Top Bar */}
       <Header />
 
-      {/* 1. HERO SECTION — Bright, Vivid Campus Photography with Staggered Animations */}
-      <section 
-        onMouseMove={handleMouseMove}
-        className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-36 bg-slate-900 text-white"
-      >
-        {/* Crisp, Bright, High-Clarity Campus Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-75 scale-105 transition-transform duration-1000 ease-out"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&auto=format&fit=crop&q=85')` }}
-        ></div>
-
-        {/* Luminous Soft Gradient Overlay for Crystal Clear Text Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-900/40 to-slate-950/80"></div>
-        <div 
-          className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-500/25 via-amber-500/20 to-transparent blur-3xl pointer-events-none transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
-          style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
-        ></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-center z-10">
+      <main className="flex-grow">
+        
+        {/* ================================================================
+            SECTION 1: CINEMATIC PRESTIGE HERO SECTION
+           ================================================================ */}
+        <section className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-navy-950 text-white">
           
-          {/* Animated School Badge */}
-          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-slate-900/80 backdrop-blur-xl text-orange-400 text-xs font-black border border-orange-500/40 shadow-xl animate-in fade-in slide-in-from-top-4 duration-700">
-            <Sparkles className="w-4 h-4 text-orange-400 animate-spin" />
-            <span className="tracking-widest uppercase">The Hayatabad Model School • Phase 3, Peshawar</span>
+          {/* Background Image with Ken Burns Slow Zoom */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img
+              src={IMAGES.heroCampus}
+              alt="The Hayatabad Model School Campus"
+              className="w-full h-full object-cover object-center animate-ken-burns filter brightness-90"
+            />
+            {/* Deep Navy Vignette & Academic Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/85 to-navy-950/70" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40" />
+            <div className="absolute inset-0 bg-crest-watermark opacity-20" />
           </div>
 
-          {/* Staggered Animated Headline with Glowing Shadow */}
-          <div className="space-y-3 max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1] drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-              Shaping Bright Minds.
-              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent drop-shadow-md">
-                Building Strong Futures.
-              </span>
-            </h1>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+              
+              {/* Left Column: Hero Typography & Call-To-Actions */}
+              <div className="lg:col-span-8 space-y-6 text-left">
+                
+                {/* Small Section Label */}
+                <RevealOnScroll delay={100}>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/20 border border-gold-500/40 backdrop-blur-md">
+                    <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                    <span className="text-[11px] sm:text-xs uppercase font-bold tracking-widest text-gold-300">
+                      Welcome to The Hayatabad Model School
+                    </span>
+                  </div>
+                </RevealOnScroll>
 
-            <p className="text-base sm:text-xl text-slate-100 font-medium leading-relaxed max-w-3xl mx-auto pt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-              Delivering 28+ years of premier academic excellence, character building, state-of-the-art AI laboratories, and proven BISE Peshawar Board position holders from <strong className="text-white font-bold">Playgroup to Class 10 (Matric)</strong>.
-            </p>
-          </div>
+                {/* Main Heading: Staggered Line Reveal with Gold Accents */}
+                <RevealOnScroll delay={250}>
+                  <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
+                    Shaping Bright Minds, <br />
+                    <span className="text-gold-400 relative inline-block">
+                      Building Strong Futures.
+                      <span className="absolute left-0 bottom-1 w-full h-[2px] bg-gradient-to-r from-gold-400 to-transparent" />
+                    </span>
+                  </h1>
+                </RevealOnScroll>
 
-          {/* Hero Action Buttons */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-            <Link
-              href="/admissions/apply"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/30 flex items-center justify-center gap-3 transition-all hover:scale-105 hover:shadow-orange-500/40"
-            >
-              <span>Apply for Admission</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+                {/* Supporting Body Paragraph */}
+                <RevealOnScroll delay={400}>
+                  <p className="text-base sm:text-lg text-slate-300 font-sans leading-relaxed max-w-2xl">
+                    Nurturing talent, character, and academic leadership since 1998 in the heart of Peshawar. Affiliated with BISE Peshawar for matriculation, blending modern STEM disciplines with moral excellence.
+                  </p>
+                </RevealOnScroll>
 
-            <a
-              href="#about"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 hover:bg-slate-900 text-white font-black text-sm border border-white/30 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
-            >
-              <span>Explore Our School</span>
-              <ChevronDown className="w-4 h-4 text-orange-400" />
-            </a>
+                {/* Hero Buttons */}
+                <RevealOnScroll delay={550}>
+                  <div className="flex flex-wrap items-center gap-4 pt-2">
+                    <Link
+                      href="/admissions/apply"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold text-navy-950 btn-gold-prestige shadow-xl"
+                    >
+                      <span>Explore Admissions 2026–27</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
 
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-950/90 hover:bg-slate-900 text-slate-100 font-black text-sm border border-slate-700 flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
-            >
-              <KeyRound className="w-4 h-4 text-orange-400" />
-              <span>Login to ERP</span>
-            </Link>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 2. REAL ANIMATED COUNTING STATISTICS SECTION (Frosted Glassmorphic Box) */}
-      <RevealOnScroll className="relative -mt-12 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white/80 backdrop-blur-2xl rounded-3xl border border-white/90 shadow-[0_12px_40px_rgba(249,115,22,0.1)] p-8 sm:p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-          
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.totalStudents} suffix="+" />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Students Enrolled</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.totalTeachers} suffix="+" />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Active Teachers</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.yearsExcellence} suffix="+" />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Years of Legacy</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.matricPassRate} suffix="%" />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">BISE Board Pass</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.academicWings} />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Academic Wings</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-sm space-y-1">
-            <h3 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              <AnimatedCounter end={stats.secureCampus} suffix="%" />
-            </h3>
-            <p className="text-[10px] font-black uppercase tracking-wider text-orange-600">Secure QR Gate</p>
-          </div>
-
-        </div>
-      </RevealOnScroll>
-
-      {/* 3. "WHY CHOOSE THE HAYATABAD MODEL SCHOOL?" (Frosted Glass Cards) */}
-      <section className="py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              The THMS Standard
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              Why Choose The Hayatabad Model School?
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Combining 28 years of pedagogical tradition with 21st-century technological tools and character development.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {whyChooseUs.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:border-orange-300 transition-all duration-300 space-y-4 group hover:-translate-y-1 h-full flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-6 h-6" />
+                    <button
+                      onClick={() => openTour(0)}
+                      className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-navy-900/80 hover:bg-navy-800 border border-gold-500/30 hover:border-gold-400 backdrop-blur-md transition-all shadow-lg group"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-3 h-3 fill-gold-400 ml-0.5" />
                       </div>
-                      <div className="space-y-2">
-                        <h3 className="font-black text-base text-slate-900 leading-snug group-hover:text-orange-600 transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                          {item.desc}
-                        </p>
-                      </div>
+                      <span>Watch Campus Tour</span>
+                    </button>
+                  </div>
+                </RevealOnScroll>
+
+                {/* Institutional Trust Badges */}
+                <RevealOnScroll delay={700}>
+                  <div className="pt-6 border-t border-white/10 flex flex-wrap items-center gap-6 text-xs text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-gold-400" />
+                      <span>BISE Peshawar Affiliated</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-gold-400" />
+                      <span>28+ Years of Educational Legacy</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-gold-400" />
+                      <span>Purpose-Built Peshawar Campus</span>
                     </div>
                   </div>
                 </RevealOnScroll>
-              );
-            })}
+
+              </div>
+
+              {/* Right Column: Floating Admissions Notice Card */}
+              <div className="lg:col-span-4">
+                <RevealOnScroll delay={600} animation="reveal-slide-right">
+                  <div className="relative rounded-2xl p-6 sm:p-7 bg-gradient-to-b from-navy-900/95 to-navy-950/95 border border-gold-500/40 shadow-2xl backdrop-blur-xl space-y-5">
+                    
+                    {/* Floating Corner Accent */}
+                    <div className="flex items-center justify-between">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-gold-500 text-navy-950 shadow-md">
+                        ADMISSIONS OPEN
+                      </span>
+                      <span className="text-xs text-gold-400 font-semibold">
+                        Session 2026–2027
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h2 className="font-serif text-xl font-bold text-white leading-snug">
+                        Enroll Your Child for Academic Distinction
+                      </h2>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        Admissions open for Playgroup, Primary, Middle, and Matriculation (Science & Humanities). Limited seats per section.
+                      </p>
+                    </div>
+
+                    {/* Feature Bullets */}
+                    <div className="space-y-2 text-xs text-slate-200">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <span>Merit Scholarships for High Achievers</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <span>Modern Computer & Science Labs</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0" />
+                        <span>Safe GPS-Monitored School Transport</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <Link
+                        href="/admissions/apply"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige"
+                      >
+                        <span>Start Online Application</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-white/10">
+                      <button
+                        onClick={() => setProspectusModalOpen(true)}
+                        className="hover:text-gold-300 transition-colors flex items-center gap-1"
+                      >
+                        <Download className="w-3 h-3 text-gold-400" />
+                        <span>Download Prospectus</span>
+                      </button>
+                      <Link href="/admissions/track" className="hover:text-gold-300 transition-colors">
+                        Track Application →
+                      </Link>
+                    </div>
+
+                  </div>
+                </RevealOnScroll>
+              </div>
+
+            </div>
           </div>
+        </section>
 
-        </div>
-      </section>
-
-      {/* 4. ABOUT THE SCHOOL SECTION — Frosted Glass Container */}
-      <section id="about" className="py-20 bg-white/70 backdrop-blur-xl border-y border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Left: Large High-Quality Campus Visual */}
-          <RevealOnScroll className="lg:col-span-6 relative" delay={100}>
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white group">
-              <img
-                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&auto=format&fit=crop&q=80"
-                alt="Students at The Hayatabad Model School"
-                className="w-full h-[450px] object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                <span className="text-xs font-black text-orange-400 uppercase tracking-widest">Established 1998</span>
-                <h4 className="text-lg font-black">28+ Years of Academic Excellence in Peshawar</h4>
+        {/* ================================================================
+            SECTION 2: FLOATING STATISTICS BAR (Overlapping Bottom of Hero)
+           ================================================================ */}
+        <section className="relative z-20 -mt-10 sm:-mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            
+            {/* Stat Card 1 */}
+            <RevealOnScroll delay={100}>
+              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+                  <Users className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                  <AnimatedCounter end={stats.totalStudents} suffix="+" />
+                </h3>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
+                  Students Enrolled
+                </p>
+                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                  Playgroup to Matric
+                </p>
               </div>
-            </div>
-          </RevealOnScroll>
+            </RevealOnScroll>
 
-          {/* Right: School Mission & Narrative */}
-          <RevealOnScroll className="lg:col-span-6 space-y-6" delay={200}>
-            <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
-                About The School
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight leading-tight">
-                Education Beyond the Classroom
-              </h2>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              Founded in 1998 in Phase 3, Hayatabad, Peshawar, <strong className="text-slate-900 font-bold">The Hayatabad Model School</strong> has developed into one of Khyber Pakhtunkhwa’s premier educational institutions. We believe that true education extends far beyond memorization—it is about nurturing curiosity, building moral integrity, and fostering technological proficiency.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-white/80 backdrop-blur-md border border-orange-200/80 shadow-sm space-y-1">
-                <span className="font-black text-xs text-orange-950 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-orange-600" />
-                  Holistic Development
-                </span>
-                <p className="text-[11px] text-slate-600 font-medium">Balancing academic rigor with sports, arts, and character building.</p>
+            {/* Stat Card 2 */}
+            <RevealOnScroll delay={200}>
+              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                  <AnimatedCounter end={stats.totalTeachers} suffix="+" />
+                </h3>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
+                  Qualified Teachers
+                </p>
+                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                  Subject Specialists
+                </p>
               </div>
+            </RevealOnScroll>
 
-              <div className="p-4 rounded-2xl bg-white/80 backdrop-blur-md border border-amber-200/80 shadow-sm space-y-1">
-                <span className="font-black text-xs text-amber-950 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600" />
-                  Islamic Moral Values
-                </span>
-                <p className="text-[11px] text-slate-600 font-medium">Instilling honesty, humility, punctuality, and civic respect.</p>
+            {/* Stat Card 3 */}
+            <RevealOnScroll delay={300}>
+              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+                  <Award className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                  <AnimatedCounter end={stats.matricPassRate} suffix="%" />
+                </h3>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
+                  Board Exam Success
+                </p>
+                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                  BISE Peshawar Top Marks
+                </p>
               </div>
-            </div>
+            </RevealOnScroll>
 
-            <div className="pt-2">
-              <a
-                href="#academics"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs shadow-md transition-all hover:scale-105"
-              >
-                <span>Discover Our Academic Wings</span>
-                <ArrowRight className="w-3.5 h-3.5 text-orange-400" />
-              </a>
-            </div>
-          </RevealOnScroll>
+            {/* Stat Card 4 */}
+            <RevealOnScroll delay={400}>
+              <div className="academic-card rounded-2xl p-5 sm:p-6 text-center group border-t-2 border-t-gold-500">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600 group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-navy-950">
+                  <AnimatedCounter end={stats.safeCampus} suffix="%" />
+                </h3>
+                <p className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
+                  Safe & Secure Campus
+                </p>
+                <p className="text-[11px] text-gold-700 mt-0.5 font-medium">
+                  24/7 CCTV & Guards
+                </p>
+              </div>
+            </RevealOnScroll>
 
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* 5. CAMPUS & FACILITIES (Frosted Glass Layout) */}
-      <section id="campus" className="py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Campus Infrastructure
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              Our Campus & Facilities
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Purpose-built facilities engineered to inspire, experiment, discover, and excel in both academics and sports.
-            </p>
-          </RevealOnScroll>
-
-          <div className="space-y-12">
-            {campusFacilities.map((fac, idx) => {
-              const isEven = idx % 2 === 0;
-              return (
-                <RevealOnScroll key={idx} delay={idx * 100}>
-                  <div
-                    className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-all ${
-                      isEven ? '' : 'lg:flex-row-reverse'
-                    }`}
-                  >
-                    {/* Visual */}
-                    <div className={`lg:col-span-6 overflow-hidden rounded-2xl ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
+        {/* ================================================================
+            SECTION 3: ABOUT US ("Why Choose Hayatabad Model School?")
+           ================================================================ */}
+        <section id="about" className="py-24 sm:py-28 bg-[#faf9f5] relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              
+              {/* Left Column: Prestigious Multi-Image Composition */}
+              <div className="lg:col-span-6 relative">
+                <RevealOnScroll animation="reveal-slide-left">
+                  <div className="relative">
+                    
+                    {/* Main Image with Gold Border Frame */}
+                    <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl border-2 border-gold-500/40 bg-navy-950 group">
                       <img
-                        src={fac.image}
-                        alt={fac.title}
-                        className="w-full h-72 sm:h-80 object-cover hover:scale-105 transition-transform duration-500 rounded-2xl"
+                        src={IMAGES.aboutMain}
+                        alt="Hayatabad Model School Classroom"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
+                    </div>
+
+                    {/* Secondary Floating Student Photo */}
+                    <div className="hidden sm:block absolute -bottom-8 -right-8 w-3/5 rounded-xl overflow-hidden aspect-[4/3] shadow-2xl border-4 border-white bg-navy-950 group">
+                      <img
+                        src={IMAGES.aboutSecondary}
+                        alt="Students engaging in laboratory learning"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
 
-                    {/* Content */}
-                    <div className={`lg:col-span-6 space-y-4 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-                        {fac.tag}
+                    {/* Established Badge Overlay */}
+                    <div className="absolute top-4 left-4 p-3 sm:p-4 rounded-xl bg-navy-950/90 text-white border border-gold-500/40 backdrop-blur-md shadow-xl flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gold-500 flex items-center justify-center text-navy-950 font-black font-serif text-lg">
+                        28
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block">
+                          Years of Legacy
+                        </span>
+                        <span className="text-xs font-semibold text-slate-200">
+                          Est. 1998 in Peshawar
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </RevealOnScroll>
+              </div>
+
+              {/* Right Column: Narrative & 4 Core Pillars */}
+              <div className="lg:col-span-6 space-y-6">
+                <RevealOnScroll>
+                  <div className="space-y-3">
+                    <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                      ABOUT OUR INSTITUTION
+                    </span>
+                    <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight leading-tight">
+                      Why Choose Hayatabad Model School?
+                    </h2>
+                    <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                  </div>
+                </RevealOnScroll>
+
+                <RevealOnScroll delay={150}>
+                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    Founded in 1998, The Hayatabad Model School has stood as a beacon of academic distinction and moral leadership in Khyber Pakhtunkhwa. We prepare young minds for global challenges by seamlessly integrating rigorous BISE Peshawar board curricula, hands-on STEM education, and timeless ethical values.
+                  </p>
+                </RevealOnScroll>
+
+                {/* 4 Feature Items */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  
+                  {/* Feature 1 */}
+                  <RevealOnScroll delay={200}>
+                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                        <Award className="w-4 h-4" />
+                      </div>
+                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                        Quality Education
+                      </h4>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Top BISE Peshawar board standing with conceptual mastery over rote memorization.
+                      </p>
+                    </div>
+                  </RevealOnScroll>
+
+                  {/* Feature 2 */}
+                  <RevealOnScroll delay={300}>
+                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                        <Users className="w-4 h-4" />
+                      </div>
+                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                        Experienced Faculty
+                      </h4>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Qualified master-degree specialists dedicated to mentorship and personal growth.
+                      </p>
+                    </div>
+                  </RevealOnScroll>
+
+                  {/* Feature 3 */}
+                  <RevealOnScroll delay={400}>
+                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                        <ShieldCheck className="w-4 h-4" />
+                      </div>
+                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                        Safe Environment
+                      </h4>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Fully gated, 24/7 CCTV surveillance and an atmosphere of mutual respect.
+                      </p>
+                    </div>
+                  </RevealOnScroll>
+
+                  {/* Feature 4 */}
+                  <RevealOnScroll delay={500}>
+                    <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-sm hover:border-gold-400 transition-colors space-y-2">
+                      <div className="w-8 h-8 rounded-lg bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                        <HeartHandshake className="w-4 h-4" />
+                      </div>
+                      <h4 className="font-serif font-bold text-navy-950 text-sm">
+                        Holistic Development
+                      </h4>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Sports, robotics, public speaking, arts, and Islamic character upbringing.
+                      </p>
+                    </div>
+                  </RevealOnScroll>
+
+                </div>
+
+                {/* CTA Action */}
+                <RevealOnScroll delay={600}>
+                  <div className="flex flex-wrap items-center gap-4 pt-3">
+                    <button
+                      onClick={() => setProspectusModalOpen(true)}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige shadow-md"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download School Prospectus</span>
+                    </button>
+                    <Link
+                      href="/admissions/apply"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
+                    >
+                      <span>Apply Online for 2026–2027</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </RevealOnScroll>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 4: ACADEMICS SECTION (Wings & Programs)
+           ================================================================ */}
+        <section id="academics" className="py-24 sm:py-28 bg-white border-y border-slate-200 relative">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Header */}
+            <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
+              <RevealOnScroll>
+                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                  OUR ACADEMICS
+                </span>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                  Academic Excellence Across All Wings
+                </h2>
+                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
+                  Our structured educational pipeline guides children from early foundational discovery to top-tier matriculation board distinctions.
+                </p>
+              </RevealOnScroll>
+            </div>
+
+            {/* Academic Wings 4-Card Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              {/* Wing 1: Primary School */}
+              <RevealOnScroll delay={100}>
+                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <img
+                      src={IMAGES.primaryWing}
+                      alt="Primary School"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                        Playgroup – Class 5
                       </span>
-                      <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-                        {fac.title}
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                        Primary School
                       </h3>
-                      <p className="text-xs font-bold text-orange-600">
-                        {fac.subtitle}
+                      <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Activity-based foundation focusing on phonics, numeracy, creative expression, curiosity, and early Islamic values.
                       </p>
-                      <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                        {fac.desc}
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Interactive Phonics & Reading</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Foundational Mathematics</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              {/* Wing 2: Middle School */}
+              <RevealOnScroll delay={200}>
+                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <img
+                      src={IMAGES.middleWing}
+                      alt="Middle School"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                        Class 6 – Class 8
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                        Middle School
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Transitioning students into critical inquiry, experimental science, computer programming fundamentals, and bilingual eloquence.
                       </p>
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Introductory Lab Sciences</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Coding & Digital Literacy</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              {/* Wing 3: Secondary School */}
+              <RevealOnScroll delay={300}>
+                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <img
+                      src={IMAGES.secondaryWing}
+                      alt="Secondary School"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                        Class 9 & Class 10
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                        Secondary School
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Specialized science streams including Pre-Medical, Pre-Engineering, and Computer Science aligned with BISE board requirements.
+                      </p>
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Physics, Chem & Biology</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>High Speed Computer Lab</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              {/* Wing 4: Matriculation & Board Prep */}
+              <RevealOnScroll delay={400}>
+                <div className="academic-card rounded-2xl overflow-hidden flex flex-col h-full group">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                    <img
+                      src={IMAGES.matricWing}
+                      alt="Matriculation Board Prep"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                        BISE Peshawar
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                        Matriculation Prep
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Intensive board preparation, mock test series, past paper analysis, and personalized coaching for top Peshawar distinctions.
+                      </p>
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Mock Board Examinations</span>
+                      </li>
+                      <li className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span>Top Position Mentorship</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 5: CAMPUS SECTION (Dark Navy Showcase)
+           ================================================================ */}
+        <section id="campus" className="py-24 sm:py-28 bg-navy-950 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-navy-pattern opacity-40" />
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              
+              {/* Left Column: Campus Overview & Feature Highlights */}
+              <div className="lg:col-span-5 space-y-6">
+                <RevealOnScroll>
+                  <div className="space-y-3">
+                    <span className="text-xs uppercase font-bold tracking-widest text-gold-400 block">
+                      OUR CAMPUS
+                    </span>
+                    <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+                      World-Class Campus & Modern Facilities
+                    </h2>
+                    <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                  </div>
+                </RevealOnScroll>
+
+                <RevealOnScroll delay={150}>
+                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Set in the serene educational hub of Hayatabad Phase 3, our purpose-built campus provides students with state-of-the-art infrastructure designed to foster academic focus, physical vitality, and scientific discovery.
+                  </p>
+                </RevealOnScroll>
+
+                {/* Facilities Quick List */}
+                <RevealOnScroll delay={250}>
+                  <div className="space-y-3">
+                    {CAMPUS_FACILITIES.slice(0, 4).map((fac, idx) => (
+                      <div
+                        key={fac.id}
+                        onClick={() => openTour(idx)}
+                        className="p-3.5 rounded-xl bg-navy-900/80 border border-navy-800 hover:border-gold-500/50 cursor-pointer transition-all flex items-center justify-between group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-gold-500/20 text-gold-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs sm:text-sm font-serif font-bold text-white group-hover:text-gold-300 transition-colors">
+                              {fac.title}
+                            </h4>
+                            <p className="text-[11px] text-slate-400 truncate max-w-[240px]">
+                              {fac.category}
+                            </p>
+                          </div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-gold-400 group-hover:translate-x-1 transition-all" />
+                      </div>
+                    ))}
+                  </div>
+                </RevealOnScroll>
+
+                <RevealOnScroll delay={350}>
+                  <div className="pt-2">
+                    <button
+                      onClick={() => openTour(0)}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold text-navy-950 btn-gold-prestige shadow-lg"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-navy-950" />
+                      <span>Take a Virtual Campus Tour</span>
+                    </button>
+                  </div>
+                </RevealOnScroll>
+
+              </div>
+
+              {/* Right Column: Interactive Image Collage */}
+              <div className="lg:col-span-7">
+                <RevealOnScroll delay={200} animation="reveal-slide-right">
+                  <div className="grid grid-cols-2 gap-4">
+                    
+                    <div 
+                      onClick={() => openTour(0)}
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                    >
+                      <img src={IMAGES.scienceLab} alt="Science Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-gold-400">STEM & Research</span>
+                        <h5 className="font-serif text-sm font-bold text-white">Modern Science Labs</h5>
+                      </div>
+                    </div>
+
+                    <div 
+                      onClick={() => openTour(2)}
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                    >
+                      <img src={IMAGES.computerLab} alt="Computer Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-gold-400">Technology</span>
+                        <h5 className="font-serif text-sm font-bold text-white">Computer & AI Lab</h5>
+                      </div>
+                    </div>
+
+                    <div 
+                      onClick={() => openTour(3)}
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                    >
+                      <img src={IMAGES.library} alt="Library" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-gold-400">Knowledge Hub</span>
+                        <h5 className="font-serif text-sm font-bold text-white">Academic Library</h5>
+                      </div>
+                    </div>
+
+                    <div 
+                      onClick={() => openTour(4)}
+                      className="rounded-2xl overflow-hidden aspect-[4/3] relative group cursor-pointer border border-navy-800 hover:border-gold-500/50 transition-all shadow-xl"
+                    >
+                      <img src={IMAGES.sports} alt="Sports Ground" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent p-4 flex flex-col justify-end">
+                        <span className="text-[10px] uppercase font-bold text-gold-400">Athletics</span>
+                        <h5 className="font-serif text-sm font-bold text-white">Sports Complex</h5>
+                      </div>
+                    </div>
+
+                  </div>
+                </RevealOnScroll>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 6: FACILITIES SECTION ("Everything Your Child Needs")
+           ================================================================ */}
+        <section className="py-24 sm:py-28 bg-[#faf9f5]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
+              <RevealOnScroll>
+                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                  INFRASTRUCTURE & ENVIRONMENT
+                </span>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                  Everything Your Child Needs to Excel
+                </h2>
+                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
+                  Comprehensive amenities ensuring physical safety, mental wellness, and intellectual enrichment.
+                </p>
+              </RevealOnScroll>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {CAMPUS_FACILITIES.map((fac, idx) => (
+                <RevealOnScroll key={fac.id} delay={idx * 100}>
+                  <div 
+                    onClick={() => openTour(idx)}
+                    className="academic-card rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                      <img
+                        src={fac.image}
+                        alt={fac.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
+                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-navy-900/90 text-gold-400 border border-gold-500/30">
+                        {fac.category}
+                      </span>
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                      <div>
+                        <h4 className="font-serif text-base font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                          {fac.title}
+                        </h4>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          {fac.description}
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-gold-700">
+                        <span>Explore Space & Specs</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </RevealOnScroll>
-              );
-            })}
+              ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 7: FACULTY SECTION
+           ================================================================ */}
+        <section id="faculty" className="py-24 sm:py-28 bg-white border-t border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div className="max-w-3xl mx-auto text-center space-y-3 mb-16">
+              <RevealOnScroll>
+                <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                  OUR FACULTY
+                </span>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                  Meet Our Dedicated Teachers & Leadership
+                </h2>
+                <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto" />
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-2">
+                  Our distinguished academic faculty comprises experienced educators, M.Phil subject scholars, and caring mentors.
+                </p>
+              </RevealOnScroll>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {faculty.map((teacher, idx) => (
+                <RevealOnScroll key={idx} delay={idx * 100}>
+                  <div className="academic-card rounded-2xl overflow-hidden text-center group flex flex-col h-full border border-slate-200/80">
+                    <div className="relative aspect-[4/4] overflow-hidden bg-navy-950">
+                      <img
+                        src={teacher.image}
+                        alt={teacher.name}
+                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent" />
+                      <span className="absolute bottom-3 left-3 right-3 text-[11px] font-medium text-gold-300 truncate">
+                        {teacher.qualification}
+                      </span>
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
+                      <div>
+                        <h4 className="font-serif text-base font-bold text-navy-950">
+                          {teacher.name}
+                        </h4>
+                        <p className="text-xs font-semibold text-gold-700 mt-0.5">
+                          {teacher.designation}
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-1">
+                          {teacher.department}
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-slate-100">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                          {teacher.experience}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 8: TESTIMONIALS SECTION (Dark Navy Luxury)
+           ================================================================ */}
+        <section id="testimonials" className="py-24 sm:py-28 bg-navy-950 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-navy-pattern opacity-50" />
+          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <RevealOnScroll>
+              <span className="text-xs uppercase font-bold tracking-widest text-gold-400 block mb-2">
+                TESTIMONIALS & TRUST
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+                What Parents & Alumni Say
+              </h2>
+              <div className="w-16 h-1 bg-gold-500 rounded-full mx-auto mb-12" />
+            </RevealOnScroll>
+
+            {/* Testimonial Card */}
+            <div className="relative rounded-2xl p-8 sm:p-12 bg-navy-900/90 border border-gold-500/30 shadow-2xl backdrop-blur-xl space-y-6 min-h-[280px] flex flex-col justify-between">
+              
+              {/* Star Rating Indicator */}
+              <div className="flex items-center justify-center gap-1 text-gold-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-gold-400" />
+                ))}
+              </div>
+
+              {/* Quote Body */}
+              <p className="font-serif text-lg sm:text-xl text-slate-100 italic leading-relaxed">
+                "{TESTIMONIALS[currentTestimonial].quote}"
+              </p>
+
+              {/* Parent Info */}
+              <div className="space-y-1">
+                <h4 className="font-serif font-bold text-base text-gold-400">
+                  {TESTIMONIALS[currentTestimonial].parentName}
+                </h4>
+                <p className="text-xs text-slate-300">
+                  {TESTIMONIALS[currentTestimonial].parentRole}
+                </p>
+              </div>
+
+              {/* Slider Controls */}
+              <div className="flex items-center justify-between pt-4 border-t border-navy-800">
+                <button
+                  onClick={() => setCurrentTestimonial((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
+                  className="p-2 rounded-full bg-navy-800 hover:bg-gold-500 hover:text-navy-950 text-slate-300 transition-all"
+                  aria-label="Previous testimonial"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Dots */}
+                <div className="flex items-center gap-2">
+                  {TESTIMONIALS.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentTestimonial(i)}
+                      className={`h-2 rounded-full transition-all ${
+                        currentTestimonial === i ? 'w-6 bg-gold-400' : 'w-2 bg-slate-600'
+                      }`}
+                      aria-label={`Slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length)}
+                  className="p-2 rounded-full bg-navy-800 hover:bg-gold-500 hover:text-navy-950 text-slate-300 transition-all"
+                  aria-label="Next testimonial"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 9: NEWS & EVENTS SECTION
+           ================================================================ */}
+        <section id="news" className="py-24 sm:py-28 bg-[#faf9f5] border-t border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+              <RevealOnScroll>
+                <div className="space-y-3">
+                  <span className="text-xs uppercase font-bold tracking-widest text-gold-600 block">
+                    NEWS & EVENTS
+                  </span>
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+                    Latest News & Campus Events
+                  </h2>
+                  <div className="w-16 h-1 bg-gold-500 rounded-full" />
+                </div>
+              </RevealOnScroll>
+              <RevealOnScroll delay={150}>
+                <Link
+                  href="/admissions/apply"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
+                >
+                  <span>View All Academic Notices</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </RevealOnScroll>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {announcements.map((item, idx) => (
+                <RevealOnScroll key={item.id || idx} delay={idx * 100}>
+                  <div 
+                    onClick={() => setSelectedNotice(item)}
+                    className="academic-card rounded-2xl overflow-hidden group cursor-pointer flex flex-col h-full"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-navy-950">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold-500 text-navy-950 shadow-md">
+                          {item.category}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-3 right-3 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-navy-950/80 text-slate-300 backdrop-blur-sm">
+                        {item.date}
+                      </div>
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                      <div>
+                        <h3 className="font-serif text-base font-bold text-navy-950 group-hover:text-gold-700 transition-colors leading-snug">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                          {item.excerpt}
+                        </p>
+                      </div>
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-navy-950 group-hover:text-gold-700">
+                        <span>Read Full Announcement</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                </RevealOnScroll>
+              ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* ================================================================
+            SECTION 10: HIGH-CONVERSION ADMISSIONS CALL TO ACTION
+           ================================================================ */}
+        <section id="admissions" className="relative py-24 sm:py-28 bg-navy-950 text-white overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img
+              src={IMAGES.ctaBg}
+              alt="Hayatabad Model School Students"
+              className="w-full h-full object-cover filter brightness-50"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/80" />
+            <div className="absolute inset-0 bg-crest-watermark opacity-25" />
           </div>
 
-        </div>
-      </section>
-
-      {/* 6. DEDICATED LIBRARY SECTION */}
-      <section className="py-20 bg-slate-950 text-white relative overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1600&auto=format&fit=crop&q=80')` }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-transparent"></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <RevealOnScroll className="lg:col-span-7 space-y-6" delay={100}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 text-orange-400 text-xs font-black border border-orange-400/30 backdrop-blur-md">
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Central School Library</span>
-            </div>
+          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
             
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-              Knowledge Lives Here.
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium max-w-2xl">
-              Our central library houses an extensive collection of Oxford reference books, scientific encyclopedias, Islamic literature, Urdu poetry, and quiet digital research terminals for students across all grades.
-            </p>
-
-            <div className="grid grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
-                <span className="text-2xl font-black text-orange-400 block font-mono">10,000+</span>
-                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Books & References</span>
+            <RevealOnScroll>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/20 border border-gold-500/40 backdrop-blur-md mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                <span className="text-[11px] uppercase font-bold tracking-widest text-gold-300">
+                  Begin Your Child's Journey of Excellence
+                </span>
               </div>
-              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
-                <span className="text-2xl font-black text-orange-400 block font-mono">100%</span>
-                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Digital Catalog</span>
+
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight leading-tight">
+                Secure Your Child’s Seat for Academic Year 2026–2027
+              </h2>
+
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mt-4">
+                Admissions are now open for Playgroup through Class 10 (BISE Peshawar). Give your child the advantage of premier education, ethical character building, and modern STEM facilities.
+              </p>
+            </RevealOnScroll>
+
+            {/* Action Buttons */}
+            <RevealOnScroll delay={200}>
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <Link
+                  href="/admissions/apply"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold text-navy-950 btn-gold-prestige shadow-2xl"
+                >
+                  <span>Apply for Admission Online</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <button
+                  onClick={() => setProspectusModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white bg-navy-900/90 hover:bg-navy-800 border border-gold-500/40 backdrop-blur-md transition-all shadow-lg"
+                >
+                  <Download className="w-4 h-4 text-gold-400" />
+                  <span>Download Prospectus</span>
+                </button>
               </div>
-              <div className="p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-inner">
-                <span className="text-2xl font-black text-orange-400 block font-mono">Daily</span>
-                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Reading Hours</span>
+            </RevealOnScroll>
+
+            {/* Helpline Info */}
+            <RevealOnScroll delay={300}>
+              <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-center gap-8 text-xs text-slate-300">
+                <div className="flex items-center gap-2">
+                  <PhoneCall className="w-4 h-4 text-gold-400" />
+                  <span>Admissions Desk: +92 91 5828850</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-gold-400" />
+                  <span>admissions@hayatabadmodel.edu.pk</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-gold-400" />
+                  <span>Phase 3, Hayatabad, Peshawar</span>
+                </div>
+              </div>
+            </RevealOnScroll>
+
+          </div>
+        </section>
+
+      </main>
+
+      {/* ================================================================
+          SECTION 11: GRAND ACADEMIC FOOTER
+         ================================================================ */}
+      <footer id="contact" className="bg-navy-950 text-slate-300 border-t border-gold-500/20 pt-16 pb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+            
+            {/* Column 1: School Bio & Crest (4 cols) */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <img src="/logo.png" alt="Hayatabad Model School Crest" className="h-14 w-auto filter drop-shadow-md" />
+                <div>
+                  <span className="font-serif font-bold text-white text-base tracking-tight block">
+                    THE HAYATABAD MODEL SCHOOL
+                  </span>
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-gold-400 block">
+                    Peshawar • Established 1998
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                A prestigious academic institution providing premier education from Playgroup through Matriculation (BISE Peshawar). Committed to developing intellect, character, and progressive leadership.
+              </p>
+              <div className="pt-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-semibold bg-navy-900 border border-gold-500/30 text-gold-300">
+                  <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
+                  BISE Peshawar Registered & Affiliated
+                </span>
               </div>
             </div>
 
-            <div className="pt-2">
+            {/* Column 2: Quick Links (2 cols) */}
+            <div className="lg:col-span-2 space-y-3">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+                Quick Navigation
+              </h4>
+              <ul className="space-y-2 text-xs">
+                <li><Link href="/" className="hover:text-gold-400 transition-colors">Home Page</Link></li>
+                <li><Link href="/#about" className="hover:text-gold-400 transition-colors">About Our Legacy</Link></li>
+                <li><Link href="/#academics" className="hover:text-gold-400 transition-colors">Academic Programs</Link></li>
+                <li><Link href="/#campus" className="hover:text-gold-400 transition-colors">Campus & Labs</Link></li>
+                <li><Link href="/#faculty" className="hover:text-gold-400 transition-colors">Faculty & Staff</Link></li>
+                <li><Link href="/#news" className="hover:text-gold-400 transition-colors">News & Events</Link></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Academic Programs (2 cols) */}
+            <div className="lg:col-span-2 space-y-3">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+                Academic Wings
+              </h4>
+              <ul className="space-y-2 text-xs">
+                <li><span className="text-slate-400">Early Years (Playgroup – Prep)</span></li>
+                <li><span className="text-slate-400">Primary Wing (Class 1 – 5)</span></li>
+                <li><span className="text-slate-400">Middle Wing (Class 6 – 8)</span></li>
+                <li><span className="text-slate-400">SSC Pre-Medical (9th & 10th)</span></li>
+                <li><span className="text-slate-400">SSC Pre-Engineering</span></li>
+                <li><span className="text-slate-400">Computer Science Stream</span></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Portals & Contact Info (4 cols) */}
+            <div className="lg:col-span-4 space-y-4">
+              <h4 className="font-serif text-sm font-bold text-white tracking-wider uppercase border-b border-navy-800 pb-2">
+                Campus Location & Contact
+              </h4>
+              <div className="space-y-2.5 text-xs text-slate-300">
+                <div className="flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
+                  <span>Phase 3, Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <PhoneCall className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>+92 91 5828850 / +92 333 9123456</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>info@hayatabadmodel.edu.pk</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>Mon – Sat: 8:00 AM – 2:00 PM</span>
+                </div>
+              </div>
+
+              {/* Newsletter Subscription */}
+              <div className="pt-2">
+                <p className="text-[11px] font-semibold text-slate-300 mb-2">
+                  Subscribe to School Newsletter & Circulars
+                </p>
+                {newsletterSubscribed ? (
+                  <div className="p-2.5 rounded-lg bg-gold-500/20 text-gold-300 text-xs flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Thank you for subscribing!</span>
+                  </div>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter parent email address"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-lg bg-navy-900 border border-navy-700 text-white text-xs focus:outline-none focus:border-gold-500"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-lg text-xs font-bold text-navy-950 btn-gold-prestige shrink-0"
+                    >
+                      Subscribe
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom Bar: Copyright & Accreditation */}
+          <div className="pt-8 border-t border-navy-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>
+              © {new Date().getFullYear()} The Hayatabad Model School, Peshawar. All Rights Reserved.
+            </p>
+            <div className="flex items-center gap-6">
+              <button onClick={() => setProspectusModalOpen(true)} className="hover:text-gold-400 transition-colors">
+                Prospectus PDF
+              </button>
+              <Link href="/admissions/track" className="hover:text-gold-400 transition-colors">
+                Track Application
+              </Link>
+              <Link href="/login" className="hover:text-gold-400 transition-colors">
+                Staff Portal
+              </Link>
               <a
-                href="#admissions"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-xs shadow-xl shadow-orange-500/20 transition-all hover:scale-105"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="flex items-center gap-1 hover:text-gold-400 transition-colors ml-2"
               >
-                <span>Apply & Join THMS</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Back to Top</span>
+                <ChevronUp className="w-3.5 h-3.5" />
               </a>
             </div>
-          </RevealOnScroll>
-
-          <RevealOnScroll className="lg:col-span-5" delay={200}>
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/20 group">
-              <img
-                src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80"
-                alt="Library Interior"
-                className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          </RevealOnScroll>
-        </div>
-      </section>
-
-      {/* 7. CHARACTER, DISCIPLINE & VALUES */}
-      <section className="py-20 lg:py-28 bg-white/70 backdrop-blur-xl border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Moral Foundation
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              Character, Discipline & Responsibility
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Education without character is incomplete. We emphasize core virtues that shape honorable and responsible citizens.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <RevealOnScroll delay={100}>
-              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                <span className="text-3xl">🤝</span>
-                <h3 className="font-black text-lg text-slate-900">Mutual Respect & Kindness</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Fostering an inclusive environment where students respect faculty, fellow classmates, school property, and diversity of thought.
-                </p>
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={200}>
-              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                <span className="text-3xl">⏰</span>
-                <h3 className="font-black text-lg text-slate-900">Punctuality & Habitual Order</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Instilling morning discipline, timely homework submission, regular attendance, and clean personal presentation.
-                </p>
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={300}>
-              <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                <span className="text-3xl">📖</span>
-                <h3 className="font-black text-lg text-slate-900">Academic Integrity</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Encouraging original thinking, honest examination conduct, intellectual curiosity, and self-driven problem solving.
-                </p>
-              </div>
-            </RevealOnScroll>
           </div>
 
-        </div>
-      </section>
-
-      {/* 8. LEARNING JOURNEY — 4 ACADEMIC WINGS (Frosted Glass) */}
-      <section id="academics" className="py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Academic Wings
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              The THMS Learning Journey
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Four progressive academic stages tailored to each phase of your child&apos;s intellectual and emotional maturity.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {learningStages.map((st, idx) => (
-              <RevealOnScroll key={idx} delay={idx * 100}>
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group hover:-translate-y-1 h-full">
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={st.image}
-                      alt={st.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-white font-mono text-xs font-black">
-                      {st.stage}
-                    </div>
-                  </div>
-
-                  <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">{st.age}</span>
-                      <h3 className="font-black text-base text-slate-900 leading-snug">{st.name}</h3>
-                      <p className="text-xs font-bold text-slate-500">{st.grades}</p>
-                      <p className="text-xs text-slate-600 leading-relaxed font-medium pt-1">
-                        {st.desc}
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-slate-100">
-                      <Link
-                        href="/admissions/apply"
-                        className="inline-flex items-center gap-1.5 text-xs font-black text-orange-600 hover:text-orange-700"
-                      >
-                        <span>Enroll in this Wing</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 9. FACULTY SHOWCASE */}
-      <section id="faculty" className="py-20 bg-white/70 backdrop-blur-xl border-y border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Expert Educators
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-              Meet Our Distinguished Faculty
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Passionate subject educators with proven teaching methodologies and dedication to student success.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {faculty.length > 0 ? (
-              faculty.map((t, idx) => (
-                <RevealOnScroll key={t.id || idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center space-y-4 hover:shadow-lg transition-all group h-full">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform overflow-hidden">
-                      {t.photoUrl ? (
-                        <img src={t.photoUrl} alt={t.fullName} className="w-full h-full object-cover" />
-                      ) : (
-                        t.fullName?.charAt(0).toUpperCase() || 'T'
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="font-black text-sm text-slate-900">{t.fullName}</h3>
-                      <p className="text-xs font-bold text-orange-600">{t.designation || 'Senior Faculty'}</p>
-                      <p className="text-[11px] text-slate-500 font-medium">{t.qualification || 'M.Sc / M.Ed'}</p>
-                    </div>
-                  </div>
-                </RevealOnScroll>
-              ))
-            ) : (
-              [
-                { name: 'Engr. Farooq Ahmad', role: 'Head of Mathematics & STEM', qual: 'M.Sc Mathematics • 12 Yrs Exp' },
-                { name: 'Dr. Ayesha Malik', role: 'Head of Biology & Sciences', qual: 'Ph.D Biology • 10 Yrs Exp' },
-                { name: 'Prof. Tariq Mahmood', role: 'Head of Computer & AI', qual: 'MS Computer Science • 9 Yrs Exp' },
-                { name: 'Ms. Sadia Khan', role: 'Senior English Department', qual: 'M.A English Literature • 8 Yrs Exp' },
-              ].map((f, idx) => (
-                <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center space-y-4 hover:shadow-lg transition-all group h-full">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md group-hover:scale-105 transition-transform">
-                      {f.name.charAt(0)}
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="font-black text-sm text-slate-900">{f.name}</h3>
-                      <p className="text-xs font-bold text-orange-600">{f.role}</p>
-                      <p className="text-[11px] text-slate-500 font-medium">{f.qual}</p>
-                    </div>
-                  </div>
-                </RevealOnScroll>
-              ))
-            )}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 10. SCHOOL LIFE MASONRY GALLERY WITH LIGHTBOX */}
-      <section className="py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Campus Moments
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              Life at The Hayatabad Model School
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              A glimpse into daily classroom discussions, laboratory discoveries, sporting tournaments, and campus celebrations.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryImages.map((img, idx) => (
-              <RevealOnScroll key={idx} delay={idx * 75}>
-                <div
-                  onClick={() => setActiveLightboxImage(img.src)}
-                  className="relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl cursor-pointer group h-64 border border-white/80"
-                >
-                  <img
-                    src={img.src}
-                    alt={img.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <span className="text-white font-black text-xs tracking-wide">{img.title}</span>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* LIGHTBOX MODAL */}
-      {activeLightboxImage && (
-        <div 
-          onClick={() => setActiveLightboxImage(null)}
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in"
-        >
-          <div className="relative max-w-4xl w-full">
-            <button
-              onClick={() => setActiveLightboxImage(null)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-orange-400 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <img
-              src={activeLightboxImage}
-              alt="Enlarged Campus View"
-              className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border border-white/20"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* 11. ADMISSIONS SECTION */}
-      <section id="admissions" className="py-20 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-y border-orange-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          
-          <RevealOnScroll className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-orange-200 shadow-sm">
-              Admissions 2026-2027
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-              Begin Your Child&apos;s Journey With Us
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Simple 5-step admission roadmap from initial online application to enrollment and smart pass issuance.
-            </p>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {[
-              { step: '01', title: 'Submit Online Form', desc: 'Fill out our digital admission portal form and attach a photo in 3 minutes.' },
-              { step: '02', title: 'Application Review', desc: 'Our admissions desk verifies student details and schedules an interview.' },
-              { step: '03', title: 'Assessment / Meeting', desc: 'Friendly interaction to assess grade readiness and understand student potential.' },
-              { step: '04', title: 'Admission Decision', desc: 'Receive official confirmation letter and 3-copy fee deposit voucher.' },
-              { step: '05', title: 'Smart Pass & Start', desc: 'Receive smart QR ID card, uniform kit guidelines, and welcome orientation.' },
-            ].map((st, idx) => (
-              <RevealOnScroll key={idx} delay={idx * 75}>
-                <div className="bg-white/85 backdrop-blur-xl p-6 rounded-3xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                  <span className="text-3xl font-black text-orange-500/40 block font-mono">{st.step}</span>
-                  <h3 className="font-black text-sm text-slate-900">{st.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">{st.desc}</p>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-          <RevealOnScroll className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4" delay={200}>
-            <Link
-              href="/admissions/apply"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/30 flex items-center justify-center gap-3 transition-all hover:scale-105"
-            >
-              <span>Apply Online Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/admissions/apply"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/90 backdrop-blur-md hover:bg-white text-slate-800 font-black text-sm border border-slate-200 shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-105"
-            >
-              <Search className="w-4 h-4 text-orange-600" />
-              <span>Track Existing Application</span>
-            </Link>
-          </RevealOnScroll>
-
-        </div>
-      </section>
-
-      {/* 12. LIVE SCHOOL UPDATES / ANNOUNCEMENTS */}
-      <section id="news" className="py-20 bg-white/70 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <RevealOnScroll className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-6">
-            <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
-                Notice Board
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-                Live School Announcements
-              </h2>
-            </div>
-            <Link
-              href="/login"
-              className="text-xs font-black text-orange-600 hover:text-orange-700 flex items-center gap-1.5"
-            >
-              <span>View All via Portal</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {announcements.length > 0 ? (
-              announcements.map((a, idx) => (
-                <RevealOnScroll key={a.id || idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-1 rounded-full">
-                      {a.type || 'Academic'}
-                    </span>
-                    <h3 className="font-black text-sm text-slate-900 leading-snug">{a.title}</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">{a.content}</p>
-                  </div>
-                </RevealOnScroll>
-              ))
-            ) : (
-              [
-                { title: 'Admissions Open 2026-2027', type: 'Admissions', date: 'Session 2026-27', desc: 'Online admissions open for Playgroup, Primary, Middle & Matric BISE streams.' },
-                { title: 'STEM & Robotics Exhibition', type: 'Event', date: 'Upcoming', desc: 'Annual science and robotics project exhibition scheduled for next term.' },
-                { title: '100% Merit Scholarships', type: 'Scholarship', date: 'Active', desc: 'Applications invited for merit positions and sibling tuition fee discount.' },
-                { title: 'Smart QR ID Rollout', type: 'Security', date: 'Active', desc: 'Encrypted smart cards active for instant real-time parent gate notifications.' },
-              ].map((n, idx) => (
-                <RevealOnScroll key={idx} delay={idx * 75}>
-                  <div className="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-3 h-full">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/80 px-2.5 py-0.5 rounded-full">
-                        {n.type}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400">{n.date}</span>
-                    </div>
-                    <h3 className="font-black text-sm text-slate-900 leading-snug">{n.title}</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">{n.desc}</p>
-                  </div>
-                </RevealOnScroll>
-              ))
-            )}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 13. FAQ ACCORDION SECTION */}
-      <section className="py-20 bg-slate-50/70 border-t border-slate-200/80">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <RevealOnScroll className="text-center space-y-2">
-            <span className="text-xs font-black uppercase tracking-wider text-orange-600 bg-white/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-orange-200 shadow-sm">
-              Got Questions?
-            </span>
-            <h2 className="text-3xl font-black text-slate-950 tracking-tight">
-              Frequently Asked Questions
-            </h2>
-          </RevealOnScroll>
-
-          <div className="space-y-3">
-            {faqs.map((faq, idx) => (
-              <RevealOnScroll key={idx} delay={idx * 50}>
-                <div className="bg-white/90 backdrop-blur-xl rounded-2xl border border-white shadow-sm overflow-hidden">
-                  <button
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-orange-50/40 transition-colors"
-                  >
-                    <span className="font-black text-sm text-slate-900">{faq.q}</span>
-                    <ChevronDown className={`w-4 h-4 text-orange-600 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
-                  </button>
-                  {openFaq === idx && (
-                    <div className="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 font-medium">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 14. FINAL HERO CTA SECTION */}
-      <section className="py-24 bg-slate-900 text-white relative overflow-hidden text-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1562774053-701939374585?w=1600&auto=format&fit=crop&q=85')` }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-950"></div>
-
-        <RevealOnScroll className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 z-10">
-          <img src="/logo.png" alt="THMS" className="h-20 w-auto mx-auto object-contain drop-shadow-[0_4px_20px_rgba(249,115,22,0.4)]" />
-          
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-            Your Child&apos;s Future Starts Here.
-          </h2>
-
-          <p className="text-sm sm:text-base text-slate-200 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-            Join over 1,200+ students on their journey of academic brilliance, character growth, and technological mastery at The Hayatabad Model School.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link
-              href="/admissions/apply"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-sm shadow-xl shadow-orange-500/30 flex items-center justify-center gap-3 transition-all hover:scale-105"
-            >
-              <span>Apply for Admission</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-950/80 hover:bg-slate-900 text-white font-black text-sm border border-white/20 backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg"
-            >
-              <KeyRound className="w-4 h-4 text-orange-400" />
-              <span>Login to ERP</span>
-            </Link>
-          </div>
-        </RevealOnScroll>
-      </section>
-
-      {/* 15. LARGE PROFESSIONAL FOOTER */}
-      <footer id="contact" className="bg-slate-950 border-t border-slate-900 py-16 text-slate-400 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          
-          <div className="space-y-4">
-            <img src="/logo.png" alt="The Hayatabad Model School" className="h-16 w-auto object-contain" />
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              The Hayatabad Model School, Phase 3, Peshawar. Providing premier education, character formation, and 100% board results since 1998.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h4 className="font-black text-white uppercase text-xs tracking-wider">Quick Navigation</h4>
-            <div className="flex flex-col space-y-2 font-medium">
-              <Link href="/" className="hover:text-orange-400 transition-colors">Home</Link>
-              <a href="#about" className="hover:text-orange-400 transition-colors">About School</a>
-              <a href="#academics" className="hover:text-orange-400 transition-colors">Academic Wings</a>
-              <a href="#campus" className="hover:text-orange-400 transition-colors">Campus Facilities</a>
-              <Link href="/admissions/apply" className="hover:text-orange-400 transition-colors">Online Admission</Link>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h4 className="font-black text-white uppercase text-xs tracking-wider">ERP Cloud Portals</h4>
-            <div className="flex flex-col space-y-2 font-medium">
-              <Link href="/login" className="hover:text-orange-400 transition-colors">Admin Command Center</Link>
-              <Link href="/login" className="hover:text-orange-400 transition-colors">Teacher Workload Hub</Link>
-              <Link href="/login" className="hover:text-orange-400 transition-colors">Student Attendance Desk</Link>
-              <Link href="/login" className="hover:text-orange-400 transition-colors">Parent Portal & Fee Slips</Link>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h4 className="font-black text-white uppercase text-xs tracking-wider">Campus & Helpline</h4>
-            <div className="space-y-2 text-xs">
-              <p className="flex items-center gap-2.5 text-slate-300">
-                <MapPin className="w-4 h-4 text-orange-400 shrink-0" />
-                <span>Phase 3, Hayatabad, Peshawar, KPK</span>
-              </p>
-              <p className="flex items-center gap-2.5 text-slate-300">
-                <PhoneCall className="w-4 h-4 text-orange-400 shrink-0" />
-                <span className="font-mono">+92 91 5828100</span>
-              </p>
-              <p className="flex items-center gap-2.5 text-slate-300">
-                <Mail className="w-4 h-4 text-orange-400 shrink-0" />
-                <span>admissions@hayatabadmodel.edu.pk</span>
-              </p>
-            </div>
-          </div>
-
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 mt-10 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500 font-medium">
-          <p>© 2026 The Hayatabad Model School. All Rights Reserved.</p>
-          <p>Powered by THMS Cloud Engine • Connected to PostgreSQL</p>
         </div>
       </footer>
+
+      {/* Interactive Modals */}
+      <CampusTourModal
+        isOpen={tourModalOpen}
+        onClose={() => setTourModalOpen(false)}
+        initialSlide={tourInitialSlide}
+      />
+
+      <NoticeModal
+        isOpen={!!selectedNotice}
+        onClose={() => setSelectedNotice(null)}
+        notice={selectedNotice}
+      />
+
+      <ProspectusModal
+        isOpen={prospectusModalOpen}
+        onClose={() => setProspectusModalOpen(false)}
+      />
+
     </div>
   );
 }

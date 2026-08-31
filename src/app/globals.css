@@ -4,138 +4,127 @@
 
 @layer base {
   :root {
-    --background: 30 50% 99%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 24 95% 53%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 30 30% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 30 20% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 30 30% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 24 95% 53%;
-    --radius: 1rem;
+    --navy-deep: #0b1626;
+    --navy-midnight: #060e18;
+    --navy-card: #0e1d30;
+    --gold-primary: #c59b27;
+    --gold-light: #dfc469;
+    --gold-dark: #855e1a;
+    --ivory-bg: #faf9f5;
+    --ivory-card: #ffffff;
   }
 
   html {
     scroll-behavior: smooth;
   }
-}
 
-body {
-  color: #0f172a;
-  background-color: #fdfdfd;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  body {
+    color: #1e293b;
+    background-color: var(--ivory-bg);
+    font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.015em;
+  }
 }
 
 /* ================================================================
-   FUTURISTIC SAAS GLASSMORPHISM & ORANGE BRAND TOKENS
+   PRESTIGE ACADEMIC DESIGN SYSTEM & LUXURY UTILITIES
    ================================================================ */
 
-.glass-panel {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 10px 30px -5px rgba(234, 88, 12, 0.06), 0 0 0 1px rgba(226, 232, 240, 0.7);
+/* Hero Cinematic Ken Burns Zoom */
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-.glass-panel-orange {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(249, 115, 22, 0.25);
-  box-shadow: 0 12px 36px -4px rgba(249, 115, 22, 0.1), 0 0 0 1px rgba(254, 215, 170, 0.6);
+.animate-ken-burns {
+  animation: kenBurnsSlow 22s ease-in-out infinite alternate;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(241, 245, 249, 0.95);
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+/* Subtle Gold Hairline & Dividers */
+.gold-hairline {
+  background: linear-gradient(90deg, transparent 0%, #c59b27 35%, #e5c058 50%, #c59b27 65%, transparent 100%);
+  height: 1px;
 }
 
-.glass-card-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.gold-hairline-vertical {
+  background: linear-gradient(180deg, transparent 0%, #c59b27 35%, #e5c058 50%, #c59b27 65%, transparent 100%);
+  width: 1px;
 }
-.glass-card-hover:hover {
+
+/* Luxury Academic Cards */
+.academic-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(11, 22, 38, 0.05);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.academic-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(197, 155, 39, 0.45);
+  box-shadow: 0 20px 35px -8px rgba(11, 22, 38, 0.12), 0 0 0 1px rgba(197, 155, 39, 0.25);
+}
+
+.navy-luxury-card {
+  background: linear-gradient(145deg, #0e1d30 0%, #08121f 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.35);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navy-luxury-card:hover {
   transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 20px 40px -4px rgba(249, 115, 22, 0.16), 0 0 0 1px rgba(251, 146, 60, 0.7);
+  border-color: rgba(197, 155, 39, 0.5);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.5), 0 0 18px rgba(197, 155, 39, 0.2);
 }
 
-/* Background Gradients & Mesh Glows */
-.mesh-orange-bg {
-  background-color: #ffffff;
-  background-image: 
-    radial-gradient(at 15% 15%, rgba(249, 115, 22, 0.14) 0px, transparent 45%),
-    radial-gradient(at 85% 20%, rgba(245, 158, 11, 0.12) 0px, transparent 45%),
-    radial-gradient(at 50% 50%, rgba(255, 237, 213, 0.45) 0px, transparent 60%);
+/* Gold Accent Buttons */
+.btn-gold-prestige {
+  background: linear-gradient(135deg, #d4af37 0%, #c59b27 60%, #a77c1d 100%);
+  color: #07121d;
+  font-weight: 700;
+  box-shadow: 0 4px 14px 0 rgba(197, 155, 39, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.subtle-grid-orange {
-  background-size: 36px 36px;
-  background-image: 
-    linear-gradient(to right, rgba(249, 115, 22, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(249, 115, 22, 0.07) 1px, transparent 1px);
+.btn-gold-prestige:hover {
+  background: linear-gradient(135deg, #dfc469 0%, #d4af37 60%, #c59b27 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px 0 rgba(197, 155, 39, 0.45);
 }
 
-/* Advanced Entrance & Continuous Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+.btn-navy-prestige {
+  background: #0b1626;
+  color: #ffffff;
+  border: 1px solid rgba(197, 155, 39, 0.3);
+  box-shadow: 0 4px 12px rgba(11, 22, 38, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float 5s ease-in-out 1.5s infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { 
-    box-shadow: 0 0 15px rgba(249, 115, 22, 0.25);
-    filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.3));
-  }
-  50% { 
-    box-shadow: 0 0 35px rgba(249, 115, 22, 0.55);
-    filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.6));
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-gradient-text {
-  background-size: 200% auto;
-  animation: gradientShift 4s ease infinite;
+.btn-navy-prestige:hover {
+  background: #11223a;
+  border-color: #c59b27;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11, 22, 38, 0.25);
 }
 
 /* Scroll-triggered reveal states */
 .reveal-init {
   opacity: 0;
-  transform: translateY(32px);
+  transform: translateY(28px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
@@ -145,20 +134,65 @@ body {
   transform: translateY(0px) !important;
 }
 
-/* Custom Sleek Scrollbar */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translateX(-35px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-slide-right {
+  opacity: 0;
+  transform: translateX(35px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-visible.reveal-slide-left,
+.reveal-visible.reveal-slide-right {
+  opacity: 1 !important;
+  transform: translateX(0px) !important;
+}
+
+/* Elegant Watermark Background */
+.bg-crest-watermark {
+  background-image: radial-gradient(rgba(197, 155, 39, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-navy-pattern {
+  background-color: #0b1626;
+  background-image: 
+    radial-gradient(circle at 100% 0%, rgba(197, 155, 39, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(26, 55, 79, 0.4) 0%, transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: auto, auto, 24px 24px;
+}
+
+/* Custom Prestige Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #0b1626;
 }
 ::-webkit-scrollbar-thumb {
-  background: #fdba74;
+  background: #c59b27;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #f97316;
+  background: #dfc469;
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Print Stylesheet */
