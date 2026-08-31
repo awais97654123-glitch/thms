@@ -352,19 +352,18 @@ export default function HomePage() {
         {/* ================================================================
             SECTION 1: CINEMATIC PRESTIGE HERO SECTION
            ================================================================ */}
-        <section className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#0a192f] text-white">
+        <section className="relative min-h-[90vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white">
           
           {/* Background Image with Ken Burns Slow Zoom */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
               src={IMAGES.heroCampus}
               alt="The Hayatabad Model School Campus"
-              className="w-full h-full object-cover object-center animate-ken-burns filter brightness-90"
+              className="w-full h-full object-cover object-center animate-ken-burns filter brightness-100 contrast-105"
             />
-            {/* Deep Royal Blue Vignette & Academic Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a192f] via-[#0a192f]/90 to-[#0a192f]/70" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-transparent to-[#0a192f]/40" />
-            <div className="absolute inset-0 bg-crest-watermark opacity-25" />
+            {/* Soft, light gradient overlay to keep building bright while ensuring typography contrast */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a192f]/80 via-[#0a192f]/45 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f]/60 via-transparent to-black/20" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
