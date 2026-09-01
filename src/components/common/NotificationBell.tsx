@@ -14,7 +14,7 @@ export interface NotificationItem {
   createdAt: string;
 }
 
-export default function NotificationBell({ className = '' }: { className?: string }) {
+export default function NotificationBell({ className = '', role }: { className?: string; role?: string }) {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);

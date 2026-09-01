@@ -12,8 +12,9 @@ interface StudentIDCardProps {
     rollNo: string;
     fullName: string;
     photoUrl?: string | null;
-    gender: string;
+    gender?: string;
     bloodGroup?: string | null;
+    emergencyPhone?: string | null;
     dob?: string | Date;
     qrToken: string;
     class?: { name: string };

@@ -4,20 +4,21 @@ import React from 'react';
 import { Printer, DollarSign, CheckCircle2, Building2 } from 'lucide-react';
 
 interface FeeReceiptProps {
-  receipt: {
-    receiptNo: string;
-    amount: number;
-    paymentDate: string | Date;
-    paymentMethod: string;
+  receipt?: {
+    receiptNo?: string;
+    amount?: number;
+    paymentDate?: string | Date;
+    paymentMethod?: string;
     transactionRef?: string | null;
     bankName?: string | null;
   };
+  payment?: any;
   invoice: {
     invoiceNo: string;
-    title: string;
+    title?: string;
     month: string;
     totalAmount: number;
-    discountAmount: number;
+    discountAmount?: number;
     paidAmount: number;
     remainingAmount: number;
     items?: Array<{ feeType: string; amount: number; description?: string | null }>;
@@ -27,9 +28,12 @@ interface FeeReceiptProps {
     admissionNo: string;
     rollNo: string;
     fullName: string;
-    className: string;
-    sectionName: string;
-    fatherName: string;
+    className?: string;
+    sectionName?: string;
+    fatherName?: string;
+    class?: { name: string };
+    section?: { name: string };
+    parent?: { fatherName?: string };
   };
   school?: {
     schoolName: string;
@@ -40,12 +44,22 @@ interface FeeReceiptProps {
 
 export default function PrintableReceipt({
   receipt,
+  payment,
   invoice,
   student,
   school,
 }: FeeReceiptProps) {
   const slips = ['STUDENT COPY', 'SCHOOL ACCOUNTS COPY', 'BANK COPY'];
   const schoolName = school?.schoolName || 'The Hayatabad Model School';
+
+  const receiptNo = receipt?.receiptNo || payment?.receiptNo || `REC-${invoice.invoiceNo}`;
+  const paidAmount = receipt?.amount || payment?.amount || invoice.paidAmount || 0;
+  const paymentDate = receipt?.paymentDate || payment?.createdAt || new Date();
+  const paymentMethod = receipt?.paymentMethod || payment?.method || 'CASH_COUNTER';
+  const className = student.className || student.class?.name || 'Class 8';
+  const sectionName = student.sectionName || student.section?.name || 'Section A';
+  const fatherName = student.fatherName || student.parent?.fatherName || 'Respected Parent';
+  const discountAmount = invoice.discountAmount || 0;
 
   return (
     <div className="space-y-4">
@@ -86,7 +100,7 @@ export default function PrintableReceipt({
               </div>
               <p className="text-[10px] text-slate-500">Sector F-4, Phase 6, Hayatabad, Peshawar</p>
               <div className="mt-1.5 flex items-center justify-between text-[10px] bg-slate-50 p-1.5 rounded border border-slate-200">
-                <span>Receipt: <strong className="text-emerald-700">{receipt.receiptNo}</strong></span>
+                <span>Receipt: <strong className="text-emerald-700">{receiptNo}</strong></span>
                 <span>Inv: <strong className="text-blue-700">{invoice.invoiceNo}</strong></span>
               </div>
             </div>
@@ -99,7 +113,7 @@ export default function PrintableReceipt({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Father Name:</span>
-                <span className="text-slate-800">{student.fatherName}</span>
+                <span className="text-slate-800">{fatherName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Student ID / Roll:</span>
@@ -107,7 +121,7 @@ export default function PrintableReceipt({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Class & Section:</span>
-                <span className="font-semibold text-slate-800">{student.className} - {student.sectionName}</span>
+                <span className="font-semibold text-slate-800">{className} - {sectionName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Fee Month:</span>
@@ -148,15 +162,15 @@ export default function PrintableReceipt({
                 <span>Total Invoice:</span>
                 <span className="font-mono font-bold">Rs. {invoice.totalAmount.toLocaleString()}</span>
               </div>
-              {invoice.discountAmount > 0 && (
+              {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-700">
                   <span>Concession / Discount:</span>
-                  <span className="font-mono">- Rs. {invoice.discountAmount.toLocaleString()}</span>
+                  <span className="font-mono">- Rs. {discountAmount.toLocaleString()}</span>
                 </div>
               )}
               <div className="flex justify-between text-emerald-900 bg-emerald-50 p-1 rounded font-bold border border-emerald-200">
                 <span>Paid Amount:</span>
-                <span className="font-mono">Rs. {receipt.amount.toLocaleString()}</span>
+                <span className="font-mono">Rs. {paidAmount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-slate-500 text-[9px]">
                 <span>Remaining Balance:</span>
@@ -167,8 +181,8 @@ export default function PrintableReceipt({
             {/* Payment Mode & Stamp */}
             <div className="mt-3 pt-2 border-t border-dashed border-slate-300 text-[9px] text-slate-500 flex items-center justify-between">
               <div>
-                <p>Mode: <strong>{receipt.paymentMethod}</strong></p>
-                <p className="text-[8px]">{new Date(receipt.paymentDate).toLocaleDateString('en-GB')}</p>
+                <p>Mode: <strong>{paymentMethod}</strong></p>
+                <p className="text-[8px]">{new Date(paymentDate).toLocaleDateString('en-GB')}</p>
               </div>
               <div className="text-right">
                 <span className="inline-block px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[8px]">

@@ -19,7 +19,7 @@ async function main() {
     console.log(`👤 Testing with Student: ${s.fullName} (${s.studentId})`);
 
     // Sibling query
-    let siblings = [];
+    let siblings: any[] = [];
     if (s.parentId || s.parent?.fatherPhone) {
       siblings = await prisma.student.findMany({
         where: {
