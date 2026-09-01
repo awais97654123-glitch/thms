@@ -126,7 +126,7 @@ export async function GET(req: NextRequest) {
         totalStudents,
         activeTeachers,
         activeAdmissions: activeAdmissionsCount,
-        todayAttendancePct: todayAttendancePct > 100 ? 100 : (todayAttendancePct || 96),
+        todayAttendancePct: todayAttendancePct > 100 ? 100 : todayAttendancePct,
         todayPresent: todayPresentCount,
         todayLate: todayLateCount,
         todayFeeCollection: todayFeeAggregate._sum.amount || 0,

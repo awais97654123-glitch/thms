@@ -55,7 +55,7 @@ model User {
   username     String    @unique
   email        String?   @unique
   passwordHash String
-  role         String    // "SUPER_ADMIN", "ADMIN", "TEACHER", "STUDENT", "PARENT", "ADMISSION_OFFICER", "ACCOUNTANT", "LIBRARIAN"
+  role         String    // "SUPER_ADMIN", "PRINCIPAL", "ADMIN", "TEACHER", "STUDENT", "PARENT", "ADMISSION_OFFICER", "ACCOUNTANT", "LIBRARIAN", "HR_MANAGER", "TRANSPORT_MANAGER"
   permissions  String?   // JSON string of explicit permissions
   status       String    @default("ACTIVE") // "ACTIVE", "INACTIVE", "SUSPENDED"
   isFirstLogin Boolean   @default(false)
@@ -72,6 +72,8 @@ model User {
   notifications Notification[]
   pushTokens   DevicePushToken[]
   supportTickets SupportTicket[]
+  leaves       Leave[]
+  teacherAttendances TeacherAttendance[]
 }
 
 model Class {
@@ -211,6 +213,8 @@ model Student {
   libraryIssues    LibraryIssue[]
   transport        StudentTransport?
   supportTickets   SupportTicket[]
+  disciplineRecords StudentDiscipline[]
+  promotionHistory  PromotionHistory[]
 
   @@index([classId, sectionId])
   @@index([sessionId])
@@ -960,3 +964,134 @@ model SupportMessage {
   @@index([ticketId])
 }
 
+// ============================================================
+// LEAVE MANAGEMENT
+// ============================================================
+model Leave {
+  id            String   @id @default(uuid())
+  userId        String
+  leaveType     String   // "ANNUAL", "SICK", "CASUAL", "MATERNITY", "UNPAID", "OTHER"
+  startDate     DateTime
+  endDate       DateTime
+  totalDays     Int      @default(1)
+  reason        String
+  status        String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED", "CANCELLED"
+  approvedById  String?
+  approverNotes String?
+  attachmentUrl String?
+  appliedAt     DateTime @default(now())
+  reviewedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([startDate, endDate])
+}
+
+// ============================================================
+// SCHOOL CALENDAR
+// ============================================================
+model CalendarEvent {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  eventType   String   // "HOLIDAY", "EXAM", "PARENT_MEETING", "SPORTS", "COMPETITION", "ADMISSION", "CULTURAL", "OTHER"
+  startDate   DateTime
+  endDate     DateTime?
+  isAllDay    Boolean  @default(true)
+  targetRole  String   @default("ALL") // "ALL", "STUDENTS", "TEACHERS", "PARENTS", "STAFF", "ADMIN"
+  classId     String?
+  color       String   @default("#1e3a8a") // hex color for calendar display
+  location    String?
+  createdById String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([startDate])
+  @@index([eventType])
+  @@index([targetRole])
+}
+
+// ============================================================
+// STUDENT DISCIPLINE RECORDS
+// ============================================================
+model StudentDiscipline {
+  id           String   @id @default(uuid())
+  studentId    String
+  type         String   // "WARNING", "REMARK", "INCIDENT", "SUSPENSION", "COMMENDATION"
+  severity     String   @default("LOW") // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  title        String
+  description  String
+  actionTaken  String?
+  reportedById String?
+  reportedBy   String?  // Name of person who reported
+  incidentDate DateTime @default(now())
+  resolvedAt   DateTime?
+  isResolved   Boolean  @default(false)
+  parentNotified Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([type])
+  @@index([incidentDate])
+}
+
+// ============================================================
+// PROMOTION HISTORY (Academic Class Advancement)
+// ============================================================
+model PromotionHistory {
+  id              String   @id @default(uuid())
+  studentId       String
+  fromClassId     String
+  fromSectionId   String
+  toClassId       String
+  toSectionId     String
+  fromSessionId   String
+  toSessionId     String
+  promotionType   String   @default("PROMOTED") // "PROMOTED", "DETAINED", "TRANSFERRED", "ALUMNI"
+  previousRollNo  String?
+  newRollNo       String?
+  finalPercentage Float?
+  finalGpa        Float?
+  classPosition   Int?
+  remarks         String?
+  promotedById    String?
+  promotedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([fromSessionId])
+  @@index([toSessionId])
+}
+
+// ============================================================
+// TEACHER / STAFF ATTENDANCE (Separate from Student Attendance)
+// ============================================================
+model TeacherAttendance {
+  id         String   @id @default(uuid())
+  userId     String
+  date       DateTime
+  checkIn    String?  // e.g. "08:00 AM"
+  checkOut   String?  // e.g. "02:30 PM"
+  status     String   @default("PRESENT") // "PRESENT", "ABSENT", "LATE", "LEAVE", "HALF_DAY"
+  method     String   @default("MANUAL") // "MANUAL", "BIOMETRIC", "QR"
+  remarks    String?
+  markedById String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([date, status])
+  @@index([userId])
+}

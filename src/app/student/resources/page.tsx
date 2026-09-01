@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   BookOpen, 
   Download, 
@@ -11,172 +12,183 @@ import {
   ExternalLink, 
   CheckCircle2, 
   Layers,
-  FileCheck
+  FileCheck,
+  RefreshCw,
+  Loader2,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function StudentResourcesPage() {
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
     { id: 'ALL', name: 'All Resources' },
-    { id: 'TEXTBOOK', name: 'E-Textbooks' },
+    { id: 'PDF', name: 'Curriculum PDFs' },
     { id: 'NOTES', name: 'Revision Notes' },
     { id: 'PAST_PAPER', name: 'BISE Past Papers' },
     { id: 'FORMULA', name: 'Formula Cheat Sheets' },
   ];
 
-  const resources = [
-    {
-      id: '1',
-      title: 'Mathematics Grade 8 & 9 Complete Formula Sheet',
-      subject: 'Mathematics',
-      category: 'FORMULA',
-      size: '2.4 MB PDF',
-      downloads: 480,
-      desc: 'Algebraic identities, geometric theorems, quadratic roots, and trigonometry quick reference tables.',
-    },
-    {
-      id: '2',
-      title: 'Physics Chapter 1 to 5 Comprehensive Notes',
-      subject: 'Physics',
-      category: 'NOTES',
-      size: '4.1 MB PDF',
-      downloads: 390,
-      desc: 'Kinematics, dynamics, gravitation, work & energy solved numericals and labeled diagrams.',
-    },
-    {
-      id: '3',
-      title: 'BISE Peshawar Board 5-Year Solved Past Papers',
-      subject: 'All Subjects',
-      category: 'PAST_PAPER',
-      size: '12.8 MB PDF',
-      downloads: 820,
-      desc: 'Model papers and annual BISE Peshawar board examinations with official marking keys.',
-    },
-    {
-      id: '4',
-      title: 'Chemistry Laboratory Manual & Reaction Equations',
-      subject: 'Chemistry',
-      category: 'TEXTBOOK',
-      size: '5.6 MB PDF',
-      downloads: 310,
-      desc: 'Standard laboratory procedures, chemical apparatus guide, and balanced chemical equations.',
-    },
-    {
-      id: '5',
-      title: 'Computer Science Python & Logic Gates Handbook',
-      subject: 'Computer Science',
-      category: 'NOTES',
-      size: '3.2 MB PDF',
-      downloads: 450,
-      desc: 'Basic syntax, loops, data structures, truth tables, and Boolean algebra rules.',
-    },
-    {
-      id: '6',
-      title: 'English Grammar, Essays & Letter Formats Guide',
-      subject: 'English',
-      category: 'NOTES',
-      size: '3.8 MB PDF',
-      downloads: 510,
-      desc: 'Active/passive voice, direct/indirect speech, formal letter templates, and high-scoring essays.',
-    },
-  ];
+  const fetchMaterials = () => {
+    setLoading(true);
+    let url = `/api/student/resources?category=${activeCategory}`;
+    if (searchQuery) url += `&q=${encodeURIComponent(searchQuery)}`;
 
-  const filtered = resources.filter((r) => {
-    if (activeCategory !== 'ALL' && r.category !== activeCategory) return false;
-    if (searchQuery && !r.title.toLowerCase().includes(searchQuery.toLowerCase()) && !r.subject.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.materials) setMaterials(data.materials);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  };
 
-  const handleDownload = (title: string) => {
-    alert(`Downloading verified academic material: "${title}"`);
+  useEffect(() => {
+    fetchMaterials();
+  }, [activeCategory]);
+
+  const handleDownload = (material: any) => {
+    alert(`Downloading verified curriculum material: "${material.title}"`);
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-8 animate-in fade-in duration-300 bg-[#ffffff] text-slate-900 pb-16">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Digital Study Library & Syllabus Hub
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium">
-            Download verified curriculum e-books, chapter revision notes, formula sheets, and BISE past papers.
-          </p>
-        </div>
+      {/* Back link */}
+      <div>
+        <Link
+          href="/student"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Student Portal</span>
+        </Link>
+      </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-          <input
-            type="text"
-            placeholder="Search notes, formulas, past papers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-orange-500 shadow-sm"
-          />
+      {/* Top Header Hero */}
+      <div className="relative overflow-hidden rounded-3xl bg-[#0a192f] text-white p-8 sm:p-10 shadow-2xl border border-blue-900/40">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-600/25 text-blue-300 text-xs font-bold border border-blue-500/40 backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+              <span>Digital Curriculum Hub • Session 2026-2027</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-serif">
+              Digital Study Library & Syllabus Hub
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+              Download verified curriculum e-textbooks, chapter revision notes, formula sheets, and BISE past papers uploaded by your faculty teachers.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-72">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                placeholder="Search notes, formulas, topics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && fetchMaterials()}
+                className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-white/10 text-white placeholder:text-slate-400 border border-white/20 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Category Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-black shrink-0 transition-all ${
-              activeCategory === cat.id
-                ? 'bg-slate-900 text-white shadow-md'
-                : 'bg-white text-slate-700 hover:bg-orange-50 border border-slate-200'
-            }`}
-          >
-            {cat.name}
-          </button>
-        ))}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-2xl text-xs font-bold shrink-0 transition-all ${
+                activeCategory === cat.id
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={fetchMaterials}
+          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 shrink-0"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          <span>Refresh</span>
+        </button>
       </div>
 
-      {/* Resources Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((res) => (
-          <div
-            key={res.id}
-            className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all space-y-4 flex flex-col justify-between group"
-          >
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-50 text-orange-700 border border-orange-200">
-                  {res.subject}
-                </span>
-                <span className="text-[10px] font-mono text-slate-400 font-bold">
-                  {res.size}
-                </span>
+      {/* Materials Cards Grid */}
+      {loading ? (
+        <div className="p-12 text-center text-slate-400 space-y-2">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
+          <p className="text-xs">Loading verified academic resources...</p>
+        </div>
+      ) : materials.length === 0 ? (
+        <div className="bg-white p-12 rounded-3xl border border-slate-200 text-center text-xs text-slate-400 space-y-3">
+          <BookOpen className="w-10 h-10 mx-auto text-slate-300" />
+          <h4 className="font-bold text-sm text-slate-700">No study materials found</h4>
+          <p>Curriculum notes will appear here once uploaded by subject faculty.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {materials.map((res) => (
+            <div
+              key={res.id}
+              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all space-y-4 flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                    {res.subject?.name || 'General Curriculum'}
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400 font-bold bg-slate-100 px-2 py-0.5 rounded">
+                    {res.fileType || 'PDF'}
+                  </span>
+                </div>
+
+                <h3 className="font-bold text-sm text-slate-900 leading-snug">
+                  {res.title}
+                </h3>
+
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  {res.description || res.topic}
+                </p>
+
+                {res.teacher && (
+                  <div className="text-[11px] text-slate-400">
+                    Faculty: <strong className="text-slate-700">{res.teacher.fullName}</strong>
+                  </div>
+                )}
               </div>
 
-              <h3 className="font-black text-sm text-slate-900 leading-snug group-hover:text-orange-600 transition-colors">
-                {res.title}
-              </h3>
-
-              <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                {res.desc}
-              </p>
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-[11px] text-slate-400 font-mono">
+                  {new Date(res.createdAt).toLocaleDateString('en-GB')}
+                </span>
+                <button
+                  onClick={() => handleDownload(res)}
+                  className="px-4 py-2 rounded-xl btn-blue-prestige text-white font-bold text-xs shadow flex items-center gap-1.5 transition-all hover:scale-105"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Material</span>
+                </button>
+              </div>
             </div>
-
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400 font-medium font-mono">
-                {res.downloads} downloads
-              </span>
-              <button
-                onClick={() => handleDownload(res.title)}
-                className="px-4 py-2 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 font-black text-xs border border-orange-200 flex items-center gap-1.5 transition-colors"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Download PDF</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
     </div>
   );

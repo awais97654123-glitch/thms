@@ -118,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          role="SUPER_ADMIN"
+          role={currentUser?.role || 'ADMIN'}
         />
 
         {/* Main Content Area */}

@@ -5,8 +5,12 @@ import { NextRequest } from 'next/server';
 import prisma from './db';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'the_hayatabad_model_school_super_secret_jwt_key_2026_erp'
+  process.env.JWT_SECRET
 );
+
+if (!process.env.JWT_SECRET) {
+  console.error('CRITICAL: JWT_SECRET environment variable is not set!');
+}
 
 export const COOKIE_NAME = 'thms_session';
 

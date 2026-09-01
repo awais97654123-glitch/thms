@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'the_hayatabad_model_school_super_secret_jwt_key_2026_erp'
+  process.env.JWT_SECRET
 );
+
+if (!process.env.JWT_SECRET) {
+  console.error('CRITICAL: JWT_SECRET environment variable is not set!');
+}
 
 const COOKIE_NAME = 'thms_session';
 
@@ -59,6 +63,8 @@ export async function middleware(req: NextRequest) {
     if (s.role === 'PARENT') return '/parent';
     if (s.role === 'ACCOUNTANT') return '/admin/fees';
     if (s.role === 'LIBRARIAN') return '/admin/library';
+    if (s.role === 'HR_MANAGER') return '/admin/staff';
+    if (s.role === 'TRANSPORT_MANAGER') return '/admin/transport';
     return '/admin';
   };
 
@@ -118,17 +124,18 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    // D. ADMIN AREA RESTRICTION (Only Super Admin & Admin can access /admin):
+    // D. ADMIN AREA RESTRICTION — Only administrative roles can access /admin:
     if (pathname.startsWith('/admin')) {
-      if (
-        session.role !== 'SUPER_ADMIN' &&
-        session.role !== 'ADMIN' &&
-        session.role !== 'ACCOUNTANT' &&
-        session.role !== 'LIBRARIAN'
-      ) {
+      const adminRoles = [
+        'SUPER_ADMIN', 'PRINCIPAL', 'ADMIN', 'SCHOOL_ADMIN',
+        'ACCOUNTANT', 'LIBRARIAN', 'ADMISSION_OFFICER',
+        'TRANSPORT_MANAGER', 'HR_MANAGER',
+      ];
+      if (!adminRoles.includes(session.role)) {
         return NextResponse.redirect(new URL('/login', req.url));
       }
 
+      // Scoped access for specialized roles
       if (
         session.role === 'ACCOUNTANT' &&
         !pathname.startsWith('/admin/fees') &&
@@ -145,6 +152,34 @@ export async function middleware(req: NextRequest) {
         pathname !== '/admin'
       ) {
         return NextResponse.redirect(new URL('/admin/library', req.url));
+      }
+
+      if (
+        session.role === 'ADMISSION_OFFICER' &&
+        !pathname.startsWith('/admin/admissions') &&
+        !pathname.startsWith('/admin/students') &&
+        !pathname.startsWith('/admin/id-cards') &&
+        pathname !== '/admin'
+      ) {
+        return NextResponse.redirect(new URL('/admin/admissions', req.url));
+      }
+
+      if (
+        session.role === 'TRANSPORT_MANAGER' &&
+        !pathname.startsWith('/admin/transport') &&
+        pathname !== '/admin'
+      ) {
+        return NextResponse.redirect(new URL('/admin/transport', req.url));
+      }
+
+      if (
+        session.role === 'HR_MANAGER' &&
+        !pathname.startsWith('/admin/staff') &&
+        !pathname.startsWith('/admin/teachers') &&
+        !pathname.startsWith('/admin/reports') &&
+        pathname !== '/admin'
+      ) {
+        return NextResponse.redirect(new URL('/admin/staff', req.url));
       }
     }
   }
