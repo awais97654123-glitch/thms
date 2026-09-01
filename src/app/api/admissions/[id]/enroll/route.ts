@@ -427,6 +427,52 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
               </table>
             </div>
 
+            {/* DIGITAL STUDENT SMART ID CARD (EMAIL ATTACHED EMBED) */}
+            <div style="background: linear-gradient(135deg, #0a192f 0%, #1e3a8a 100%); border-radius: 16px; padding: 20px; color: #ffffff; margin: 24px 0; border: 2px solid #3b82f6; box-shadow: 0 10px 25px rgba(10,25,47,0.35);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 14px;">
+                <div>
+                  <h4 style="margin: 0; font-size: 13px; font-family: Georgia, serif; letter-spacing: 0.5px; color: #ffffff;">THE HAYATABAD MODEL SCHOOL</h4>
+                  <span style="font-size: 9px; color: #93c5fd; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Official Student Smart Identity Card</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; color: #60a5fa;">
+                  2026–2027
+                </div>
+              </div>
+
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="width: 90px; vertical-align: top; padding-right: 14px;">
+                    <div style="width: 80px; height: 95px; background: #ffffff; border-radius: 10px; border: 2px solid #60a5fa; overflow: hidden; text-align: center;">
+                      ${enrollmentResult.student.photoUrl ? `
+                        <img src="${enrollmentResult.student.photoUrl}" alt="${enrollmentResult.student.fullName}" style="width: 100%; height: 100%; object-fit: cover;" />
+                      ` : `
+                        <div style="padding-top: 24px; color: #1e3a8a; font-size: 24px; font-weight: bold;">
+                          ${enrollmentResult.student.fullName.charAt(0)}
+                        </div>
+                      `}
+                    </div>
+                  </td>
+                  <td style="vertical-align: top; font-size: 12px;">
+                    <h2 style="margin: 0 0 4px 0; font-size: 16px; color: #ffffff; font-weight: 800;">${enrollmentResult.student.fullName}</h2>
+                    <p style="margin: 2px 0; color: #93c5fd; font-size: 11px;">Class: <strong style="color: #ffffff;">${enrollmentResult.student.class.name} (${enrollmentResult.student.section.name})</strong></p>
+                    <p style="margin: 2px 0; color: #93c5fd; font-size: 11px;">Roll No: <strong style="color: #ffffff;">${enrollmentResult.student.rollNo}</strong></p>
+                    <p style="margin: 2px 0; color: #93c5fd; font-size: 11px;">Student ID: <strong style="color: #fde047; font-family: monospace;">${enrollmentResult.student.studentId}</strong></p>
+                    <p style="margin: 2px 0; color: #93c5fd; font-size: 11px;">Emergency: <strong style="color: #ffffff;">${application.emergencyPhone || application.fatherPhone}</strong></p>
+                  </td>
+                  <td style="width: 80px; vertical-align: middle; text-align: right;">
+                    <div style="background: #ffffff; padding: 6px; border-radius: 8px; display: inline-block;">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(enrollmentResult.student.qrToken)}" alt="QR Code" style="width: 68px; height: 68px; display: block;" />
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <div style="margin-top: 12px; pt: 8px; border-top: 1px dashed rgba(255,255,255,0.2); font-size: 9px; color: #bfdbfe; display: flex; justify-content: space-between;">
+                <span>Gate Pass & Library Access Verified</span>
+                <span>Principal Office: Prof. M. Tariq Khan</span>
+              </div>
+            </div>
+
             <div style="text-align: center; margin: 26px 0 10px 0;">
               <a href="http://localhost:3000/login" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
                 Access Portal Login ➔
@@ -443,7 +489,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       emailProvider.sendEmail({
         to: parentTargetEmail,
         toName: application.fatherName || 'Parent',
-        subject: `Official Admission Confirmation — ${enrollmentResult.student.fullName} (ID: ${enrollmentResult.student.studentId})`,
+        subject: `Official Admission Confirmation & Digital ID Card — ${enrollmentResult.student.fullName} (ID: ${enrollmentResult.student.studentId})`,
         html: emailHtml,
       }).catch((e) => console.warn('Enrollment email dispatch warning:', e));
     }

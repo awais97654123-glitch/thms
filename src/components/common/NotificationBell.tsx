@@ -105,8 +105,9 @@ export default function NotificationBell({ className = '' }: { className?: strin
     <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Bell Trigger Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 rounded-2xl bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 shadow-sm transition-all hover:scale-105 flex items-center justify-center focus:outline-none"
+        className="relative p-2.5 rounded-2xl bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 shadow-sm transition-all hover:scale-105 flex items-center justify-center focus:outline-none cursor-pointer"
         aria-label="Notifications"
       >
         <Bell className={`w-5 h-5 ${unreadCount > 0 ? 'text-blue-600 animate-wiggle' : 'text-slate-600'}`} />
@@ -118,17 +119,17 @@ export default function NotificationBell({ className = '' }: { className?: strin
         )}
       </button>
 
-      {/* Notification Dropdown Panel */}
+      {/* Notification Dropdown Panel with safe positioning */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 overflow-hidden text-slate-800 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-[380px] rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 overflow-hidden text-slate-800 animate-in fade-in zoom-in-95 duration-150">
           
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-[#0a192f] to-[#1e3a8a] text-white flex items-center justify-between">
+          <div className="p-4 bg-gradient-to-r from-[#0a192f] via-[#1e3a8a] to-[#2563eb] text-white flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-2">
               <Bell className="w-4 h-4 text-blue-400" />
               <h4 className="font-serif font-bold text-sm">Notifications & Alerts</h4>
               {unreadCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-white">
+                <span className="px-2 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-white shadow-sm">
                   {unreadCount} new
                 </span>
               )}
@@ -136,9 +137,10 @@ export default function NotificationBell({ className = '' }: { className?: strin
 
             {unreadCount > 0 && (
               <button
+                type="button"
                 onClick={markAllAsRead}
                 disabled={loading}
-                className="text-[11px] text-blue-200 hover:text-white font-semibold underline disabled:opacity-50"
+                className="text-[11px] text-blue-200 hover:text-white font-semibold underline disabled:opacity-50 cursor-pointer"
               >
                 Mark all read
               </button>
@@ -158,7 +160,7 @@ export default function NotificationBell({ className = '' }: { className?: strin
                   key={notif.id}
                   onClick={() => !notif.isRead && markOneAsRead(notif.id)}
                   className={`p-3.5 hover:bg-slate-50 transition-colors flex items-start gap-3 cursor-pointer ${
-                    !notif.isRead ? 'bg-blue-50/40 border-l-4 border-l-blue-600' : ''
+                    !notif.isRead ? 'bg-blue-50/50 border-l-4 border-l-blue-600' : ''
                   }`}
                 >
                   <div className="p-2 rounded-xl bg-slate-100 border border-slate-200 shrink-0 mt-0.5">
@@ -198,7 +200,7 @@ export default function NotificationBell({ className = '' }: { className?: strin
           {/* Footer */}
           <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
             <span className="text-[10px] text-slate-400 font-semibold">
-              Live updates synced with The Hayatabad Model School Network
+              The Hayatabad Model School Notification Hub
             </span>
           </div>
 

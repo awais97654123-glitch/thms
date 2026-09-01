@@ -18,10 +18,12 @@ import {
   Clock, 
   FolderDown, 
   Calendar, 
-  Bot,
-  HelpCircle,
-  ChevronRight
+  Bot, 
+  HelpCircle, 
+  ChevronRight,
+  Bell
 } from 'lucide-react';
+import NotificationBell from '@/components/common/NotificationBell';
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -64,25 +66,25 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col text-slate-900 selection:bg-orange-500 selection:text-white">
-      {/* DEDICATED STUDENT PORTAL HEADER */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 shadow-sm">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col text-slate-900 selection:bg-blue-600 selection:text-white">
+      {/* DEDICATED STUDENT PORTAL HEADER (Royal Blue Prestige & Crisp White) */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-blue-900/10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
-          {/* Left: 3D School Logo + Student Portal Title */}
+          {/* Left: School Logo + Student Portal Title */}
           <div className="flex items-center gap-3">
             <Link href="/student" className="flex items-center gap-3 group">
               <img
                 src="/logo.png"
                 alt="THMS"
-                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.25)] group-hover:scale-105 transition-transform"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(37,99,235,0.25)] group-hover:scale-105 transition-transform"
               />
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-black text-slate-900 text-sm sm:text-base tracking-tight block">
                     The Hayatabad Model School
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-orange-50 text-orange-700 border border-orange-200 uppercase tracking-wider hidden sm:inline-block">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider hidden sm:inline-block">
                     Student Portal
                   </span>
                 </div>
@@ -94,7 +96,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
           </div>
 
           {/* Center: Desktop Navigation Tabs */}
-          <nav className="hidden 2xl:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/80">
+          <nav className="hidden 2xl:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/80">
             {navItems.slice(0, 7).map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -104,14 +106,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   href={item.href}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 transition-all ${
                     isActive
-                      ? 'bg-white text-orange-600 shadow-sm'
-                      : 'text-slate-700 hover:text-orange-600 hover:bg-white/60'
+                      ? 'bg-white text-blue-700 shadow-sm'
+                      : 'text-slate-700 hover:text-blue-700 hover:bg-white/60'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${item.isAI ? 'text-amber-500 animate-pulse' : ''}`} />
+                  <Icon className={`w-3.5 h-3.5 ${item.isAI ? 'text-blue-600 animate-pulse' : ''}`} />
                   <span>{item.name}</span>
                   {item.isAI && (
-                    <span className="px-1 py-0.2 rounded text-[8px] bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black">
+                    <span className="px-1 py-0.2 rounded text-[8px] bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black">
                       AI
                     </span>
                   )}
@@ -120,21 +122,24 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             })}
           </nav>
 
-          {/* Right: AI Quick Launcher + Student Avatar + Sign Out */}
+          {/* Right: Notification Bell + AI Quick Launcher + Student Avatar + Sign Out */}
           <div className="flex items-center gap-2.5">
+            {/* In-App Notifications */}
+            <NotificationBell />
+
             <Link
               href="/student/ai-assistant"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-orange-500/10 to-amber-500/10 hover:from-orange-500/20 hover:to-amber-500/20 text-orange-700 border border-orange-200/80 text-xs font-black transition-all hover:scale-105"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 text-xs font-black transition-all hover:scale-105"
             >
-              <Bot className="w-4 h-4 text-orange-600 animate-pulse" />
+              <Bot className="w-4 h-4 text-blue-600 animate-pulse" />
               <span>AI Copilot</span>
             </Link>
 
             <Link
               href="/student/settings"
-              className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl bg-white hover:bg-orange-50/60 border border-slate-200 shadow-sm transition-all"
+              className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl bg-white hover:bg-blue-50/60 border border-slate-200 shadow-sm transition-all"
             >
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black flex items-center justify-center text-xs shadow-md overflow-hidden">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0a192f] via-[#1e3a8a] to-[#2563eb] text-white font-black flex items-center justify-center text-xs shadow-md overflow-hidden border border-white">
                 {student?.photoUrl ? (
                   <img src={student.photoUrl} alt={student.fullName} className="w-full h-full object-cover" />
                 ) : (
@@ -145,7 +150,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                 <p className="text-xs font-black text-slate-900 leading-tight">
                   {student?.fullName || 'Student'}
                 </p>
-                <p className="text-[10px] text-orange-600 font-mono font-bold">
+                <p className="text-[10px] text-blue-600 font-mono font-bold">
                   {student?.studentId || 'THMS-ID'}
                 </p>
               </div>
@@ -162,16 +167,16 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-2xl text-slate-700 hover:bg-orange-50 border border-slate-200 2xl:hidden"
+              className="p-2.5 rounded-2xl text-slate-700 hover:bg-blue-50 border border-slate-200 2xl:hidden"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-orange-600" /> : <Menu className="w-5 h-5 text-slate-800" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-blue-600" /> : <Menu className="w-5 h-5 text-slate-800" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="2xl:hidden bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 px-4 py-4 space-y-1 animate-in slide-in-from-top-4 duration-200">
+          <div className="2xl:hidden bg-white/95 backdrop-blur-2xl border-b border-blue-900/10 px-4 py-4 space-y-1 animate-in slide-in-from-top-4 duration-200">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -182,15 +187,15 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-black transition-all ${
                     isActive
-                      ? 'bg-orange-500/10 text-orange-600 border border-orange-200'
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
                       : 'text-slate-800 hover:bg-slate-100'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${item.isAI ? 'text-amber-500' : 'text-orange-600'}`} />
+                    <Icon className={`w-4 h-4 ${item.isAI ? 'text-cyan-600' : 'text-blue-600'}`} />
                     <span>{item.name}</span>
                     {item.isAI && (
-                      <span className="px-1.5 py-0.5 rounded text-[8px] bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black">
+                      <span className="px-1.5 py-0.5 rounded text-[8px] bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black">
                         AI
                       </span>
                     )}

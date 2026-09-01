@@ -17,20 +17,20 @@ export default function PortalCircularLoader({
 }: PortalCircularLoaderProps) {
   const content = (
     <div className="flex flex-col items-center justify-center p-6 space-y-4 text-center">
-      {/* Progressive Rotating Arc with Central THMS 3D Mark */}
+      {/* Progressive Rotating Arc with Central THMS Mark (Royal Blue Prestige) */}
       <div className="relative flex items-center justify-center w-24 h-24">
         {/* Outer Glow */}
-        <div className="absolute inset-0 rounded-full bg-orange-500/20 blur-xl animate-pulse"></div>
+        <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse"></div>
         
         {/* Progressive Rotating Arc Ring */}
-        <div className="w-24 h-24 rounded-full border-4 border-orange-100/60 border-t-orange-500 border-r-amber-500 animate-spin drop-shadow-[0_0_12px_rgba(249,115,22,0.4)]"></div>
+        <div className="w-24 h-24 rounded-full border-4 border-blue-100/70 border-t-blue-600 border-r-cyan-500 animate-spin drop-shadow-[0_0_14px_rgba(37,99,235,0.45)]"></div>
         
         {/* Center THMS Mark */}
         <div className="absolute inset-0 flex items-center justify-center p-4">
           <img 
             src="/logo.png" 
             alt="THMS" 
-            className="w-12 h-12 object-contain drop-shadow-[0_2px_6px_rgba(249,115,22,0.3)] animate-pulse" 
+            className="w-12 h-12 object-contain drop-shadow-[0_2px_8px_rgba(37,99,235,0.35)] animate-pulse" 
           />
         </div>
       </div>

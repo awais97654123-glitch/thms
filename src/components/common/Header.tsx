@@ -111,6 +111,7 @@ export default function Header({ user, onToggleSidebar }: HeaderProps) {
     { name: 'About Us', href: '/#about' },
     { name: 'Academics', href: '/#academics' },
     { name: 'Admissions', href: '/#admissions' },
+    { name: 'Verify Student', href: '/students/verify' },
     { name: 'Campus', href: '/#campus' },
     { name: 'Faculty', href: '/#faculty' },
     { name: 'News & Events', href: '/#news' },
