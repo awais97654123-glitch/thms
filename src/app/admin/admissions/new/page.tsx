@@ -132,7 +132,7 @@ export default function AdminNewAdmissionPage() {
         throw new Error(data.error || 'Failed to submit admission form');
       }
 
-      const appId = data.id;
+      const appId = data.id || data.applicationId;
 
       // 2. If direct 1-Click Enrollment is requested, trigger enrollment immediately
       if (enrollDirectly && appId) {
