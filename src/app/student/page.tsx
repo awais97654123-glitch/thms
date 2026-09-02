@@ -35,16 +35,20 @@ import {
   Target,
   Ban,
   AlertTriangle,
-  RefreshCw
+  RefreshCw,
+  QrCode,
+  Camera
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
 import NotificationBell from '@/components/common/NotificationBell';
+import QRScannerModal from '@/components/common/QRScanner';
 
 export default function StudentDashboardPage() {
   const [student, setStudent] = useState<any | null>(null);
   const [school, setSchool] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showQrModal, setShowQrModal] = useState(false);
   const [attendanceStats, setAttendanceStats] = useState<any | null>(null);
   const [homeworks, setHomeworks] = useState<any[]>([]);
   const [results, setResults] = useState<any[]>([]);
@@ -296,24 +300,37 @@ export default function StudentDashboardPage() {
       {/* 3. STAGGERED BOTTOM-TO-TOP KPI ANALYTICS GRID */}
       <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Today's Gate Check-in */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-all">
-          <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
-            Today&apos;s Gate Check-in
-          </span>
-          <div className="flex items-center gap-2">
-            <span className={`px-3 py-1 rounded-full text-xs font-black border ${
-              todayStatus === 'PRESENT'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                : todayStatus === 'LATE'
-                ? 'bg-amber-50 text-amber-700 border-amber-300'
-                : todayStatus === 'ABSENT'
-                ? 'bg-rose-50 text-rose-700 border-rose-300'
-                : 'bg-slate-100 text-slate-700 border-slate-300'
-            }`}>
-              {todayStatus === 'PRESENT' ? '✓ Present' : todayStatus === 'LATE' ? '⚠️ Late Arrival' : todayStatus === 'ABSENT' ? '✗ Absent' : 'Pending Roll Call'}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-all flex flex-col justify-between">
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
+              Today&apos;s Gate Check-in
             </span>
+            <div className="flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-xs font-black border ${
+                todayStatus === 'PRESENT'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                  : todayStatus === 'LATE'
+                  ? 'bg-amber-50 text-amber-700 border-amber-300'
+                  : todayStatus === 'ABSENT'
+                  ? 'bg-rose-50 text-rose-700 border-rose-300'
+                  : 'bg-slate-100 text-slate-700 border-slate-300'
+              }`}>
+                {todayStatus === 'PRESENT' ? '✓ Present' : todayStatus === 'LATE' ? '⚠️ Late Arrival' : todayStatus === 'ABSENT' ? '✗ Absent' : 'Pending Roll Call'}
+              </span>
+            </div>
           </div>
-          <p className="text-[11px] text-slate-400 font-medium">Smart QR pass scan at main gate</p>
+
+          {todayStatus !== 'PRESENT' && (
+            <button
+              onClick={() => setShowQrModal(true)}
+              className="w-full py-2 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>Mark Attendance (QR)</span>
+            </button>
+          )}
+
+          <p className="text-[10px] text-slate-400 font-medium">Smart QR pass scan at main gate</p>
         </div>
 
         {/* Overall Attendance Rate */}
@@ -673,6 +690,22 @@ export default function StudentDashboardPage() {
           <span className="font-bold text-xs text-slate-900 block">Settings</span>
         </Link>
       </div>
+
+      {/* SMART QR ATTENDANCE MODAL (Sections 49 & 51-55) */}
+      {showQrModal && (
+        <QRScannerModal
+          onClose={() => {
+            setShowQrModal(false);
+            // Refresh student attendance stats
+            fetch('/api/student/attendance')
+              .then((res) => res.json())
+              .then((attData) => {
+                if (attData.statistics) setAttendanceStats(attData.statistics);
+              })
+              .catch(console.error);
+          }}
+        />
+      )}
 
     </div>
   );

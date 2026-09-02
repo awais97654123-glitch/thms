@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Find teacher record for this user or query param if admin
     let teacher = null;
     if (session.role === 'TEACHER') {
       teacher = await prisma.teacher.findFirst({
@@ -22,75 +21,14 @@ export async function GET(req: NextRequest) {
             { employeeId: session.username },
           ],
         },
-        include: {
-          assignments: {
-            include: {
-              class: true,
-              section: true,
-              subject: true,
-            },
-          },
-          managedSections: {
-            include: {
-              class: true,
-            },
-          },
-          subjects: {
-            include: {
-              class: true,
-            },
-          },
-        },
       });
     } else if (session.role === 'ADMIN' || session.role === 'SUPER_ADMIN') {
       const { searchParams } = new URL(req.url);
       const teacherId = searchParams.get('teacherId');
       if (teacherId) {
-        teacher = await prisma.teacher.findUnique({
-          where: { id: teacherId },
-          include: {
-            assignments: {
-              include: {
-                class: true,
-                section: true,
-                subject: true,
-              },
-            },
-            managedSections: {
-              include: {
-                class: true,
-              },
-            },
-            subjects: {
-              include: {
-                class: true,
-              },
-            },
-          },
-        });
+        teacher = await prisma.teacher.findUnique({ where: { id: teacherId } });
       } else {
-        // Return first teacher or all classes for admin overview
-        teacher = await prisma.teacher.findFirst({
-          include: {
-            assignments: {
-              include: {
-                class: true,
-                section: true,
-                subject: true,
-              },
-            },
-            managedSections: {
-              include: {
-                class: true,
-              },
-            },
-            subjects: {
-              include: {
-                class: true,
-              },
-            },
-          },
-        });
+        teacher = await prisma.teacher.findFirst();
       }
     }
 
@@ -98,79 +36,104 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Teacher profile not found' }, { status: 404 });
     }
 
-    // Build structured assigned classes array
-    // Map assignments: Class -> Sections -> Subjects
-    const classMap: Record<string, {
-      id: string;
-      name: string;
-      code: string;
-      sections: {
+    // Authoritative source of truth:
+    // 1. Central Timetable slots assigned to this teacher
+    // 2. Official TeacherAssignment records
+    const [timetableSlots, teacherAssignments] = await Promise.all([
+      prisma.timetable.findMany({
+        where: {
+          teacherId: teacher.id,
+          status: 'PUBLISHED',
+        },
+        include: {
+          class: true,
+          section: true,
+          subject: true,
+        },
+        orderBy: [{ dayOfWeek: 'asc' }, { startTime: 'asc' }],
+      }),
+      prisma.teacherAssignment.findMany({
+        where: { teacherId: teacher.id },
+        include: {
+          class: true,
+          section: true,
+          subject: true,
+        },
+      }),
+    ]);
+
+    // Build structured Map: Class -> Sections -> Subjects
+    const classMap: Record<
+      string,
+      {
         id: string;
         name: string;
-        subjects: {
+        code: string;
+        sections: {
           id: string;
           name: string;
-          code: string;
+          subjects: { id: string; name: string; code: string }[];
         }[];
-      }[];
-    }> = {};
+      }
+    > = {};
 
-    // 1. Process explicit TeacherAssignments
-    if (teacher.assignments && teacher.assignments.length > 0) {
-      for (const assign of teacher.assignments) {
-        if (!classMap[assign.classId]) {
-          classMap[assign.classId] = {
-            id: assign.class.id,
-            name: assign.class.name,
-            code: assign.class.code,
-            sections: [],
-          };
-        }
+    const addAssignment = (
+      cls: { id: string; name: string; code: string },
+      sec: { id: string; name: string },
+      sub: { id: string; name: string; code: string }
+    ) => {
+      if (!classMap[cls.id]) {
+        classMap[cls.id] = {
+          id: cls.id,
+          name: cls.name,
+          code: cls.code,
+          sections: [],
+        };
+      }
 
-        let sectionObj = classMap[assign.classId].sections.find(s => s.id === assign.sectionId);
-        if (!sectionObj) {
-          sectionObj = {
-            id: assign.section.id,
-            name: assign.section.name,
-            subjects: [],
-          };
-          classMap[assign.classId].sections.push(sectionObj);
-        }
+      let sectionObj = classMap[cls.id].sections.find((s) => s.id === sec.id);
+      if (!sectionObj) {
+        sectionObj = {
+          id: sec.id,
+          name: sec.name,
+          subjects: [],
+        };
+        classMap[cls.id].sections.push(sectionObj);
+      }
 
-        if (!sectionObj.subjects.some(sub => sub.id === assign.subjectId)) {
-          sectionObj.subjects.push({
-            id: assign.subject.id,
-            name: assign.subject.name,
-            code: assign.subject.code,
-          });
-        }
+      if (!sectionObj.subjects.some((s) => s.id === sub.id)) {
+        sectionObj.subjects.push({
+          id: sub.id,
+          name: sub.name,
+          code: sub.code,
+        });
+      }
+    };
+
+    // 1. Ingest from Timetable (source of truth)
+    for (const slot of timetableSlots) {
+      if (slot.class && slot.section && slot.subject) {
+        addAssignment(slot.class, slot.section, slot.subject);
       }
     }
 
-    // 2. Process legacy subjects or managedSections if assignments is empty
-    if (Object.keys(classMap).length === 0) {
-      // Find classes with sections
-      for (const subject of teacher.subjects) {
-        if (!classMap[subject.classId]) {
-          const cls = await prisma.class.findUnique({
-            where: { id: subject.classId },
-            include: { sections: true },
-          });
-          if (cls) {
-            classMap[subject.classId] = {
-              id: cls.id,
-              name: cls.name,
-              code: cls.code,
-              sections: cls.sections.map(sec => ({
-                id: sec.id,
-                name: sec.name,
-                subjects: [{
-                  id: subject.id,
-                  name: subject.name,
-                  code: subject.code,
-                }],
-              })),
-            };
+    // 2. Ingest from TeacherAssignment (source of truth)
+    for (const assign of teacherAssignments) {
+      if (assign.class && assign.section && assign.subject) {
+        addAssignment(assign.class, assign.section, assign.subject);
+      }
+    }
+
+    // Fallback: If no assignments exist yet, allow admin to see classes or return empty
+    if (Object.keys(classMap).length === 0 && (session.role === 'ADMIN' || session.role === 'SUPER_ADMIN')) {
+      const allSampleClasses = await prisma.class.findMany({
+        include: { sections: true, subjects: true },
+        take: 3,
+      });
+      for (const cls of allSampleClasses) {
+        for (const sec of cls.sections) {
+          for (const sub of cls.subjects) {
+            addAssignment(cls, sec, sub);
           }
         }
       }
@@ -185,15 +148,20 @@ export async function GET(req: NextRequest) {
         fullName: teacher.fullName,
         employeeId: teacher.employeeId,
         designation: teacher.designation,
+        department: teacher.department,
         qualification: teacher.qualification,
         email: teacher.email,
         phone: teacher.phone,
       },
       assignedClasses,
-      rawAssignments: teacher.assignments,
+      totalClasses: assignedClasses.length,
+      timetablePeriodsCount: timetableSlots.length,
     });
   } catch (error: any) {
     console.error('Fetch teacher classes error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to fetch assigned classes' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch assigned classes' },
+      { status: 500 }
+    );
   }
 }

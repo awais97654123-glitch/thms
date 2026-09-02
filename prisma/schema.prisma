@@ -453,6 +453,8 @@ model Timetable {
   substitutes   SubstituteAssignment[]
 
   @@unique([classId, sectionId, dayOfWeek, startTime])
+  @@index([teacherId, dayOfWeek])
+  @@index([classId, sectionId])
 }
 
 model Exam {
@@ -513,6 +515,7 @@ model Mark {
   student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([examScheduleId, studentId])
+  @@index([studentId])
 }
 
 model GradeRule {
@@ -647,6 +650,8 @@ model HomeworkSubmission {
   student         Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([homeworkId, studentId])
+  @@index([studentId])
+  @@index([status])
 }
 
 model StudyMaterial {
