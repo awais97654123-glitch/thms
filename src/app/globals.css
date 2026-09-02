@@ -4,18 +4,26 @@
 
 @layer base {
   :root {
-    --navy-deep: #0a192f;
-    --navy-midnight: #030b17;
-    --navy-card: #0c1e38;
-    --blue-primary: #2563eb;
-    --blue-light: #60a5fa;
-    --blue-dark: #1d4ed8;
-    --gold-primary: #2563eb;
-    --gold-light: #60a5fa;
-    --gold-dark: #1d4ed8;
-    --ivory-bg: #ffffff;
-    --ivory-card: #ffffff;
-    --pure-white: #ffffff;
+    --primary-blue: #2563eb;
+    --dark-navy: #0f2a5f;
+    --deep-blue: #173b7a;
+    --light-blue: #eff6ff;
+    --very-light-blue: #f8faff;
+    --page-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --main-text: #0f172a;
+    --secondary-text: #475569;
+    --muted-text: #64748b;
+    --border-color: #e2e8f0;
+    --divider-color: #f1f5f9;
+    --status-success: #16a34a;
+    --status-success-bg: #f0fdf4;
+    --status-warning: #f59e0b;
+    --status-warning-bg: #fffbeb;
+    --status-danger: #dc2626;
+    --status-danger-bg: #fef2f2;
+    --status-info: #0284c7;
+    --status-info-bg: #f0f9ff;
   }
 
   html {
@@ -23,9 +31,9 @@
   }
 
   body {
-    color: #0f172a;
-    background-color: #ffffff;
-    font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--main-text);
+    background-color: var(--page-bg);
+    font-family: var(--font-sans), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

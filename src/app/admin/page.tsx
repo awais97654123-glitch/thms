@@ -107,10 +107,10 @@ export default function AdminDashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-300 bg-[#ffffff] text-slate-900 pb-16">
       
       {/* Top Royal Blue Command Header with Notification Bell */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#0a192f] text-white p-8 sm:p-10 shadow-2xl border border-blue-900/40">
+      <div className="relative overflow-hidden rounded-3xl bg-[#0F2A5F] text-white p-8 sm:p-10 shadow-xl border border-[#173B7A]">
         {/* Ambient Glows */}
-        <div className="absolute right-0 top-0 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute left-1/3 bottom-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#2563EB]/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute left-1/3 bottom-0 w-80 h-80 bg-[#173B7A]/30 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-2xl">

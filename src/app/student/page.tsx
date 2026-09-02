@@ -32,7 +32,10 @@ import {
   BarChart3,
   Flame,
   Zap,
-  Target
+  Target,
+  Ban,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import PrintableIDCard from '@/components/common/PrintableIDCard';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
@@ -46,6 +49,26 @@ export default function StudentDashboardPage() {
   const [homeworks, setHomeworks] = useState<any[]>([]);
   const [results, setResults] = useState<any[]>([]);
   const [feeInvoices, setFeeInvoices] = useState<any[]>([]);
+
+  // Live Timetable & Period Engine State
+  const [liveSchedule, setLiveSchedule] = useState<any[]>([]);
+  const [currentPeriod, setCurrentPeriod] = useState<any | null>(null);
+  const [nextPeriod, setNextPeriod] = useState<any | null>(null);
+  const [isSchoolClosed, setIsSchoolClosed] = useState(false);
+  const [closureInfo, setClosureInfo] = useState<any | null>(null);
+
+  const fetchLiveTimetable = () => {
+    fetch('/api/timetable/live')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.schedule) setLiveSchedule(data.schedule);
+        if (data.currentPeriod) setCurrentPeriod(data.currentPeriod);
+        if (data.nextPeriod) setNextPeriod(data.nextPeriod);
+        setIsSchoolClosed(!!data.isSchoolClosed);
+        if (data.closureInfo) setClosureInfo(data.closureInfo);
+      })
+      .catch(console.error);
+  };
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -91,15 +114,11 @@ export default function StudentDashboardPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
 
-  const todayPeriods = [
-    { time: '08:00 - 08:45 AM', subject: 'Mathematics (Algebra)', teacher: 'Engr. Farooq Ahmad', room: 'Room 201', active: false },
-    { time: '08:45 - 09:30 AM', subject: 'English Grammar & Speech', teacher: 'Ms. Sadia Khan', room: 'Room 201', active: false },
-    { time: '09:30 - 10:15 AM', subject: 'Physics Laboratory Practical', teacher: 'Dr. Zobia Khan', room: 'Science Lab A', active: true },
-    { time: '10:45 - 11:30 AM', subject: 'Computer Science & AI Coding', teacher: 'Prof. Tariq Mahmood', room: 'IT Lab 1', active: false },
-    { time: '11:30 - 12:15 PM', subject: 'Urdu Literature', teacher: 'Sir Usman Ali', room: 'Room 201', active: false },
-  ];
+    fetchLiveTimetable();
+    const interval = setInterval(fetchLiveTimetable, 45000);
+    return () => clearInterval(interval);
+  }, []);
 
   const pendingFeeAmount = feeInvoices
     .filter((inv: any) => inv.status !== 'PAID')
@@ -148,12 +167,12 @@ export default function StudentDashboardPage() {
     <div className="space-y-8">
       
       {/* 1. STAGGERED BOTTOM-TO-TOP SLIDE-IN HERO BANNER */}
-      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950/80 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-orange-500/20">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative overflow-hidden rounded-3xl bg-[#0F2A5F] text-white p-6 sm:p-8 lg:p-10 shadow-xl border border-[#173B7A]">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#2563EB]/20 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-orange-400/40 shadow-xl overflow-hidden shrink-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-[#2563EB]/40 shadow-xl overflow-hidden shrink-0">
               <img
                 src={student.photoUrl || '/student-avatar.png'}
                 alt={student.fullName}
@@ -161,15 +180,15 @@ export default function StudentDashboardPage() {
               />
             </div>
             <div className="space-y-1 sm:space-y-1.5">
-              <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-xs font-black border border-orange-400/30">
-                <Sparkles className="w-3 h-3 text-orange-400 animate-spin" />
+              <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-[#2563EB]/25 text-blue-200 text-xs font-bold border border-[#2563EB]/40">
+                <Sparkles className="w-3 h-3 text-blue-300" />
                 <span>Session 2026-2027 • Enrolled Scholar</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
                 Welcome, {student.fullName}!
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 font-medium">
-                {student.class?.name || 'Class 8'} ({student.section?.name || 'Section A'}) • Roll No: <strong className="text-white font-mono">{student.rollNo}</strong> • Student ID: <strong className="text-orange-300 font-mono">{student.studentId}</strong>
+                {student.class?.name || 'Class 8'} ({student.section?.name || 'Section A'}) • Roll No: <strong className="text-white font-mono">{student.rollNo}</strong> • Student ID: <strong className="text-blue-300 font-mono">{student.studentId}</strong>
               </p>
             </div>
           </div>
@@ -200,6 +219,56 @@ export default function StudentDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* 2. REAL-TIME LIVE PERIOD HERO WIDGET */}
+      {isSchoolClosed && closureInfo ? (
+        <div className="p-6 rounded-3xl bg-rose-50 border-2 border-rose-500 text-rose-950 flex items-start gap-4 shadow-md animate-in fade-in">
+          <AlertTriangle className="w-8 h-8 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-[10px] uppercase">
+                {closureInfo.isEmergency ? 'Emergency Closure' : 'Campus Notice'}
+              </span>
+              <h3 className="font-black text-lg text-rose-950 font-serif">{closureInfo.title}</h3>
+            </div>
+            <p className="text-xs text-rose-800 font-medium leading-relaxed">
+              {closureInfo.reason}. Academic sessions, periods, and examinations are suspended today.
+            </p>
+          </div>
+        </div>
+      ) : currentPeriod ? (
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white border border-blue-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-extrabold text-[10px] uppercase border border-emerald-500/40 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+                CURRENT PERIOD IN PROGRESS
+              </span>
+              <span className="text-xs text-slate-400 font-mono">
+                {currentPeriod.startTime} - {currentPeriod.endTime}
+              </span>
+            </div>
+            <h3 className="text-2xl font-black text-white font-serif">{currentPeriod.subjectName}</h3>
+            <p className="text-xs text-slate-300 font-medium">
+              Instructor: <strong className="text-white">{currentPeriod.isSubstitute ? `Substitute: ${currentPeriod.substituteTeacherName}` : currentPeriod.teacherName}</strong> • Room: <span className="text-blue-300 font-bold">{currentPeriod.roomNo}</span>
+            </p>
+          </div>
+
+          <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2 bg-white/10 p-3.5 rounded-2xl border border-white/15">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Time Remaining</span>
+            <span className="text-2xl font-black text-emerald-400 font-mono tracking-tight">
+              {currentPeriod.minutesRemaining ?? 0} min
+            </span>
+          </div>
+        </div>
+      ) : liveSchedule.some((p) => p.status === 'CANCELLED') ? (
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 flex items-center gap-3">
+          <Ban className="w-5 h-5 text-rose-600 shrink-0" />
+          <div className="text-xs">
+            <strong>Timetable Update:</strong> One or more of today&apos;s periods have been cancelled by faculty. Check the schedule below for reasons.
+          </div>
+        </div>
+      ) : null}
 
       {/* 2. STAGGERED BOTTOM-TO-TOP SLIDE-IN AI TIP STRIP */}
       <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 p-5 rounded-3xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 border border-orange-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -444,34 +513,58 @@ export default function StudentDashboardPage() {
           </div>
 
           <div className="space-y-3">
-            {todayPeriods.map((period, idx) => (
-              <div
-                key={idx}
-                className={`p-3.5 rounded-2xl border flex items-center justify-between text-xs transition-colors ${
-                  period.active
-                    ? 'bg-orange-500/10 border-orange-400 shadow-sm'
-                    : 'bg-slate-50 border-slate-100 hover:bg-orange-50/40'
-                }`}
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 text-xs">{period.subject}</span>
-                    {period.active && (
-                      <span className="px-2 py-0.2 rounded-full text-[8px] font-black bg-orange-600 text-white uppercase animate-pulse">
-                        Active Now
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[11px] text-slate-500 font-medium">Instructor: {period.teacher}</span>
-                </div>
-                <div className="text-right space-y-1">
-                  <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-bold block">
-                    {period.time}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium">{period.room}</span>
-                </div>
+            {liveSchedule.length === 0 ? (
+              <div className="p-6 text-center text-slate-400 text-xs font-medium space-y-1">
+                <Clock className="w-8 h-8 text-slate-300 mx-auto" />
+                <p>No instructional periods scheduled for today</p>
               </div>
-            ))}
+            ) : (
+              liveSchedule.map((period, idx) => {
+                const isCancelled = period.status === 'CANCELLED';
+                const isActive = period.status === 'ACTIVE';
+                const isSubstitute = period.status === 'SUBSTITUTE';
+
+                return (
+                  <div
+                    key={period.id || idx}
+                    className={`p-3.5 rounded-2xl border flex items-center justify-between text-xs transition-colors ${
+                      isActive
+                        ? 'bg-emerald-500/10 border-emerald-400 shadow-sm ring-1 ring-emerald-500/30'
+                        : isCancelled
+                        ? 'bg-rose-50 border-rose-200'
+                        : isSubstitute
+                        ? 'bg-purple-50 border-purple-200'
+                        : 'bg-slate-50 border-slate-100 hover:bg-orange-50/40'
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900 text-xs">{period.subjectName}</span>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${
+                            period.badgeClass || 'bg-slate-200 text-slate-600'
+                          }`}
+                        >
+                          {period.label || period.status}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        Instructor: {period.isSubstitute ? `Sub: ${period.substituteTeacherName}` : period.teacherName}
+                      </span>
+                      {isCancelled && period.cancellationReason && (
+                        <p className="text-[10px] text-rose-600 italic">Reason: &ldquo;{period.cancellationReason}&rdquo;</p>
+                      )}
+                    </div>
+                    <div className="text-right space-y-1">
+                      <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-mono text-[10px] font-bold block">
+                        {period.startTime} - {period.endTime}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">{period.roomNo || 'Room 201'}</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 

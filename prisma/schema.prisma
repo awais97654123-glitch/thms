@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -74,6 +75,7 @@ model User {
   supportTickets SupportTicket[]
   leaves       Leave[]
   teacherAttendances TeacherAttendance[]
+  periodCancellations PeriodCancellation[]
 }
 
 model Class {
@@ -232,6 +234,16 @@ model Teacher {
   email          String
   qualification  String
   designation    String   @default("Senior Subject Teacher")
+  department     String?  @default("General Academics")
+  qualifiedSubjects String? // JSON array of subjects, e.g. '["Mathematics", "Physics"]'
+  workingDays    String?  @default("MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY")
+  availableFrom  String?  @default("08:00")
+  availableTo    String?  @default("14:30")
+  maxDailyPeriods Int     @default(6)
+  maxWeeklyPeriods Int    @default(30)
+  preferredPeriods String?
+  unavailablePeriods String?
+  isClassTeacherEligible Boolean @default(true)
   joiningDate    DateTime @default(now())
   photoUrl       String?
   address        String?
@@ -247,6 +259,8 @@ model Teacher {
   homeworks      Homework[]
   studyMaterials StudyMaterial[]
   libraryIssues  LibraryIssue[]
+  substituteAssignments SubstituteAssignment[] @relation("SubstituteTeacher")
+  originalAssignments   SubstituteAssignment[] @relation("OriginalTeacher")
 }
 
 model TeacherAssignment {
@@ -399,14 +413,21 @@ model Timetable {
   dayOfWeek String   // "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"
   startTime String   // e.g. "08:30"
   endTime   String   // e.g. "09:15"
-  roomNo    String?  // e.g. "Room 102"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  roomNo        String?  // e.g. "Room 102"
+  version       String   @default("1.0")
+  status        String   @default("PUBLISHED") // "DRAFT", "PUBLISHED", "ARCHIVED"
+  effectiveFrom DateTime?
+  publishedById String?
+  publishedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
   section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  cancellations PeriodCancellation[]
+  substitutes   SubstituteAssignment[]
 
   @@unique([classId, sectionId, dayOfWeek, startTime])
 }
@@ -1094,4 +1115,71 @@ model TeacherAttendance {
   @@unique([userId, date])
   @@index([date, status])
   @@index([userId])
+}
+
+// ============================================================
+// REAL-TIME PERIOD OPERATIONS: CANCELLATIONS, SUBSTITUTES & CLOSURES
+// ============================================================
+model PeriodCancellation {
+  id                String    @id @default(uuid())
+  timetableId       String
+  date              DateTime
+  reason            String
+  cancelledById     String
+  cancelledAt       DateTime  @default(now())
+  status            String    @default("CANCELLED") // "CANCELLED", "REVOKED"
+  notificationsSent Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  timetable         Timetable @relation(fields: [timetableId], references: [id], onDelete: Cascade)
+  cancelledBy       User      @relation(fields: [cancelledById], references: [id], onDelete: Cascade)
+
+  @@unique([timetableId, date])
+  @@index([date])
+  @@index([timetableId])
+  @@index([status])
+}
+
+model SubstituteAssignment {
+  id                  String    @id @default(uuid())
+  timetableId         String
+  date                DateTime
+  originalTeacherId   String
+  substituteTeacherId String
+  assignedById        String
+  reason              String?
+  status              String    @default("ACTIVE") // "ACTIVE", "CANCELLED", "COMPLETED"
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  timetable           Timetable @relation(fields: [timetableId], references: [id], onDelete: Cascade)
+  originalTeacher     Teacher   @relation("OriginalTeacher", fields: [originalTeacherId], references: [id], onDelete: Cascade)
+  substituteTeacher   Teacher   @relation("SubstituteTeacher", fields: [substituteTeacherId], references: [id], onDelete: Cascade)
+
+  @@unique([timetableId, date])
+  @@index([date])
+  @@index([substituteTeacherId])
+  @@index([originalTeacherId])
+  @@index([timetableId])
+}
+
+model SchoolClosure {
+  id               String    @id @default(uuid())
+  title            String
+  reason           String
+  closureType      String    @default("FULL_DAY") // "FULL_DAY", "EARLY_DISMISSAL", "DELAYED_OPENING", "HOLIDAY", "WEATHER_EMERGENCY"
+  startDate        DateTime
+  endDate          DateTime
+  targetAudience   String    @default("ALL") // "ALL", "STUDENTS", "TEACHERS", "PARENTS", "STAFF"
+  isEmergency      Boolean   @default(false)
+  affectsTimetable Boolean   @default(true)
+  affectsAttendance Boolean  @default(true)
+  createdById      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([startDate, endDate])
+  @@index([isEmergency])
+  @@index([closureType])
 }

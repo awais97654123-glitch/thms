@@ -23,7 +23,9 @@ import {
   CreditCard,
   Phone,
   RefreshCw,
-  Loader2
+  Loader2,
+  Ban,
+  AlertTriangle
 } from 'lucide-react';
 import PrintableReportCard from '@/components/common/PrintableReportCard';
 import PrintableReceipt from '@/components/common/PrintableReceipt';
@@ -42,6 +44,12 @@ export default function ParentDashboardPage() {
   const [childHomework, setChildHomework] = useState<any[]>([]);
   const [showReportCard, setShowReportCard] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
+
+  // Live Ward Schedule & Period Engine
+  const [childSchedule, setChildSchedule] = useState<any[]>([]);
+  const [childCurrentPeriod, setChildCurrentPeriod] = useState<any | null>(null);
+  const [isSchoolClosed, setIsSchoolClosed] = useState(false);
+  const [closureInfo, setClosureInfo] = useState<any | null>(null);
 
   // 1. Fetch authenticated parent profile
   const fetchParentData = () => {
@@ -101,6 +109,17 @@ export default function ParentDashboardPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.submissions) setChildHomework(data.submissions);
+      })
+      .catch(console.error);
+
+    // Live Timetable & Period Engine
+    fetch(`/api/timetable/live?studentId=${activeChild.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.schedule) setChildSchedule(data.schedule);
+        if (data.currentPeriod) setChildCurrentPeriod(data.currentPeriod);
+        setIsSchoolClosed(!!data.isSchoolClosed);
+        if (data.closureInfo) setClosureInfo(data.closureInfo);
       })
       .catch(console.error);
   }, [activeChild?.id]);
@@ -238,6 +257,107 @@ export default function ParentDashboardPage() {
           <h3 className="text-3xl font-black text-slate-900 font-mono tracking-tight">{childHomework.length || 0} Tasks</h3>
           <p className="text-xs text-amber-600 font-bold">Current Week Curricula</p>
         </div>
+      </div>
+
+      {/* REAL-TIME WARD LIVE PERIOD & TIMETABLE WIDGET */}
+      {isSchoolClosed && closureInfo && (
+        <div className="p-6 rounded-3xl bg-rose-50 border-2 border-rose-500 text-rose-950 flex items-start gap-4 shadow-md animate-in fade-in">
+          <AlertTriangle className="w-8 h-8 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-[10px] uppercase">
+                {closureInfo.isEmergency ? 'Emergency Campus Closure' : 'Notice of School Closure'}
+              </span>
+              <h3 className="font-black text-lg text-rose-950 font-serif">{closureInfo.title}</h3>
+            </div>
+            <p className="text-xs text-rose-800 font-medium leading-relaxed">
+              {closureInfo.reason}. On-campus periods and physical classes are suspended today.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* CANCELLATION NOTICE FOR PARENTS */}
+      {childSchedule.some((p) => p.status === 'CANCELLED') && (
+        <div className="p-5 rounded-3xl bg-rose-50 border border-rose-300 text-rose-950 space-y-2 animate-in fade-in">
+          <div className="flex items-center gap-2 text-rose-700 font-bold text-xs">
+            <Ban className="w-4 h-4" />
+            <span>Class Period Cancellation Notice for {activeChild.fullName}:</span>
+          </div>
+          {childSchedule
+            .filter((p) => p.status === 'CANCELLED')
+            .map((p) => (
+              <div key={p.id} className="p-3 bg-white rounded-2xl border border-rose-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <strong className="text-slate-900">{p.subjectName}</strong> ({p.startTime} - {p.endTime}) cancelled by {p.teacherName}.
+                  {p.cancellationReason && (
+                    <span className="text-rose-700 block text-[11px] italic mt-0.5">Reason: &ldquo;{p.cancellationReason}&rdquo;</span>
+                  )}
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black uppercase shrink-0">
+                  Cancelled
+                </span>
+              </div>
+            ))}
+        </div>
+      )}
+
+      {/* TODAY'S SCHEDULE FOR ACTIVE CHILD */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-blue-600" />
+            <h3 className="font-bold text-sm text-slate-900 font-serif">
+              {activeChild.fullName}&apos;s Live Timetable &amp; Schedule Today
+            </h3>
+          </div>
+          <span className="text-[11px] text-slate-500 font-medium">Asia/Karachi • Live Period Tracking</span>
+        </div>
+
+        {childSchedule.length === 0 ? (
+          <p className="text-xs text-slate-400 py-4 text-center">No periods scheduled for this section today.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {childSchedule.map((p) => {
+              const isActive = p.status === 'ACTIVE';
+              const isCancelled = p.status === 'CANCELLED';
+              const isSub = p.status === 'SUBSTITUTE';
+
+              return (
+                <div
+                  key={p.id}
+                  className={`p-4 rounded-2xl border transition-all space-y-1.5 ${
+                    isActive
+                      ? 'bg-emerald-50 border-emerald-400 shadow-sm ring-2 ring-emerald-500/20'
+                      : isCancelled
+                      ? 'bg-rose-50/70 border-rose-200'
+                      : isSub
+                      ? 'bg-purple-50/70 border-purple-200'
+                      : 'bg-slate-50 border-slate-100'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-mono font-bold text-slate-700">{p.startTime} - {p.endTime}</span>
+                    <span className={`px-2 py-0.5 rounded-full font-black uppercase text-[8px] ${p.badgeClass || 'bg-slate-200 text-slate-600'}`}>
+                      {p.label || p.status}
+                    </span>
+                  </div>
+
+                  <h4 className="font-black text-xs text-slate-900">{p.subjectName}</h4>
+                  <p className="text-[11px] text-slate-500">
+                    {p.isSubstitute ? `Sub: ${p.substituteTeacherName}` : p.teacherName} • Room {p.roomNo}
+                  </p>
+
+                  {isActive && p.minutesRemaining !== undefined && (
+                    <div className="text-[10px] text-emerald-700 font-mono font-bold pt-1">
+                      🟢 Active Now • {p.minutesRemaining}m left
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* REAL ATTENDANCE & INVOICES GRID */}

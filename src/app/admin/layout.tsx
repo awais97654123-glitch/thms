@@ -62,15 +62,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col text-slate-900 selection:bg-blue-600 selection:text-white">
-      {/* Universal Session Control Strip (Prestige Royal Blue / Navy) */}
-      <div className="bg-[#0a192f] text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 border-b border-blue-900/60 sticky top-0 z-40 backdrop-blur-xl shadow-md">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col text-[#0F172A] selection:bg-[#2563EB] selection:text-white">
+      {/* Universal Session Control Strip (Dark Navy #0F2A5F) */}
+      <div className="bg-[#0F2A5F] text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 border-b border-[#173B7A] sticky top-0 z-40 backdrop-blur-xl shadow-sm">
         <div className="flex items-center gap-2">
           {!isMainDashboard ? (
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-900/40 hover:bg-blue-800/60 text-white rounded-xl font-bold transition-all shadow-sm border border-blue-700/60 active:scale-95 text-xs"
+              className="inline-flex items-center gap-1 px-3 py-1 bg-[#173B7A]/60 hover:bg-[#173B7A] text-white rounded-xl font-bold transition-all shadow-sm border border-[#2563EB]/40 active:scale-95 text-xs"
               title="Go back to previous page"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -79,31 +79,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ) : (
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-900/40 hover:bg-blue-800/60 text-blue-200 hover:text-white rounded-xl font-semibold transition-all border border-blue-700/60 text-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#173B7A]/60 hover:bg-[#173B7A] text-blue-200 hover:text-white rounded-xl font-semibold transition-all border border-[#2563EB]/40 text-xs"
               title="View Public Website"
             >
-              <Home className="w-3.5 h-3.5 text-cyan-400" />
+              <Home className="w-3.5 h-3.5 text-blue-300" />
               <span>School Website</span>
             </Link>
           )}
 
-          <div className="hidden sm:flex items-center gap-2 text-slate-400 pl-3 border-l border-blue-900/80">
+          <div className="hidden sm:flex items-center gap-2 text-slate-300 pl-3 border-l border-[#173B7A]">
             <span className="font-extrabold text-white text-xs">The Hayatabad Model School</span>
-            <ChevronRight className="w-3 h-3 text-slate-500" />
-            <span className="text-blue-400 font-bold text-xs">Executive Admin Control Tower</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span className="text-blue-300 font-bold text-xs">Admin Control Tower</span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 text-[11px] font-extrabold">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_8px_#60a5fa]"></span>
-            <span>Session: 2026–2027</span>
+          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#2563EB]/20 text-blue-200 border border-[#2563EB]/40 text-[11px] font-extrabold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] animate-pulse shadow-[0_0_8px_#3b82f6]"></span>
+            <span>Academic Session: 2026–2027</span>
           </div>
 
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-500/15 hover:bg-rose-600 text-rose-300 hover:text-white rounded-xl font-bold transition-all border border-rose-500/30 text-[11px] active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-500/15 hover:bg-rose-600 text-rose-200 hover:text-white rounded-xl font-bold transition-all border border-rose-500/30 text-[11px] active:scale-95"
             title="Leave current session"
           >
             <LogOut className="w-3.5 h-3.5" />

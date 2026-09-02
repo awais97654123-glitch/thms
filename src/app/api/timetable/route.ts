@@ -35,68 +35,33 @@ export async function GET(req: NextRequest) {
   }
 }
 
+import { assignTimetableTransactional } from '@/lib/timetable/scheduling-engine';
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getCurrentUser();
-    const { classId, sectionId, subjectId, teacherId, dayOfWeek, startTime, endTime, roomNo } = await req.json();
+    const body = await req.json();
+    const {
+      classId,
+      sectionId,
+      subjectId,
+      teacherId,
+      dayOfWeek,
+      startTime,
+      endTime,
+      roomNo,
+      version,
+      effectiveFrom,
+      allowOverride,
+      id,
+    } = body;
 
     if (!classId || !sectionId || !subjectId || !teacherId || !dayOfWeek || !startTime || !endTime) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
-    // 1. Conflict Check: Teacher double-booked at the same day & time
-    const teacherConflict = await prisma.timetable.findFirst({
-      where: {
-        teacherId,
-        dayOfWeek,
-        startTime,
-      },
-      include: { class: true, section: true, teacher: true },
-    });
-
-    if (teacherConflict) {
-      return NextResponse.json({
-        error: `Teacher Conflict: ${teacherConflict.teacher.fullName} is already scheduled for ${teacherConflict.class.name} (${teacherConflict.section.name}) on ${dayOfWeek} at ${startTime}.`,
-      }, { status: 409 });
-    }
-
-    // 2. Conflict Check: Room double-booked
-    if (roomNo) {
-      const roomConflict = await prisma.timetable.findFirst({
-        where: {
-          roomNo,
-          dayOfWeek,
-          startTime,
-        },
-        include: { class: true, section: true },
-      });
-
-      if (roomConflict) {
-        return NextResponse.json({
-          error: `Room Conflict: ${roomNo} is already occupied by ${roomConflict.class.name} (${roomConflict.section.name}) on ${dayOfWeek} at ${startTime}.`,
-        }, { status: 409 });
-      }
-    }
-
-    // 3. Conflict Check: Same section double-booked
-    const sectionConflict = await prisma.timetable.findFirst({
-      where: {
-        classId,
-        sectionId,
-        dayOfWeek,
-        startTime,
-      },
-      include: { subject: true },
-    });
-
-    if (sectionConflict) {
-      return NextResponse.json({
-        error: `Section Conflict: This class/section already has ${sectionConflict.subject.name} on ${dayOfWeek} at ${startTime}.`,
-      }, { status: 409 });
-    }
-
-    const timetable = await prisma.timetable.create({
-      data: {
+    const result = await assignTimetableTransactional(
+      {
         classId,
         sectionId,
         subjectId,
@@ -105,28 +70,32 @@ export async function POST(req: NextRequest) {
         startTime,
         endTime,
         roomNo,
+        version: version || '1.0',
+        effectiveFrom,
+        allowOverride: !!allowOverride,
+        excludeTimetableId: id,
       },
-      include: {
-        class: true,
-        section: true,
-        subject: true,
-        teacher: true,
-      },
-    });
+      session?.userId
+    );
 
-    await logAuditEvent({
-      userId: session?.userId,
-      userName: session?.fullName || 'Admin',
-      role: session?.role || 'ADMIN',
-      action: 'TIMETABLE_CREATED',
-      entity: 'Timetable',
-      entityId: timetable.id,
-      details: `Scheduled ${timetable.subject.name} for ${timetable.class.name} (${timetable.section.name}) on ${dayOfWeek} ${startTime}-${endTime}`,
+    return NextResponse.json({
+      success: true,
+      timetable: result.timetable,
+      warnings: result.warnings,
+      message: 'Timetable period scheduled successfully without hard conflicts',
     });
+  } catch (error: any) {
+    console.error('Timetable scheduling error:', error);
+    const isConflict =
+      error.message &&
+      (error.message.includes('Conflict') ||
+        error.message.includes('Limit') ||
+        error.message.includes('booked') ||
+        error.message.includes('Invalid Time'));
 
-    return NextResponse.json({ success: true, timetable });
-  } catch (error) {
-    console.error('Timetable conflict error:', error);
-    return NextResponse.json({ error: 'Failed to create timetable entry' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Failed to create timetable entry' },
+      { status: isConflict ? 409 : 500 }
+    );
   }
 }

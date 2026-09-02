@@ -50,29 +50,29 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col text-slate-900 selection:bg-orange-500 selection:text-white">
-      {/* DEDICATED TEACHER PORTAL HEADER (No public website navbar) */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-orange-500/10 shadow-sm">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col text-[#0F172A] selection:bg-[#2563EB] selection:text-white">
+      {/* DEDICATED TEACHER PORTAL HEADER */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-[#E2E8F0] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
-          {/* Left: 3D School Logo + Teacher Portal Title */}
+          {/* Left: School Logo + Teacher Portal Title */}
           <div className="flex items-center gap-3">
             <Link href="/teacher" className="flex items-center gap-3 group">
               <img
                 src="/logo.png"
                 alt="THMS"
-                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.25)] group-hover:scale-105 transition-transform"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(37,99,235,0.2)] group-hover:scale-105 transition-transform"
               />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-black text-slate-900 text-sm sm:text-base tracking-tight block">
+                  <span className="font-black text-[#0F172A] text-sm sm:text-base tracking-tight block">
                     The Hayatabad Model School
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider hidden sm:inline-block">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] uppercase tracking-wider hidden sm:inline-block">
                     Faculty Workload Portal
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium">
+                <p className="text-[11px] text-[#64748B] font-medium">
                   {teacher ? `${teacher.fullName} • ${teacher.designation || 'Faculty Member'}` : 'Authorized Educator'}
                 </p>
               </div>
@@ -80,7 +80,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
           </div>
 
           {/* Center: Desktop Navigation Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/80">
+          <nav className="hidden lg:flex items-center gap-1.5 bg-[#F1F5F9] p-1.5 rounded-full border border-[#E2E8F0]">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -88,10 +88,10 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all ${
                     isActive
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-slate-700 hover:text-blue-600 hover:bg-white/60'
+                      ? 'bg-white text-[#2563EB] shadow-sm'
+                      : 'text-[#475569] hover:text-[#2563EB] hover:bg-white/60'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />

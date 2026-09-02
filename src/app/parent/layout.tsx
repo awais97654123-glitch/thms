@@ -52,14 +52,14 @@ export default function ParentLayout({ children }: { children: React.ReactNode }
               <img
                 src="/logo.png"
                 alt="THMS"
-                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.25)] group-hover:scale-105 transition-transform"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-[0_2px_8px_rgba(37,99,235,0.2)] group-hover:scale-105 transition-transform"
               />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-black text-slate-900 text-sm sm:text-base tracking-tight block">
+                  <span className="font-black text-[#0F172A] text-sm sm:text-base tracking-tight block">
                     The Hayatabad Model School
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider hidden sm:inline-block">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] uppercase tracking-wider hidden sm:inline-block">
                     Parent Guardian Portal
                   </span>
                 </div>
