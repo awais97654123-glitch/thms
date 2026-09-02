@@ -208,20 +208,34 @@ export default function ParentDashboardPage() {
                     : 'bg-white border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 font-bold flex items-center justify-center text-base border border-blue-200 shrink-0">
-                    {ch.fullName.charAt(0)}
+                <div className="flex flex-col gap-2.5 w-full">
+                  <div className="flex items-start justify-between gap-3 w-full">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#2563EB] font-bold flex items-center justify-center text-base border border-[#BFDBFE] shrink-0">
+                        {ch.fullName.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-sm leading-tight">{ch.fullName}</h3>
+                        <p className="text-xs text-slate-500 font-medium">{ch.class?.name} • Section {ch.section?.name || 'A'}</p>
+                        <span className="font-mono text-[10px] text-blue-800 font-bold">{ch.studentId}</span>
+                      </div>
+                    </div>
+
+                    {isSelected && (
+                      <CheckCircle2 className="w-5 h-5 text-[#2563EB] shrink-0" />
+                    )}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-sm leading-tight">{ch.fullName}</h3>
-                    <p className="text-xs text-slate-500">{ch.class?.name} • {ch.section?.name || 'A'}</p>
-                    <span className="font-mono text-[10px] text-blue-900 font-bold">{ch.studentId}</span>
+
+                  {/* Micro indicators */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 text-[10px] font-bold w-full">
+                    <span className="px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A] border border-[#DCFCE7]">
+                      ✓ {ch.status || 'ENROLLED'}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                      Card: {ch.cardStatus || 'VALID'}
+                    </span>
                   </div>
                 </div>
-
-                {isSelected && (
-                  <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                )}
               </button>
             );
           })}

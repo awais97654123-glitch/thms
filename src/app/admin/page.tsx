@@ -49,6 +49,8 @@ export default function AdminDashboardPage() {
 
   const [recentAdmissions, setRecentAdmissions] = useState<any[]>([]);
   const [recentPayments, setRecentPayments] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [smartReminders, setSmartReminders] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Animated Chart Rising Effect State
@@ -67,6 +69,8 @@ export default function AdminDashboardPage() {
         }
         if (data.recentAdmissions && data.recentAdmissions.length > 0) setRecentAdmissions(data.recentAdmissions);
         if (data.recentPayments && data.recentPayments.length > 0) setRecentPayments(data.recentPayments);
+        if (data.recentActivity) setRecentActivity(data.recentActivity);
+        if (data.smartReminders) setSmartReminders(data.smartReminders);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -191,6 +195,56 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Operational Smart Reminders (Section 44) */}
+      {smartReminders && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link
+            href="/admin/admissions"
+            className="p-4 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] hover:border-[#2563EB] flex items-center justify-between group transition-all"
+          >
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase font-bold text-[#2563EB] block">
+                Admissions Desk
+              </span>
+              <p className="text-xs font-bold text-[#0F172A]">
+                {smartReminders.admissionsPending} applications awaiting review
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#2563EB] group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+
+          <Link
+            href="/admin/fees"
+            className="p-4 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] hover:border-[#2563EB] flex items-center justify-between group transition-all"
+          >
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase font-bold text-[#2563EB] block">
+                Billing & Dues
+              </span>
+              <p className="text-xs font-bold text-[#0F172A]">
+                Rs. {smartReminders.feeCollectionsPending.toLocaleString()} pending collection
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#2563EB] group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+
+          <Link
+            href="/admin/academics/timetable"
+            className="p-4 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] hover:border-[#2563EB] flex items-center justify-between group transition-all"
+          >
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase font-bold text-[#2563EB] block">
+                Master Schedule
+              </span>
+              <p className="text-xs font-bold text-[#0F172A]">
+                {smartReminders.timetableConfigured} weekly periods active
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#2563EB] group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+      )}
 
       {/* Primary KPI Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -599,6 +653,56 @@ export default function AdminDashboardPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Live Activity Feed (Section 6 & 42) */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#16A34A] animate-pulse" />
+            <h3 className="font-black text-base text-slate-900 font-serif">
+              Live Campus Activity Stream
+            </h3>
+          </div>
+          <span className="text-[11px] text-[#2563EB] font-bold bg-[#EFF6FF] px-3 py-1 rounded-full border border-[#BFDBFE]">
+            Authoritative Event Log
+          </span>
+        </div>
+
+        {recentActivity.length === 0 ? (
+          <div className="p-6 text-center text-xs text-slate-500 font-medium">
+            No system events logged yet today. Live activities will appear here automatically.
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {recentActivity.map((act) => (
+              <div
+                key={act.id}
+                className="py-3 flex items-start justify-between text-xs hover:bg-[#F8FAFC] px-2 rounded-xl transition-colors"
+              >
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[#0F172A]">{act.action}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]">
+                      {act.role || 'STAFF'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 leading-snug">
+                    {typeof act.details === 'object' ? JSON.stringify(act.details) : String(act.details || '')}
+                  </p>
+                </div>
+                <div className="text-right shrink-0 pl-4">
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {new Date(act.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  <span className="text-[10px] text-slate-500 block font-medium">
+                    {act.userName || 'System'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Live QR Gate Scanner Modal */}

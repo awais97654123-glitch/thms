@@ -15,6 +15,8 @@ import {
   BookOpen
 } from 'lucide-react';
 
+import MobileBottomNav from '@/components/common/MobileBottomNav';
+
 export default function ParentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -98,9 +100,12 @@ export default function ParentLayout({ children }: { children: React.ReactNode }
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 pb-20 md:pb-8">
         {children}
       </main>
+
+      {/* Mobile Bottom Navigation (Section 45-46) */}
+      <MobileBottomNav role="PARENT" />
     </div>
   );
 }

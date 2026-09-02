@@ -183,6 +183,9 @@ model Student {
   photoUrl         String?
   status           String   @default("ENROLLED") // "ENROLLED", "SUSPENDED", "ALUMNI", "TRANSFERRED"
   qrToken          String   @unique // Secure opaque QR identity token
+  cardStatus       String   @default("ACTIVE") // "ACTIVE", "REVOKED", "LOST", "EXPIRED"
+  cardIssuedAt     DateTime? @default(now())
+  cardExpiresAt    DateTime?
   
   classId          String
   sectionId        String
@@ -217,12 +220,32 @@ model Student {
   supportTickets   SupportTicket[]
   disciplineRecords StudentDiscipline[]
   promotionHistory  PromotionHistory[]
+  qrScanLogs       QrScanLog[]
 
   @@index([classId, sectionId])
   @@index([sessionId])
   @@index([parentId])
   @@index([status])
   @@index([rollNo])
+  @@index([cardStatus])
+}
+
+model QrScanLog {
+  id            String    @id @default(uuid())
+  qrToken       String
+  studentId     String?
+  scanType      String    @default("VERIFICATION") // "VERIFICATION", "GATE_ENTRY", "GATE_EXIT"
+  result        String    // "VERIFIED", "INVALID", "REVOKED", "EXPIRED"
+  scannedAt     DateTime  @default(now())
+  scannerIp     String?
+  scannerDevice String?
+  remarks       String?
+
+  student       Student?  @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  @@index([qrToken])
+  @@index([studentId])
+  @@index([scannedAt])
 }
 
 model Teacher {

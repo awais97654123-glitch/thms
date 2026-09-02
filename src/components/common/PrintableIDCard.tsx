@@ -39,11 +39,14 @@ export default function PrintableIDCard({ student, school }: StudentIDCardProps)
 
   useEffect(() => {
     if (student.qrToken) {
-      QRCode.toDataURL(student.qrToken, {
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'https://hayatabadmodel.edu.pk';
+      const verifyUrl = `${origin}/verify/student/${encodeURIComponent(student.qrToken)}`;
+
+      QRCode.toDataURL(verifyUrl, {
         width: 180,
         margin: 1,
         color: {
-          dark: '#0f172a',
+          dark: '#0F2A5F',
           light: '#ffffff',
         },
       })

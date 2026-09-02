@@ -13,8 +13,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'QR Token is required' }, { status: 400 });
     }
 
+    let cleanedToken = qrToken.trim();
+    if (cleanedToken.includes('/verify/student/')) {
+      const parts = cleanedToken.split('/verify/student/');
+      cleanedToken = parts[parts.length - 1].split('?')[0].trim();
+    }
+
     const student = await prisma.student.findUnique({
-      where: { qrToken: qrToken.trim() },
+      where: { qrToken: cleanedToken },
       include: {
         class: true,
         section: true,
@@ -22,8 +28,39 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+
     if (!student) {
+      await prisma.qrScanLog.create({
+        data: {
+          qrToken: cleanedToken,
+          scanType: 'GATE_ENTRY',
+          result: 'INVALID',
+          scannerIp: ip,
+          scannerDevice: deviceId || 'Smart Gate Scanner',
+          remarks: 'Gate scan token not found',
+        },
+      }).catch(console.error);
+
       return NextResponse.json({ error: 'Unrecognized QR Token. Student record not found.' }, { status: 404 });
+    }
+
+    if (student.cardStatus && student.cardStatus !== 'ACTIVE') {
+      await prisma.qrScanLog.create({
+        data: {
+          qrToken: cleanedToken,
+          studentId: student.id,
+          scanType: 'GATE_ENTRY',
+          result: student.cardStatus,
+          scannerIp: ip,
+          scannerDevice: deviceId || 'Smart Gate Scanner',
+          remarks: `Gate scan rejected because card is ${student.cardStatus}`,
+        },
+      }).catch(console.error);
+
+      return NextResponse.json({
+        error: `Identity Card Inactive (${student.cardStatus}). Gate turnstile entry denied.`,
+      }, { status: 403 });
     }
 
     if (student.status !== 'ENROLLED') {

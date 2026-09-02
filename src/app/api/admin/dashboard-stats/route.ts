@@ -33,7 +33,9 @@ export async function GET(req: NextRequest) {
       todayPresentCount,
       todayLateCount,
       todayFeeAggregate,
-      pendingFeeAggregate
+      pendingFeeAggregate,
+      recentActivity,
+      timetablePeriodsCount
     ] = await Promise.all([
       // 1. Total Enrolled Students
       prisma.student.count({ where: { status: 'ENROLLED' } }),
@@ -115,6 +117,23 @@ export async function GET(req: NextRequest) {
         where: { status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] } },
         _sum: { remainingAmount: true },
       }),
+
+      // 10. Live Activity Feed from AuditLog
+      prisma.auditLog.findMany({
+        take: 8,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          action: true,
+          details: true,
+          userName: true,
+          role: true,
+          createdAt: true,
+        },
+      }),
+
+      // 11. Smart Reminders counts
+      prisma.timetable.count(),
     ]);
 
     const totalAttendanceToday = todayPresentCount + todayLateCount;
@@ -131,9 +150,16 @@ export async function GET(req: NextRequest) {
         todayLate: todayLateCount,
         todayFeeCollection: todayFeeAggregate._sum.amount || 0,
         pendingFees: pendingFeeAggregate._sum.remainingAmount || 0,
+        totalPeriodsScheduled: timetablePeriodsCount,
       },
       recentAdmissions,
       recentPayments,
+      recentActivity,
+      smartReminders: {
+        admissionsPending: activeAdmissionsCount,
+        timetableConfigured: timetablePeriodsCount,
+        feeCollectionsPending: pendingFeeAggregate._sum.remainingAmount || 0,
+      },
       serverTime: new Date().toISOString(),
     };
 
