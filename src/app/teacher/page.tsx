@@ -27,13 +27,15 @@ import {
   User,
   SlidersHorizontal,
   ChevronDown,
-  Phone
+  Phone,
+  Camera
 } from 'lucide-react';
 import PortalCircularLoader from '@/components/common/PortalCircularLoader';
 import NotificationBell from '@/components/common/NotificationBell';
 import StudentDetailDrawer from '@/components/teacher/StudentDetailDrawer';
 import CreateHomeworkModal from '@/components/teacher/CreateHomeworkModal';
 import FastMarksEntryModal from '@/components/teacher/FastMarksEntryModal';
+import QRScannerModal from '@/components/common/QRScanner';
 
 export default function TeacherDashboardPage() {
   const [teacher, setTeacher] = useState<any | null>(null);
@@ -53,6 +55,7 @@ export default function TeacherDashboardPage() {
   const [selectedStudentForDrawer, setSelectedStudentForDrawer] = useState<any | null>(null);
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
   const [showMarksModal, setShowMarksModal] = useState(false);
+  const [showScannerModal, setShowScannerModal] = useState(false);
 
   // Live Period Engine State
   const [todaySchedule, setTodaySchedule] = useState<any[]>([]);
@@ -559,6 +562,14 @@ export default function TeacherDashboardPage() {
               {/* Class Quick Actions */}
               <div className="flex flex-wrap items-center gap-2">
                 <button
+                  onClick={() => setShowScannerModal(true)}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>Scan Student QR</span>
+                </button>
+
+                <button
                   onClick={handleMarkAllPresent}
                   className="px-3.5 py-2 rounded-xl bg-[#F0FDF4] hover:bg-[#DCFCE7] text-[#16A34A] font-bold text-xs border border-[#BBF7D0] flex items-center gap-1.5 transition-colors"
                 >
@@ -908,6 +919,16 @@ export default function TeacherDashboardPage() {
           subjects={currentSubjects}
           students={students}
           onSuccess={() => fetchClassStudents()}
+        />
+      )}
+
+      {/* LIVE OPTICAL QR SCANNER MODAL */}
+      {showScannerModal && (
+        <QRScannerModal
+          title="Classroom Live QR Attendance Scanner"
+          subtitle={`Scanning students for ${currentClassObject?.name || 'Class'} - Section ${currentSectionObject?.name || ''}`}
+          onClose={() => setShowScannerModal(false)}
+          onAttendanceMarked={() => fetchClassStudents()}
         />
       )}
 

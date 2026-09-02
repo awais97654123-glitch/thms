@@ -199,19 +199,20 @@ export default function StudentDashboardPage() {
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <NotificationBell />
+            <button
+              type="button"
+              onClick={() => setShowQrModal(true)}
+              className="flex-1 sm:flex-none px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
+            >
+              <Camera className="w-4 h-4" />
+              <span>Mark Attendance (QR)</span>
+            </button>
             <Link
-              href="/student/ai-assistant"
-              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl btn-blue-prestige text-white text-xs font-bold shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-105"
+              href="/student/ai-study"
+              className="flex-1 sm:flex-none px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs font-black shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
               <Bot className="w-4 h-4 animate-pulse" />
               <span>Ask AI Copilot</span>
-            </Link>
-            <Link
-              href="/student/support"
-              className="flex-1 sm:flex-none px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-black border border-white/20 backdrop-blur-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
-            >
-              <HelpCircle className="w-4 h-4 text-orange-400" />
-              <span>Helpdesk</span>
             </Link>
             <Link
               href="/student/settings"
@@ -320,15 +321,18 @@ export default function StudentDashboardPage() {
             </div>
           </div>
 
-          {todayStatus !== 'PRESENT' && (
-            <button
-              onClick={() => setShowQrModal(true)}
-              className="w-full py-2 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all"
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span>Mark Attendance (QR)</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setShowQrModal(true)}
+            className={`w-full py-2 px-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all ${
+              todayStatus === 'PRESENT'
+                ? 'bg-emerald-600 hover:bg-emerald-700'
+                : 'bg-[#2563EB] hover:bg-[#1D4ED8]'
+            }`}
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>{todayStatus === 'PRESENT' ? '✓ Verified (Tap to Scan)' : 'Open Camera to Scan'}</span>
+          </button>
 
           <p className="text-[10px] text-slate-400 font-medium">Smart QR pass scan at main gate</p>
         </div>
