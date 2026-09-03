@@ -199,6 +199,13 @@ export default function StudentDashboardPage() {
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <NotificationBell />
+            <Link
+              href="/student/classes"
+              className="flex-1 sm:flex-none px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-xs font-black shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>My Classrooms (LMS)</span>
+            </Link>
             <button
               type="button"
               onClick={() => setShowQrModal(true)}

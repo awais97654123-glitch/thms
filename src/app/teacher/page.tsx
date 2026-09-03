@@ -35,6 +35,8 @@ import NotificationBell from '@/components/common/NotificationBell';
 import StudentDetailDrawer from '@/components/teacher/StudentDetailDrawer';
 import CreateHomeworkModal from '@/components/teacher/CreateHomeworkModal';
 import FastMarksEntryModal from '@/components/teacher/FastMarksEntryModal';
+import CreateClassTestModal from '@/components/teacher/CreateClassTestModal';
+import UploadStudyMaterialModal from '@/components/teacher/UploadStudyMaterialModal';
 import QRScannerModal from '@/components/common/QRScanner';
 
 export default function TeacherDashboardPage() {
@@ -54,6 +56,8 @@ export default function TeacherDashboardPage() {
   // Modals & Drawers
   const [selectedStudentForDrawer, setSelectedStudentForDrawer] = useState<any | null>(null);
   const [showHomeworkModal, setShowHomeworkModal] = useState(false);
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [showMaterialModal, setShowMaterialModal] = useState(false);
   const [showMarksModal, setShowMarksModal] = useState(false);
   const [showScannerModal, setShowScannerModal] = useState(false);
 
@@ -586,6 +590,22 @@ export default function TeacherDashboardPage() {
                 </button>
 
                 <button
+                  onClick={() => setShowTestModal(true)}
+                  className="px-3.5 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs border border-purple-200 flex items-center gap-1.5 transition-colors"
+                >
+                  <Award className="w-3.5 h-3.5 text-purple-600" />
+                  <span>+ Schedule Test</span>
+                </button>
+
+                <button
+                  onClick={() => setShowMaterialModal(true)}
+                  className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-xs border border-amber-200 flex items-center gap-1.5 transition-colors"
+                >
+                  <FileText className="w-3.5 h-3.5 text-amber-600" />
+                  <span>+ Upload Docs</span>
+                </button>
+
+                <button
                   onClick={() => setShowMarksModal(true)}
                   className="px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-colors"
                 >
@@ -918,6 +938,29 @@ export default function TeacherDashboardPage() {
           sectionName={currentSectionObject.name}
           subjects={currentSubjects}
           students={students}
+          onSuccess={() => fetchClassStudents()}
+        />
+      )}
+
+      {/* SCHEDULE CLASS TEST MODAL */}
+      {currentClassObject && currentSectionObject && (
+        <CreateClassTestModal
+          isOpen={showTestModal}
+          onClose={() => setShowTestModal(false)}
+          classId={selectedClassId}
+          sectionId={selectedSectionId}
+          subjects={currentSubjects}
+          onSuccess={() => fetchClassStudents()}
+        />
+      )}
+
+      {/* UPLOAD STUDY MATERIAL MODAL */}
+      {currentClassObject && currentSectionObject && (
+        <UploadStudyMaterialModal
+          isOpen={showMaterialModal}
+          onClose={() => setShowMaterialModal(false)}
+          classId={selectedClassId}
+          subjects={currentSubjects}
           onSuccess={() => fetchClassStudents()}
         />
       )}

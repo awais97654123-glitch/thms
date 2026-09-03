@@ -96,6 +96,7 @@ model Class {
   announcements      Announcement[]
   examSchedules      ExamSchedule[]
   teacherAssignments TeacherAssignment[]
+  classTests         ClassTest[]
 }
 
 model Section {
@@ -116,6 +117,7 @@ model Section {
   examSchedules      ExamSchedule[]
   announcements      Announcement[]
   teacherAssignments TeacherAssignment[]
+  classTests         ClassTest[]
 }
 
 model Subject {
@@ -137,6 +139,7 @@ model Subject {
   homeworks          Homework[]
   studyMaterials     StudyMaterial[]
   teacherAssignments TeacherAssignment[]
+  classTests         ClassTest[]
 }
 
 model Parent {
@@ -221,6 +224,7 @@ model Student {
   disciplineRecords StudentDiscipline[]
   promotionHistory  PromotionHistory[]
   qrScanLogs       QrScanLog[]
+  testSubmissions  ClassTestSubmission[]
 
   @@index([classId, sectionId])
   @@index([sessionId])
@@ -284,6 +288,7 @@ model Teacher {
   libraryIssues  LibraryIssue[]
   substituteAssignments SubstituteAssignment[] @relation("SubstituteTeacher")
   originalAssignments   SubstituteAssignment[] @relation("OriginalTeacher")
+  classTests            ClassTest[]
 }
 
 model TeacherAssignment {
@@ -454,7 +459,9 @@ model Timetable {
 
   @@unique([classId, sectionId, dayOfWeek, startTime])
   @@index([teacherId, dayOfWeek])
+  @@index([teacherId, dayOfWeek, status])
   @@index([classId, sectionId])
+  @@index([roomNo, dayOfWeek])
 }
 
 model Exam {
@@ -670,6 +677,66 @@ model StudyMaterial {
   class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
   subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   teacher     Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@index([classId, subjectId])
+  @@index([teacherId])
+}
+
+model ClassTest {
+  id              String    @id @default(uuid())
+  classId         String
+  sectionId       String
+  subjectId       String
+  teacherId       String
+  title           String
+  description     String?
+  testDate        DateTime
+  startTime       String?   // e.g. "09:00"
+  durationMinutes Int       @default(45)
+  totalMarks      Float     @default(25)
+  passingMarks    Float     @default(10)
+  paperUrl        String?
+  questionsJson   String?   // JSON of test questions if online
+  instructions    String?
+  status          String    @default("PUBLISHED") // "DRAFT", "PUBLISHED", "COMPLETED", "ARCHIVED"
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  class           Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  section         Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  subject         Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacher         Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  submissions     ClassTestSubmission[]
+
+  @@index([classId, sectionId])
+  @@index([teacherId])
+  @@index([testDate])
+  @@index([status])
+}
+
+model ClassTestSubmission {
+  id              String    @id @default(uuid())
+  testId          String
+  studentId       String
+  startedAt       DateTime  @default(now())
+  submittedAt     DateTime?
+  submissionText  String?
+  attachmentsJson String?
+  answersJson     String?   // JSON of student answers
+  marksObtained   Float?
+  feedback        String?
+  status          String    @default("SUBMITTED") // "IN_PROGRESS", "SUBMITTED", "GRADED", "LATE"
+  gradedById      String?
+  gradedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  test            ClassTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  student         Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, studentId])
+  @@index([studentId])
+  @@index([status])
 }
 
 model Announcement {

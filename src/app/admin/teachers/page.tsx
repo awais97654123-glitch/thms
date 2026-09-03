@@ -18,7 +18,8 @@ import {
   Calendar,
   Sparkles,
   BookOpen,
-  Info
+  Info,
+  RefreshCw
 } from 'lucide-react';
 import AdminChipLoader from '@/components/common/AdminChipLoader';
 import Button from '@/components/ui/Button';
@@ -40,6 +41,17 @@ export default function AdminTeachersPage() {
   const [teacherAssignments, setTeacherAssignments] = useState<any[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(false);
   const [createdCredentials, setCreatedCredentials] = useState<any | null>(null);
+
+  // Subject confirmation via Enter key state
+  const [subjectInput, setSubjectInput] = useState('');
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>(['Mathematics', 'Physics']);
+
+  // AI Auto-Scheduling Assistant States
+  const [aiStep, setAiStep] = useState<'FORM' | 'REVIEW'>('FORM');
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiProposals, setAiProposals] = useState<any[]>([]);
+  const [aiSummary, setAiSummary] = useState<any | null>(null);
+  const [acceptedSlotIds, setAcceptedSlotIds] = useState<Set<string>>(new Set());
 
   // New Teacher Eligibility Form
   const [formData, setFormData] = useState({
@@ -114,22 +126,93 @@ export default function AdminTeachersPage() {
     }
   };
 
-  const handleAddTeacher = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddSubjectChip = (subj: string) => {
+    const clean = subj.trim();
+    if (!clean) return;
+    if (!selectedSubjects.some((s) => s.toLowerCase() === clean.toLowerCase())) {
+      setSelectedSubjects((prev) => [...prev, clean]);
+    }
+    setSubjectInput('');
+  };
+
+  const handleSubjectKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddSubjectChip(subjectInput);
+    }
+  };
+
+  const handleRemoveSubjectChip = (subjToRemove: string) => {
+    setSelectedSubjects((prev) => prev.filter((s) => s !== subjToRemove));
+  };
+
+  const handleGenerateAiSchedule = async () => {
+    if (!formData.fullName.trim()) {
+      alert('Please enter the faculty member full name first.');
+      return;
+    }
+    if (selectedSubjects.length === 0) {
+      alert('Please enter and confirm at least one teaching subject (press Enter to add subject).');
+      return;
+    }
+
+    setAiGenerating(true);
+    try {
+      const res = await fetch('/api/admin/timetable/ai-schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teacherName: formData.fullName,
+          qualifiedSubjects: selectedSubjects,
+          workingDays: formData.workingDays.split(',').map((d) => d.trim()),
+          availableFrom: formData.availableFrom,
+          availableTo: formData.availableTo,
+          maxDailyPeriods: formData.maxDailyPeriods,
+          maxWeeklyPeriods: formData.maxWeeklyPeriods,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAiProposals(data.proposedSlots || []);
+        setAiSummary(data.summary || null);
+        setAcceptedSlotIds(new Set((data.proposedSlots || []).map((s: any) => s.id)));
+        setAiStep('REVIEW');
+      } else {
+        alert(data.error || 'Failed to generate AI schedule proposal.');
+      }
+    } catch {
+      alert('Network error communicating with AI scheduling assistant.');
+    } finally {
+      setAiGenerating(false);
+    }
+  };
+
+  const handleToggleAcceptSlot = (slotId: string) => {
+    setAcceptedSlotIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(slotId)) next.delete(slotId);
+      else next.add(slotId);
+      return next;
+    });
+  };
+
+  const handleAcceptAllValid = () => {
+    setAcceptedSlotIds(new Set(aiProposals.map((s) => s.id)));
+  };
+
+  const handleAddTeacher = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setDbProcessing(true);
-    setDbMessage('Creating Teacher Profile & Eligibility Record...');
+    setDbMessage('Creating Teacher Profile & Committing Approved Timetable...');
 
     try {
-      const qualifiedArray = formData.qualifiedSubjects
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-
       const payload = {
         ...formData,
-        qualifiedSubjects: qualifiedArray,
+        qualifiedSubjects: selectedSubjects,
       };
 
+      // 1. Create Teacher Profile
       const res = await fetch('/api/teachers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -137,15 +220,40 @@ export default function AdminTeachersPage() {
       });
 
       const data = await res.json();
-      if (res.ok && data.success) {
-        setCreatedCredentials(data.credentials);
-        setShowAddModal(false);
-        fetchTeachers();
-      } else {
+      if (!res.ok || !data.success) {
         alert(data.error || 'Failed to create teacher');
+        setDbProcessing(false);
+        return;
       }
+
+      const createdTeacher = data.teacher;
+      const credentials = data.credentials;
+
+      // 2. Commit Approved AI Timetable Slots if any
+      const approvedSlotsToCommit = aiProposals.filter((s) => acceptedSlotIds.has(s.id));
+      if (approvedSlotsToCommit.length > 0 && createdTeacher?.id) {
+        setDbMessage(`Saving ${approvedSlotsToCommit.length} official timetable slots...`);
+        const ttRes = await fetch('/api/admin/timetable/ai-schedule', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            teacherId: createdTeacher.id,
+            approvedSlots: approvedSlotsToCommit,
+          }),
+        });
+        const ttData = await ttRes.json();
+        if (!ttRes.ok) {
+          console.warn('Timetable commit warning:', ttData.error);
+        }
+      }
+
+      setCreatedCredentials(credentials);
+      setShowAddModal(false);
+      setAiStep('FORM');
+      setAiProposals([]);
+      fetchTeachers();
     } catch {
-      alert('Error creating teacher');
+      alert('Error creating teacher and timetable');
     } finally {
       setDbProcessing(false);
     }
@@ -438,126 +546,420 @@ export default function AdminTeachersPage() {
         </div>
       )}
 
-      {/* CREATE NEW TEACHER & ELIGIBILITY MODAL */}
+      {/* CREATE NEW TEACHER & AI TIMETABLE SCHEDULER MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#E2E8F0] p-6 sm:p-8 space-y-6">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-[#E2E8F0] p-6 sm:p-8 space-y-6">
+            
+            {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
               <div>
-                <span className="text-[10px] uppercase font-bold text-[#2563EB] block">
-                  Faculty Registration
-                </span>
-                <h3 className="text-xl font-black text-[#0F172A]">
-                  Register Faculty & Eligibility Rules
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase font-bold text-[#2563EB] tracking-wider">
+                    {aiStep === 'FORM' ? 'Step 1: Faculty Registration' : 'Step 2: AI Timetable Review & Approval'}
+                  </span>
+                  {aiStep === 'REVIEW' && (
+                    <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] font-extrabold flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-purple-600" />
+                      AI Assisted
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-xl font-black text-[#0F172A] mt-0.5">
+                  {aiStep === 'FORM' ? 'Register Faculty & Teaching Eligibility' : `Review AI Proposed Timetable for ${formData.fullName}`}
                 </h3>
               </div>
               <button
-                onClick={() => setShowAddModal(false)}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setAiStep('FORM');
+                  setAiProposals([]);
+                }}
                 className="p-2 rounded-xl bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#475569] text-xs font-bold transition-colors"
               >
                 ✕ Close
               </button>
             </div>
 
-            <form onSubmit={handleAddTeacher} className="space-y-4 text-xs">
-              <Input
-                label="Full Name"
-                required
-                placeholder="e.g. Prof. Arshad Khan"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              />
+            {aiStep === 'FORM' ? (
+              /* STEP 1: FORM WITH ENTER-KEY SUBJECT TAGS */
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleGenerateAiSchedule();
+                }}
+                className="space-y-4 text-xs"
+              >
+                <Input
+                  label="Full Name"
+                  required
+                  placeholder="e.g. Prof. Ahmad Khan"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Phone Number"
+                    placeholder="+92 300 1234567"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                  <Input
+                    label="Email Address"
+                    type="email"
+                    placeholder="faculty@hayatabadmodel.edu.pk"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Department"
+                    value={formData.department}
+                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  />
+                  <Input
+                    label="Designation"
+                    value={formData.designation}
+                    onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                  />
+                </div>
+
                 <Input
-                  label="Phone Number"
-                  placeholder="+92 300 1234567"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  label="Academic Qualifications"
+                  value={formData.qualification}
+                  onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
                 />
+
+                {/* ENTER-KEY / SUBJECT CONFIRMATION SECTION */}
+                <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="font-extrabold text-[#0F172A] text-xs flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4 text-[#2563EB]" />
+                        <span>Teaching Subjects (Press Enter to Confirm)</span>
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <p className="text-[11px] text-[#475569] mt-0.5">
+                        Type subject name and press <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded font-mono text-[10px] text-slate-800 shadow-sm">Enter</kbd> to add to eligibility list.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-[#2563EB]">
+                      {selectedSubjects.length} subject(s) added
+                    </span>
+                  </div>
+
+                  {/* Subject Input Field */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="e.g. Science, Mathematics, English, Urdu, Physics..."
+                      value={subjectInput}
+                      onChange={(e) => setSubjectInput(e.target.value)}
+                      onKeyDown={handleSubjectKeyDown}
+                      className="flex-1 px-3 py-2 text-xs rounded-xl border border-blue-300 focus:outline-none focus:ring-2 focus:ring-[#2563EB] bg-white font-medium shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleAddSubjectChip(subjectInput)}
+                      className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Subject</span>
+                    </button>
+                  </div>
+
+                  {/* Selected Subject Chips */}
+                  {selectedSubjects.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      {selectedSubjects.map((subj) => (
+                        <span
+                          key={subj}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[#1E3A8A] font-bold text-xs border border-blue-300 shadow-sm animate-in zoom-in-95"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{subj}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSubjectChip(subj)}
+                            className="w-4 h-4 rounded-full bg-blue-100 hover:bg-red-100 text-blue-700 hover:text-red-700 flex items-center justify-center text-[10px] font-bold transition-colors ml-1"
+                            title="Remove subject"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* School Catalog Quick Picks */}
+                  <div className="pt-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
+                      Quick Suggestions from School Catalog:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        'Science',
+                        'Mathematics',
+                        'English',
+                        'Urdu',
+                        'Computer',
+                        'Physics',
+                        'Chemistry',
+                        'Biology',
+                        'Islamiat',
+                        'Social Studies',
+                      ].map((catSubject) => {
+                        const isSelected = selectedSubjects.some(
+                          (s) => s.toLowerCase() === catSubject.toLowerCase()
+                        );
+                        return (
+                          <button
+                            key={catSubject}
+                            type="button"
+                            disabled={isSelected}
+                            onClick={() => handleAddSubjectChip(catSubject)}
+                            className={`px-2.5 py-1 text-[11px] rounded-lg border font-medium transition-all ${
+                              isSelected
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 opacity-60 cursor-not-allowed'
+                                : 'bg-white hover:bg-blue-100 text-slate-700 border-slate-200 hover:border-blue-300'
+                            }`}
+                          >
+                            {isSelected ? `✓ ${catSubject}` : `+ ${catSubject}`}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Available From Time"
+                    type="time"
+                    value={formData.availableFrom}
+                    onChange={(e) => setFormData({ ...formData, availableFrom: e.target.value })}
+                  />
+                  <Input
+                    label="Available To Time"
+                    type="time"
+                    value={formData.availableTo}
+                    onChange={(e) => setFormData({ ...formData, availableTo: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Max Daily Periods Limit"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={formData.maxDailyPeriods}
+                    onChange={(e) => setFormData({ ...formData, maxDailyPeriods: parseInt(e.target.value, 10) || 6 })}
+                  />
+                  <Input
+                    label="Max Weekly Periods Limit"
+                    type="number"
+                    min="1"
+                    max="40"
+                    value={formData.maxWeeklyPeriods}
+                    onChange={(e) => setFormData({ ...formData, maxWeeklyPeriods: parseInt(e.target.value, 10) || 30 })}
+                  />
+                </div>
+
                 <Input
-                  label="Email Address"
-                  type="email"
-                  placeholder="faculty@hayatabadmodel.edu.pk"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  label="Initial Portal Password"
+                  value={formData.tempPassword}
+                  onChange={(e) => setFormData({ ...formData, tempPassword: e.target.value })}
+                  helperText="Faculty member will be required to change this upon initial login."
                 />
+
+                {/* Multi-action Submit Buttons */}
+                <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    onClick={handleGenerateAiSchedule}
+                    disabled={aiGenerating || !formData.fullName || selectedSubjects.length === 0}
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 text-white font-bold text-xs rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all"
+                  >
+                    {aiGenerating ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>AI Inspecting School Schedule & Conflicts...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                        <span>AI Auto-Schedule & Review Proposal</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAddTeacher()}
+                    disabled={dbProcessing || !formData.fullName}
+                    className="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl border border-slate-300 transition-colors"
+                  >
+                    Register Only (Manual Schedule Later)
+                  </button>
+                </div>
+              </form>
+            ) : (
+              /* STEP 2: AI PROPOSAL REVIEW TABLE */
+              <div className="space-y-5 text-xs">
+                
+                {/* AI Summary Banner */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200 flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase text-purple-700 tracking-wider">
+                      AI Schedule Analysis Completed
+                    </span>
+                    <p className="text-xs text-slate-700 font-medium">
+                      Found <strong className="text-purple-900">{aiProposals.length} conflict-free slots</strong> across {aiSummary?.classesCovered?.length || 0} classes for {formData.fullName}.
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      Estimated weekly teaching workload: {aiSummary?.weeklyWorkloadHours || 0} hours (Max cap: {formData.maxWeeklyPeriods} periods).
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleAcceptAllValid}
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors"
+                    >
+                      ✓ Accept All Valid ({aiProposals.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGenerateAiSchedule}
+                      disabled={aiGenerating}
+                      className="px-3 py-1.5 bg-white hover:bg-slate-100 text-purple-700 border border-purple-300 rounded-xl font-bold text-xs transition-colors flex items-center gap-1"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${aiGenerating ? 'animate-spin' : ''}`} />
+                      <span>Regenerate</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Human Review Table */}
+                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                  <div className="max-h-[380px] overflow-y-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead className="bg-slate-100 text-slate-700 text-[10px] uppercase tracking-wider font-extrabold sticky top-0 z-10 border-b border-slate-200">
+                        <tr>
+                          <th className="p-3 w-10 text-center">Status</th>
+                          <th className="p-3">Day & Period</th>
+                          <th className="p-3">Class & Section</th>
+                          <th className="p-3">Subject</th>
+                          <th className="p-3">Room</th>
+                          <th className="p-3">AI Reasoning & Confidence</th>
+                          <th className="p-3 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 text-xs">
+                        {aiProposals.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="p-8 text-center text-slate-400">
+                              No open slots found matching this teacher's availability and qualified subjects.
+                            </td>
+                          </tr>
+                        ) : (
+                          aiProposals.map((slot) => {
+                            const isAccepted = acceptedSlotIds.has(slot.id);
+                            return (
+                              <tr
+                                key={slot.id}
+                                className={`transition-colors ${
+                                  isAccepted ? 'bg-emerald-50/40 hover:bg-emerald-50/70' : 'bg-slate-50/60 opacity-60'
+                                }`}
+                              >
+                                <td className="p-3 text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={isAccepted}
+                                    onChange={() => handleToggleAcceptSlot(slot.id)}
+                                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                  />
+                                </td>
+                                <td className="p-3">
+                                  <span className="font-bold text-slate-900 block">{slot.dayOfWeek}</span>
+                                  <span className="text-[10px] text-blue-700 font-semibold">
+                                    {slot.periodLabel} ({slot.startTime} - {slot.endTime})
+                                  </span>
+                                </td>
+                                <td className="p-3 font-semibold text-slate-800">
+                                  {slot.className} - {slot.sectionName}
+                                </td>
+                                <td className="p-3">
+                                  <span className="px-2 py-0.5 rounded-lg bg-blue-100 text-blue-800 font-bold text-[11px]">
+                                    {slot.subjectName}
+                                  </span>
+                                </td>
+                                <td className="p-3 font-mono text-slate-600">
+                                  {slot.roomNo}
+                                </td>
+                                <td className="p-3 max-w-xs">
+                                  <div className="flex items-center gap-1.5 mb-0.5">
+                                    <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-black text-[9px]">
+                                      {slot.confidence}% Match
+                                    </span>
+                                    <span className="text-[10px] text-slate-400">0 conflicts found</span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-500 leading-tight">
+                                    {slot.reason}
+                                  </p>
+                                </td>
+                                <td className="p-3 text-right">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleAcceptSlot(slot.id)}
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                                      isAccepted
+                                        ? 'bg-emerald-600 hover:bg-red-600 text-white'
+                                        : 'bg-slate-200 hover:bg-emerald-600 hover:text-white text-slate-700'
+                                    }`}
+                                  >
+                                    {isAccepted ? 'Accepted' : 'Accept Slot'}
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Bottom Action Bar */}
+                <div className="pt-2 flex items-center justify-between border-t border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setAiStep('FORM')}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors"
+                  >
+                    ← Back to Teacher Details
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAddTeacher()}
+                    disabled={dbProcessing}
+                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg flex items-center gap-2 transition-all"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>
+                      Approve & Register Faculty with Official Timetable ({acceptedSlotIds.size} slots)
+                    </span>
+                  </button>
+                </div>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input
-                  label="Department"
-                  value={formData.department}
-                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                />
-                <Input
-                  label="Designation"
-                  value={formData.designation}
-                  onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                />
-              </div>
-
-              <Input
-                label="Academic Qualifications"
-                value={formData.qualification}
-                onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
-              />
-
-              <Input
-                label="Qualified Subjects (Comma separated)"
-                placeholder="e.g. Mathematics, Physics, General Science"
-                helperText="Scheduling engine will only allow timetable assignments matching these qualified subjects."
-                value={formData.qualifiedSubjects}
-                onChange={(e) => setFormData({ ...formData, qualifiedSubjects: e.target.value })}
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input
-                  label="Available From Time"
-                  type="time"
-                  value={formData.availableFrom}
-                  onChange={(e) => setFormData({ ...formData, availableFrom: e.target.value })}
-                />
-                <Input
-                  label="Available To Time"
-                  type="time"
-                  value={formData.availableTo}
-                  onChange={(e) => setFormData({ ...formData, availableTo: e.target.value })}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input
-                  label="Max Daily Periods Limit"
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={formData.maxDailyPeriods}
-                  onChange={(e) => setFormData({ ...formData, maxDailyPeriods: parseInt(e.target.value, 10) || 6 })}
-                />
-                <Input
-                  label="Max Weekly Periods Limit"
-                  type="number"
-                  min="1"
-                  max="40"
-                  value={formData.maxWeeklyPeriods}
-                  onChange={(e) => setFormData({ ...formData, maxWeeklyPeriods: parseInt(e.target.value, 10) || 30 })}
-                />
-              </div>
-
-              <Input
-                label="Initial Portal Password"
-                value={formData.tempPassword}
-                onChange={(e) => setFormData({ ...formData, tempPassword: e.target.value })}
-                helperText="Faculty member will be required to change this upon initial login."
-              />
-
-              <div className="pt-2">
-                <Button type="submit" variant="primary" size="md" className="w-full">
-                  Create Faculty Member & Set Eligibility
-                </Button>
-              </div>
-            </form>
           </div>
         </div>
       )}

@@ -42,3 +42,10 @@ src-tauri/target/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+python_service/temp/
+python_service/__pycache__/
+

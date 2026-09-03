@@ -18,9 +18,18 @@ export async function GET(
         { status: 400 }
       );
     }
+    const cleanToken = decodeURIComponent(token.trim());
 
-    const student = await prisma.student.findUnique({
-      where: { qrToken: token.trim() },
+    const student = await prisma.student.findFirst({
+      where: {
+        OR: [
+          { qrToken: cleanToken },
+          { studentId: cleanToken },
+          { admissionNo: cleanToken },
+          { rollNo: cleanToken },
+          { id: cleanToken },
+        ],
+      },
       include: {
         class: true,
         section: true,
